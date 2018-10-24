@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "name": "fureev/support",
+  "description": "PHP Support Package",
+  "keywords": [
+    "php",
+    "support",
+    "helpers"
+  ],
+  "authors": [
+    {
+      "name": "Fureev",
+      "email": "fureev@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~7.0",
+    "phpstan/phpstan": "*",
+    "avto-dev/php-cs-fixer": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Php\\Support\\": "src/",
+      "Php\\Support\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "@php ./vendor/bin/phpunit --no-coverage",
+    "test-cover": "@php ./vendor/bin/phpunit --coverage-text",
+    "phpstan": "@php ./vendor/bin/phpstan analyze --ansi --level=max ./src"
+  }
+}
