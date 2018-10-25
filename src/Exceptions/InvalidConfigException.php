@@ -7,10 +7,16 @@ namespace Php\Support\Exceptions;
  *
  * @package Php\Support\Exceptions
  */
-class InvalidConfigException extends Exception
+class InvalidConfigException extends ConfigException
 {
-    public function getName()
+    /**
+     * InvalidConfigException constructor.
+     *
+     * @param string     $message
+     * @param mixed|null $config
+     */
+    public function __construct($message = 'Invalid Configuration', $config = null)
     {
-        return 'Invalid Configuration';
+        parent::__construct($message, $config);
     }
 }
