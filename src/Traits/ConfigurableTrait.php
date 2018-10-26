@@ -13,7 +13,7 @@ trait ConfigurableTrait
      *
      * @return $this
      */
-    public function configurable(array $attributes, $exceptOnMiss = true)
+    public function configurable(array $attributes, ?bool $exceptOnMiss = true)
     {
         foreach ($attributes as $key => $value) {
             if ($exceptOnMiss && !property_exists($this, $key)) {
