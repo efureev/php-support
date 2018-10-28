@@ -9,7 +9,7 @@ namespace Php\Support\Exceptions;
  */
 class MissingConfigException extends ConfigException
 {
-    /** @var string */
+    /** @var string|null */
     protected $needKey;
 
     /**
