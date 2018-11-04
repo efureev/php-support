@@ -27,4 +27,35 @@ class Arr
             }
         }
     }
+
+    /**
+     * Remove named keys from arrays
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function removeKeys(array $array): array
+    {
+        $array = array_values($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) $value = static::removeKeys($value);
+        }
+
+        return $array;
+    }
+
+    /**
+     * Changes PHP array to PostgreSQL array format
+     *
+     * @param array $array
+     *
+     * @return string
+     */
+    public static function ToPostgresArray(array $array): string
+    {
+        $array = \json_encode(self::removeKeys($array), JSON_UNESCAPED_UNICODE);
+
+        return str_replace('[', '{', str_replace(']', '}', str_replace('"', '', $array)));
+    }
 }

@@ -1,5 +1,5 @@
 {
-  "version": "1.0.8",
+  "version": "1.0.9",
   "name": "efureev/support",
   "description": "PHP Support Package",
   "keywords": [
@@ -14,7 +14,8 @@
     }
   ],
   "require": {
-    "php": ">=7.1"
+    "php": ">=7.1",
+    "ext-json": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "~7.0",
