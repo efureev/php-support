@@ -28,5 +28,18 @@ class Arr
         }
     }
 
+    /**
+     * Remove elements from array by value
+     *
+     * @param array $array
+     * @param mixed $val
+     */
+    public static function removeByValue(array &$array, $val)
+    {
+        if (($key = array_search($val, $array)) !== false) {
+            unset($array[ $key ]);
+        }
+    }
+
 
 }
