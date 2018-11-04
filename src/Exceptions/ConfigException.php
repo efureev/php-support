@@ -26,4 +26,12 @@ class ConfigException extends Exception
 
         $this->config = $config;
     }
+
+    /**
+     * @return array|null
+     */
+    public function getConfig(): ?array
+    {
+        return $this->config;
+    }
 }

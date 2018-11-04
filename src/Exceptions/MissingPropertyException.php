@@ -17,11 +17,15 @@ class MissingPropertyException extends ConfigException
      *
      * @param mixed  $config
      * @param string $property
-     * @param string $message
      */
-    public function __construct($config = null, $property = null, $message = 'Missing Property in Config')
+    public function __construct($config = null, $property = null)
     {
-        parent::__construct($config, $message);
         $this->property = $property;
+        parent::__construct($config, sprintf('Missing property "%s" in config', $this->property));
+    }
+
+    public function getProperty(): ?string
+    {
+        return $this->property;
     }
 }
