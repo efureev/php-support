@@ -5,6 +5,7 @@ namespace Php\Support\Components;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
+use Php\Support\Traits\Getter;
 
 class Params implements
     \ArrayAccess,
@@ -13,13 +14,17 @@ class Params implements
     Arrayable,
     Jsonable
 {
+    use Getter {
+        Getter::__get as  __getParent;
+    }
+
     /** @var array */
     private $_data = [];
 
     /**
      * Params constructor.
      *
-     * @param array|null $array
+     * @param array $array
      */
     public function __construct(array $array)
     {
@@ -49,9 +54,9 @@ class Params implements
      *
      * @param int $options
      *
-     * @return string
+     * @return string|null
      */
-    public function toJson($options = 320): string
+    public function toJson($options = 320): ?string
     {
         return Json::encode($this->jsonSerialize(), $options);
     }
@@ -73,7 +78,7 @@ class Params implements
      */
     public function __toString()
     {
-        return $this->toJson();
+        return $this->toJson() ?? '';
     }
 
 
@@ -158,4 +163,72 @@ class Params implements
     {
         unset($this->_data[ $offset ]);
     }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     * @throws \Php\Support\Exceptions\UnknownPropertyException
+     */
+    public function __get(string $name)
+    {
+        if ($this->offsetExists($name)) {
+            return $this->offsetGet($name);
+        }
+
+        return self::__getParent($name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset(string $name)
+    {
+        if ($res = $this->offsetExists($name)) {
+            return true;
+        }
+
+        $getter = static::getter($name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter() !== null;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     */
+    public function __set(string $name, $value)
+    {
+        $setter = 'set' . ucfirst($name);
+        if (method_exists($this, $setter)) {
+            $this->$setter($value);
+        }
+
+        if ($this->offsetExists($name)) {
+            $this->offsetSet($name, $value);
+        }
+    }
+
+    /**
+     * @param string $name
+     */
+    public function __unset(string $name)
+    {
+        if ($this->offsetExists($name)) {
+            $this->offsetUnset($name);
+
+            return;
+        }
+
+        $setter = 'set' . ucfirst($name);
+        if (method_exists($this, $setter)) {
+            $this->$setter(null);
+        }
+    }
+
 }

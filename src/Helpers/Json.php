@@ -35,10 +35,10 @@ class Json
      *                       <http://www.php.net/manual/en/function.json-encode.php>. Default is
      *                       `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      *
-     * @return string the encoding result.
+     * @return null|string the encoding result.
      * @throws InvalidArgumentException if there is any encoding error.
      */
-    public static function encode($value, $options = 320)
+    public static function encode($value, $options = 320): ?string
     {
         $value = static::dataToArray($value);
         set_error_handler(function () {
@@ -48,7 +48,7 @@ class Json
         restore_error_handler();
         static::handleJsonError(json_last_error());
 
-        return $json;
+        return $json ?: null;
     }
 
     /**
@@ -59,10 +59,10 @@ class Json
      *
      * @param mixed $value the data to be encoded
      *
-     * @return string the encoding result
+     * @return string|null the encoding result
      * @throws InvalidArgumentException if there is any encoding error
      */
-    public static function htmlEncode($value)
+    public static function htmlEncode($value): ?string
     {
         return static::encode($value, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
     }
@@ -70,15 +70,15 @@ class Json
     /**
      * Decodes the given JSON string into a PHP data structure.
      *
-     * @param string $json    the JSON string to be decoded
-     * @param bool   $asArray whether to return objects in terms of associative arrays.
+     * @param null|string $json    the JSON string to be decoded
+     * @param bool        $asArray whether to return objects in terms of associative arrays.
      *
      * @return mixed the PHP data
      * @throws InvalidArgumentException if there is any decoding error
      */
     public static function decode(?string $json, $asArray = true)
     {
-        if ($json === null || $json === '') {
+        if (is_null($json) || $json === '') {
             return null;
         }
         $decode = \json_decode($json, $asArray);
@@ -127,8 +127,10 @@ class Json
                 $data = $data->toArray();
             } else {
                 $result = [];
-                foreach ($data as $name => $value) {
-                    $result[ $name ] = $value;
+                if (is_iterable($data)) {
+                    foreach ($data as $name => $value) {
+                        $result[ $name ] = $value;
+                    }
                 }
                 $data = $result;
             }
