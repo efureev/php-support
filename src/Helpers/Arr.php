@@ -2,6 +2,9 @@
 
 namespace Php\Support\Helpers;
 
+use Php\Support\Interfaces\Arrayable;
+use Php\Support\Interfaces\Jsonable;
+
 /**
  * Class Arr
  *
@@ -39,6 +42,28 @@ class Arr
         if (($key = array_search($val, $array)) !== false) {
             unset($array[ $key ]);
         }
+    }
+
+    /**
+     * @param mixed $items
+     *
+     * @return array
+     */
+    public static function toArray($items): array
+    {
+        if (is_array($items)) {
+            return $items;
+        } elseif ($items instanceof Arrayable) {
+            return $items->toArray();
+        } elseif ($items instanceof Jsonable) {
+            return Json::decode($items->toJson());
+        } elseif ($items instanceof \JsonSerializable) {
+            return $items->jsonSerialize();
+        } elseif ($items instanceof \Traversable) {
+            return iterator_to_array($items);
+        }
+
+        return (array)$items;
     }
 
 
