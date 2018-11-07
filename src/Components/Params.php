@@ -90,10 +90,14 @@ class Params implements
     public function toArray(array $keys = []): array
     {
         $result = [];
-        foreach ($keys as $key) {
-            if (isset($this->_data[ $key ])) {
-                $result[ $key ] = $this->_data[ $key ];
+        if ($keys) {
+            foreach ($keys as $key) {
+                if (isset($this->_data[ $key ])) {
+                    $result[ $key ] = $this->_data[ $key ];
+                }
             }
+        } else {
+            $result = $this->_data;
         }
 
         return Json::dataToArray($result);

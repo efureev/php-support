@@ -62,4 +62,30 @@ final class ParamsTest extends TestCase
         $this->assertEquals($params->emptyArray, $array['emptyArray']);
     }
 
+    public function testCanBeCollect(): void
+    {
+
+        $phone1 = [
+            "id"           => 1,
+            "type"         => "PHONE",
+            "notification" => "false",
+            "phone"        => "8-4912-25-97-22"
+        ];
+        $phone2 = [
+            "id"           => 2,
+            "type"         => "FAX",
+            "notification" => "false",
+            "phone"        => "8-4912-25-97-22"
+        ];
+        $cls = new class extends Params
+        {
+        };
+        $phones = new Params([$phone1, $phone2]);
+
+        $this->assertCount(2, $phones);
+        $this->assertEquals($phones->toArray(), [$phone1, $phone2]);
+        $this->assertEquals($phones->toJson(), '[{"id":1,"type":"PHONE","notification":"false","phone":"8-4912-25-97-22"},{"id":2,"type":"FAX","notification":"false","phone":"8-4912-25-97-22"}]');
+
+    }
+
 }
