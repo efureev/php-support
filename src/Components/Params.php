@@ -26,7 +26,7 @@ class Params implements
      *
      * @param array $array
      */
-    public function __construct(array $array)
+    public function __construct(array $array = [])
     {
         $this->fromArray($array);
     }
