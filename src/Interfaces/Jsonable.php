@@ -19,9 +19,11 @@ interface Jsonable
     public function toJson($options = 320);
 
     /**
+     * @static
+     *
      * @param string $string
      *
-     * @return array
+     * @return Jsonable
      */
-    public function fromJson(string $string): array;
+    public static function fromJson(string $string): Jsonable;
 }
