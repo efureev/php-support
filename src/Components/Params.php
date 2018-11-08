@@ -9,6 +9,7 @@ use Php\Support\Traits\Getter;
 
 class Params implements
     \ArrayAccess,
+    \IteratorAggregate,
     \JsonSerializable,
     \Countable,
     Arrayable,
@@ -19,16 +20,17 @@ class Params implements
     }
 
     /** @var array */
-    private $_data = [];
+    protected $_items = [];
+
 
     /**
      * Params constructor.
      *
-     * @param array $array
+     * @param array|null $array
      */
-    public function __construct(array $array = [])
+    public function __construct(?array $array = [])
     {
-        $this->fromArray($array);
+        $this->fromArray($array ?? []);
     }
 
     /**
@@ -46,7 +48,7 @@ class Params implements
             }
 
             return $value;
-        }, $this->_data);
+        }, $this->_items);
     }
 
     /**
@@ -62,14 +64,25 @@ class Params implements
     }
 
     /**
-     * @param string $str
+     * @param string $string
      *
-     * @return array
+     * @return \Php\Support\Interfaces\Jsonable|\Php\Support\Components\Params
      */
-    public function fromJson(string $str): array
+    public static function fromJson(string $string): Jsonable
     {
-        return Json::decode($str);
+        return new static(Json::decode($string));
     }
+
+    /**
+     * @param string $string
+     *
+     * @return \Php\Support\Interfaces\Jsonable
+     */
+    public function fromJsonString(string $string): Jsonable
+    {
+        return $this->fromArray(Json::decode($string));
+    }
+
 
     /**
      * Convert items to its string representation.
@@ -92,12 +105,12 @@ class Params implements
         $result = [];
         if ($keys) {
             foreach ($keys as $key) {
-                if (isset($this->_data[ $key ])) {
-                    $result[ $key ] = $this->_data[ $key ];
+                if (isset($this->_items[ $key ])) {
+                    $result[ $key ] = $this->_items[ $key ];
                 }
             }
         } else {
-            $result = $this->_data;
+            $result = $this->_items;
         }
 
         return Json::dataToArray($result);
@@ -105,10 +118,26 @@ class Params implements
 
     /**
      * @param array $array
+     *
+     * @return \Php\Support\Components\Params
      */
-    public function fromArray(array $array): void
+    public function fromArray(array $array)
     {
-        $this->_data = $array;
+        $this->_items = $array;
+
+        return $this;
+    }
+
+    /**
+     * Clear elements
+     *
+     * @return $this
+     */
+    public function clear()
+    {
+        $this->_items = [];
+
+        return $this;
     }
 
     /**
@@ -116,7 +145,7 @@ class Params implements
      */
     public function count(): int
     {
-        return count($this->_data);
+        return count($this->_items);
     }
 
     /**
@@ -128,7 +157,7 @@ class Params implements
      */
     public function offsetExists($offset): bool
     {
-        return array_key_exists($offset, $this->_data);
+        return array_key_exists($offset, $this->_items);
     }
 
     /**
@@ -140,7 +169,19 @@ class Params implements
      */
     public function offsetGet($offset)
     {
-        return $this->_data[ $offset ];
+        return $this->_items[ $offset ];
+    }
+
+    /**
+     * Alias of a offsetGet
+     *
+     * @param mixed $key
+     *
+     * @return mixed
+     */
+    public function get($key)
+    {
+        return $this->offsetGet($key);
     }
 
     /**
@@ -152,10 +193,97 @@ class Params implements
     public function offsetSet($offset, $value)
     {
         if (is_null($offset)) {
-            $this->_data[] = $value;
+            $this->_items[] = $value;
         } else {
-            $this->_data[ $offset ] = $value;
+            $this->_items[ $offset ] = $value;
         }
+    }
+
+    /**
+     * Alias of a offsetSet
+     *
+     * @param mixed $key
+     * @param mixed $value
+     */
+    public function set($key, $value)
+    {
+        $this->offsetSet($key, $value);
+    }
+
+    /**
+     * @var array
+     */
+    protected $dynamicHashKeys = [];
+
+    /**
+     * @param array $keys
+     *
+     * @return $this
+     */
+    public function setDynamicHashKeys(array $keys)
+    {
+        $this->dynamicHashKeys = $keys;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed  $value
+     * @param string $delimiter
+     *
+     * @return null|string
+     */
+    protected function dynamicId($value, string $delimiter = '|'): ?string
+    {
+        if ($this->dynamicHashKeys) {
+            $values = array_filter(array_map(function ($key) use ($value) {
+                return $value[ $key ] ?? null;
+            }, $this->dynamicHashKeys));
+
+            if ($values) {
+                return md5(implode($delimiter, $values));
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @var string|null
+     */
+    protected $uniqueKey;
+
+    /**
+     * @param string $key
+     *
+     * @return $this
+     */
+    public function setUniqueKeyName(string $key)
+    {
+        $this->uniqueKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed       $value
+     * @param null|string $key
+     *
+     * @return null|string
+     */
+    public function add($value, ?string $key = null)
+    {
+        if (!$key) {
+            $key = $this->uniqueKey ? $value[ $this->uniqueKey ] ?? null : $this->dynamicId($value);
+        }
+
+        $this->offsetSet($key, $value);
+
+        if (!$key) {
+            $key = count($this->_items) - 1;
+        }
+
+        return $key;
     }
 
     /**
@@ -165,7 +293,15 @@ class Params implements
      */
     public function offsetUnset($offset)
     {
-        unset($this->_data[ $offset ]);
+        unset($this->_items[ $offset ]);
+    }
+
+    /**
+     * @return \ArrayIterator|\Traversable
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->_items);
     }
 
     /**
