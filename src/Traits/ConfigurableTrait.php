@@ -16,15 +16,28 @@ trait ConfigurableTrait
     public function configurable(array $attributes, ?bool $exceptOnMiss = true)
     {
         foreach ($attributes as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            } else {
-                if ($exceptOnMiss) {
-                    throw new InvalidParamException("Property $key is absent at class: " . get_class($this));
-                }
+            if (!$this->setProp($key, $value) && $exceptOnMiss) {
+                throw new InvalidParamException("Property $key is absent at class: " . get_class($this));
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param        $value
+     *
+     * @return bool
+     */
+    private function setProp(string $key, $value)
+    {
+        if (property_exists($this, $key)) {
+            $this->{$key} = $value;
+
+            return true;
+        }
+
+        return false;
     }
 }
