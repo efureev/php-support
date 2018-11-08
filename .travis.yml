@@ -12,8 +12,7 @@ before_script:
 - composer install
 
 script:
-- ./vendor/bin/phpunit --coverage-text
-- ./vendor/bin/phpunit --coverage-clover=coverage.xml
+- ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
 after_script:
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
