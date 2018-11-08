@@ -39,6 +39,7 @@ trait Setter
     public function __unset(string $name)
     {
         $setter = static::setter($name);
+
         if (method_exists($this, $setter)) {
             $this->$setter(null);
         } elseif (method_exists($this, 'get' . ucfirst($name))) {

@@ -4,9 +4,11 @@ namespace Php\Support\Components;
 
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;
+use Php\Support\Traits\DynamicHash;
 
 class Params extends BaseParams
 {
+    use DynamicHash;
 
     /**
      * @param string $string
@@ -44,44 +46,6 @@ class Params extends BaseParams
     }
 
     /**
-     * @var array
-     */
-    protected $dynamicHashKeys = [];
-
-    /**
-     * @param array $keys
-     *
-     * @return $this
-     */
-    public function setDynamicHashKeys(array $keys)
-    {
-        $this->dynamicHashKeys = $keys;
-
-        return $this;
-    }
-
-    /**
-     * @param mixed  $value
-     * @param string $delimiter
-     *
-     * @return null|string
-     */
-    protected function dynamicId($value, string $delimiter = '|'): ?string
-    {
-        if ($this->dynamicHashKeys) {
-            $values = array_filter(array_map(function ($key) use ($value) {
-                return $value[ $key ] ?? null;
-            }, $this->dynamicHashKeys));
-
-            if ($values) {
-                return md5(implode($delimiter, $values));
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @var string|null
      */
     protected $uniqueKey;
@@ -107,7 +71,7 @@ class Params extends BaseParams
     public function add($value, ?string $key = null)
     {
         if (!$key) {
-            $key = $this->uniqueKey ? $value[ $this->uniqueKey ] ?? null : $this->dynamicId($value);
+            $key = $this->uniqueKey ? $value[ $this->uniqueKey ] ?? null : $this->dynamicHash($value);
         }
 
         $this->offsetSet($key, $value);

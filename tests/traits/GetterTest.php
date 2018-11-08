@@ -29,15 +29,16 @@ final class GetterTest extends TestCase
         $this->assertFalse(isset($cls->val));
         $this->assertEquals('getJackDaniels', $cls::getter('jackDaniels'));
 
-//        $cls->writeOnly = 'success';
-
-//        var_dump($cls);die;
-//        $this->assertEquals('success', $cls->getKeyName());
-
         try {
             $this->assertEquals('success', $cls->writeOnly);
         } catch (\Throwable $e) {
             $this->assertInstanceOf(Php\Support\Exceptions\InvalidCallException::class, $e);
+        }
+
+        try {
+            $val = $cls->valName;
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(Php\Support\Exceptions\UnknownPropertyException::class, $e);
         }
 
 
