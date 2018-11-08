@@ -30,7 +30,7 @@ class Arr
     /**
      * Replace templates into item
      *
-     * @param       $item
+     * @param mixed $item
      * @param array $replace
      */
     private static function itemReplaceByTemplate(&$item, array $replace)
