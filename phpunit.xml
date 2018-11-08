@@ -20,6 +20,7 @@
     </filter>
     <logging>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+        <log type="coverage-xml" target="./storage/coverage/xml"/>
         <log type="coverage-html" target="./storage/coverage/html"/>
     </logging>
 </phpunit>

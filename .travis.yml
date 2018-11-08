@@ -7,38 +7,16 @@ before_install:
 - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - ./cc-test-reporter before-build
-- echo -n | openssl s_client -connect https://scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 before_script:
 - composer install
 
 script:
-- ./vendor/bin/phpunit
+- ./vendor/bin/phpunit --coverage-text
+- ./vendor/bin/phpunit --coverage-clover=coverage.xml
 
 after_script:
 - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 after_success:
 - bash <(curl -s https://codecov.io/bash)
-
-addons:
-  coverity_scan:
-    project:
-      name: "efureev/php-support"
-      version: 1.2.0
-      description: PHP Support
-
-    #notification_email: fureev@gmail.com
-
-    # Commands to prepare for build_command
-    # ** likely specific to your build **
-    #build_command_prepend: ./configure
-
-    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
-    # ** likely specific to your build **
-    # build_command: make
-
-    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
-    # Take care in resource usage, and consider the build frequency allowances per
-    #   https://scan.coverity.com/faq#frequency
-    branch_pattern: master
