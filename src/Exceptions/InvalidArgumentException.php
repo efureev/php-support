@@ -7,7 +7,7 @@ namespace Php\Support\Exceptions;
  *
  * @package Php\Support\Exceptions
  */
-class InvalidArgumentException extends \BadMethodCallException
+class InvalidArgumentException extends \InvalidArgumentException
 {
 
     /**

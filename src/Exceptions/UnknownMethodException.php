@@ -7,7 +7,7 @@ namespace Php\Support\Exceptions;
  *
  * @package Php\Support\Exceptions
  */
-class UnknownMethodException extends Exception
+class UnknownMethodException extends \BadMethodCallException
 {
     /** @var string|null */
     protected $method;

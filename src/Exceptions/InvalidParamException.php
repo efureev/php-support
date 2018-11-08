@@ -7,7 +7,7 @@ namespace Php\Support\Exceptions;
  *
  * @package Php\Support\Exceptions
  */
-class InvalidParamException extends \BadMethodCallException
+class InvalidParamException extends \LogicException
 {
     /** @var string|null */
     protected $param;

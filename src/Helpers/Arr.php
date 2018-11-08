@@ -23,11 +23,22 @@ class Arr
     public static function arrayReplaceByTemplate(array &$array, array $replace)
     {
         foreach ($array as &$item) {
-            if (is_array($item)) {
-                self::arrayReplaceByTemplate($item, $replace);
-            } else if (is_string($item)) {
-                $item = Str::stringReplaceByTemplate($item, $replace);
-            }
+            static::itemReplaceByTemplate($item, $replace);
+        }
+    }
+
+    /**
+     * Replace templates into item
+     *
+     * @param       $item
+     * @param array $replace
+     */
+    private static function itemReplaceByTemplate(&$item, array $replace)
+    {
+        if (is_array($item)) {
+            self::arrayReplaceByTemplate($item, $replace);
+        } else if (is_string($item)) {
+            $item = Str::stringReplaceByTemplate($item, $replace);
         }
     }
 
