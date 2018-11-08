@@ -52,22 +52,25 @@ class Arr
     public static function toArray($items): array
     {
         if (is_array($items)) {
-            return $items;
+            $res = $items;
         } elseif ($items instanceof Arrayable) {
-            return $items->toArray();
+            $res = $items->toArray();
         } elseif ($items instanceof Jsonable) {
-            return Json::decode($items->toJson());
+            $res = Json::decode($items->toJson());
         } elseif ($items instanceof \JsonSerializable) {
-            return $items->jsonSerialize();
+            $res = $items->jsonSerialize();
         } elseif ($items instanceof \Traversable) {
-            return iterator_to_array($items);
+            $res = iterator_to_array($items);
+        } else {
+            $res = (array)$items;
         }
 
-        return (array)$items;
+        return $res;
     }
 
     /**
      * Apply class or type to every element into collection
+     *
      * @param array         $array
      * @param string        $cls
      * @param \Closure|null $fn
