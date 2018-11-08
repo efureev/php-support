@@ -66,5 +66,55 @@ class Arr
         return (array)$items;
     }
 
+    /**
+     * Apply class or type to every element into collection
+     * @param array         $array
+     * @param string        $cls
+     * @param \Closure|null $fn
+     *
+     * @return array
+     */
+    public static function applyCls(array $array, string $cls, \Closure $fn = null)
+    {
+        $fn = self::getNoopClosureForApplyCls($fn);
+
+        return array_map(function ($element) use ($cls, $fn) {
+            switch ($cls) {
+                case 'array':
+                    $result = (array)$element;
+                    break;
+                case 'string':
+                    $result = \strval($element);
+                    break;
+                case 'integer':
+                    $result = \intval($element);
+                    break;
+
+                default:
+                    $result = $fn($cls, $element);
+            }
+
+            return $result;
+
+        }, $array);
+    }
+
+    /**
+     * @param \Closure|null $fn
+     *
+     * @return \Closure
+     */
+    public static function getNoopClosureForApplyCls(\Closure $fn = null)
+    {
+        if (!$fn) {
+            $fn = function ($cls, $data) {
+                if (class_exists($cls)) {
+                    return new $cls($data);
+                }
+            };
+        }
+
+        return $fn;
+    }
 
 }
