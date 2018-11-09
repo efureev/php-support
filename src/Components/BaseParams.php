@@ -30,7 +30,15 @@ class BaseParams implements
      */
     public function __construct(?array $array = [])
     {
+        $this->init();
         $this->fromArray($array ?? []);
+    }
+
+    /**
+     * Initialization component
+     */
+    public function init()
+    {
     }
 
     /**
