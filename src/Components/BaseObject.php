@@ -36,7 +36,7 @@ class BaseObject
      */
     public function __call(string $name, $params)
     {
-        throw new UnknownMethodException($name, 'Calling unknown method: ' . get_class($this) . "::$name()");
+        throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()", $name);
     }
 
 

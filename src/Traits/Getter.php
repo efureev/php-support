@@ -27,7 +27,7 @@ trait Getter
         } elseif (method_exists($this, 'set' . ucfirst($name))) {
             throw new InvalidCallException('Getting write-only property: ' . get_class($this) . '::' . $name);
         } else {
-            throw new UnknownPropertyException($name, 'Getting unknown property: ' . get_class($this) . '::' . $name);
+            throw new UnknownPropertyException('Getting unknown property: ' . get_class($this) . '::' . $name, $name);
         }
     }
 
