@@ -21,7 +21,7 @@ class UnknownPropertyException extends Exception
     public function __construct(?string $message = null, ?string $property = null)
     {
         $this->property = $property;
-        parent::__construct($message ?? ($this->getName() . ($this->property ? ': "'.$this->property.'"': '')));
+        parent::__construct($message ?? ($this->getName() . ($this->property ? ': "' . $this->property . '"' : '')));
     }
 
     /**

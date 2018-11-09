@@ -10,15 +10,6 @@ namespace Php\Support\Interfaces;
 interface Jsonable
 {
     /**
-     * Convert the object to its JSON representation.
-     *
-     * @param  int $options
-     *
-     * @return string
-     */
-    public function toJson($options = 320);
-
-    /**
      * @static
      *
      * @param string $string
@@ -26,4 +17,13 @@ interface Jsonable
      * @return Jsonable
      */
     public static function fromJson(string $string): Jsonable;
+
+    /**
+     * Convert the object to its JSON representation.
+     *
+     * @param  int $options
+     *
+     * @return string
+     */
+    public function toJson($options = 320);
 }

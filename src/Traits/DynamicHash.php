@@ -48,16 +48,6 @@ trait DynamicHash
     }
 
     /**
-     * @param string $value
-     *
-     * @return string
-     */
-    protected static function hash(string $value): string
-    {
-        return md5($value);
-    }
-
-    /**
      * @param array $keys
      * @param mixed $value
      *
@@ -68,5 +58,15 @@ trait DynamicHash
         return array_filter(array_map(function ($key) use ($value) {
             return $value[ $key ] ?? null;
         }, $keys));
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    protected static function hash(string $value): string
+    {
+        return md5($value);
     }
 }

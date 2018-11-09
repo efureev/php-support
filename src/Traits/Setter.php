@@ -32,6 +32,15 @@ trait Setter
         }
     }
 
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function setter(string $name)
+    {
+        return 'set' . ucfirst($name);
+    }
 
     /**
      * @param string $name
@@ -45,15 +54,5 @@ trait Setter
         } elseif (method_exists($this, 'get' . ucfirst($name))) {
             throw new InvalidCallException('Unsetting read-only property: ' . get_class($this) . '::' . $name);
         }
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function setter(string $name)
-    {
-        return 'set' . ucfirst($name);
     }
 }

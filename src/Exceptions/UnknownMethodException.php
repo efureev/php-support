@@ -21,7 +21,7 @@ class UnknownMethodException extends \BadMethodCallException
     public function __construct(?string $message = null, ?string $method = null)
     {
         $this->method = $method;
-        parent::__construct($message ?? ($this->getName() . ($this->method ? ': "'.$this->method.'"': '')));
+        parent::__construct($message ?? ($this->getName() . ($this->method ? ': "' . $this->method . '"' : '')));
     }
 
     /**

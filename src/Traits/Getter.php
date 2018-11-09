@@ -34,6 +34,16 @@ trait Getter
     /**
      * @param string $name
      *
+     * @return string
+     */
+    public static function getter(string $name)
+    {
+        return 'get' . ucfirst($name);
+    }
+
+    /**
+     * @param string $name
+     *
      * @return bool
      */
     public function __isset(string $name)
@@ -44,15 +54,5 @@ trait Getter
         } else {
             return false;
         }
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function getter(string $name)
-    {
-        return 'get' . ucfirst($name);
     }
 }
