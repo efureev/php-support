@@ -31,5 +31,16 @@ final class MissingPropertyTest extends TestCase
             $this->assertSame('Missing property', $e->getName());
             $this->assertSame('Missing property', $e->getMessage());
         }
+
+
+        try {
+            throw new MissingPropertyException(null, 'test', ['key' => 'val']);
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(MissingPropertyException::class, $e);
+            $this->assertSame('Missing property', $e->getName());
+            $this->assertSame('Missing property: "test"', $e->getMessage());
+            $this->assertSame('test', $e->getProperty());
+            $this->assertSame(['key' => 'val'], $e->getConfig());
+        }
     }
 }

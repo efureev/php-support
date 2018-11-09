@@ -17,7 +17,7 @@ class ConfigException extends Exception
     /**
      * ConfigException constructor.
      *
-     * @param null   $config
+     * @param mixed|null   $config
      * @param string $message
      */
     public function __construct($message = 'Config Exception', $config = null)
