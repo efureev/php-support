@@ -18,10 +18,18 @@ class UnknownPropertyException extends Exception
      * @param null|string $property
      * @param null|string $message
      */
-    public function __construct(?string $property = null, ?string $message = null)
+    public function __construct(?string $message = null, ?string $property = null)
     {
         $this->property = $property;
-        parent::__construct($message ?? sprintf('Missing property "%s" ', $this->property));
+        parent::__construct($message ?? ($this->getName() . ($this->property ? ': "'.$this->property.'"': '')));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'Unknown property';
     }
 
     /**

@@ -18,10 +18,18 @@ class UnknownMethodException extends \BadMethodCallException
      * @param null|string $method
      * @param null|string $message
      */
-    public function __construct(?string $method = null, ?string $message = null)
+    public function __construct(?string $message = null, ?string $method = null)
     {
         $this->method = $method;
-        parent::__construct($message ?? sprintf('Missing method "%s" ', $this->method));
+        parent::__construct($message ?? ($this->getName() . ($this->method ? ': "'.$this->method.'"': '')));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'Unknown method';
     }
 
     /**

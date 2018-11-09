@@ -20,7 +20,7 @@ class ConfigException extends Exception
      * @param null   $config
      * @param string $message
      */
-    public function __construct($config = null, $message = 'Config Exception')
+    public function __construct($message = 'Config Exception', $config = null)
     {
         parent::__construct($message);
 
