@@ -91,15 +91,16 @@ class BaseParams implements
      */
     public function toArray(array $keys = []): array
     {
+        if (!$keys) {
+            return Json::dataToArray($this->_items);
+        }
+
         $result = [];
-        if ($keys) {
-            foreach ($keys as $key) {
-                if (isset($this->_items[ $key ])) {
-                    $result[ $key ] = $this->_items[ $key ];
-                }
+
+        foreach ($keys as $key) {
+            if (isset($this->_items[ $key ])) {
+                $result[ $key ] = $this->_items[ $key ];
             }
-        } else {
-            $result = $this->_items;
         }
 
         return Json::dataToArray($result);
