@@ -51,6 +51,8 @@ class Params extends BaseParams
     protected $uniqueKey;
 
     /**
+     * Set unique key name for elements collection
+     *
      * @param string $key
      *
      * @return $this
@@ -63,6 +65,9 @@ class Params extends BaseParams
     }
 
     /**
+     * Add new element with key. If key is absent - create dynamic key: by unique index (uniqueKey) or by hash of group
+     * fields (dynamicHashKeys)
+     *
      * @param mixed       $value
      * @param null|string $key
      *
