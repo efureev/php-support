@@ -40,6 +40,17 @@ final class ParamsJsonTest extends TestCase
         $this->assertInstanceOf(Contact::class, $contact);
     }
 
+    public function testCanBeEmpty(): void
+    {
+        $contacts = new Contacts();
+
+        $this->assertInstanceOf(Contacts::class, $contacts);
+        $this->assertCount(0, $contacts);
+
+        $this->assertEquals('[]', (string)$contacts);
+        $this->assertEquals('[]', $contacts->toJson());
+    }
+
     public function testOneInstanceCanBeJson(): void
     {
         $contact = self::values();

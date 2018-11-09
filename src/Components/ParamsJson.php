@@ -38,7 +38,7 @@ class ParamsJson extends Params
      */
     public function jsonSerialize(): array
     {
-        return $this->_type
+        return $this->_type && $this->_items
             ? [
                 '_type' => $this->_type,
                 '_data' => parent::jsonSerialize()

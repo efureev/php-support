@@ -50,7 +50,7 @@ class BaseParams implements
             if ($value instanceof \JsonSerializable) {
                 return $value->jsonSerialize();
             } elseif ($value instanceof Jsonable) {
-                return json_decode($value->toJson(), true);
+                return Json::decode($value->toJson(), true);
             } elseif ($value instanceof Arrayable) {
                 return $value->toArray();
             }
