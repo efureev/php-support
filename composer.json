@@ -1,5 +1,5 @@
 {
-  "version": "1.2.3",
+  "version": "1.2.4",
   "name": "efureev/support",
   "description": "PHP Support Package",
   "keywords": [
@@ -23,6 +23,9 @@
     "avto-dev/php-cs-fixer": "*"
   },
   "autoload": {
+    "files": [
+      "src/global.php"
+    ],
     "psr-4": {
       "Php\\Support\\": "src/",
       "Php\\Support\\Tests\\": "tests/"
