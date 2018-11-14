@@ -75,9 +75,10 @@ class Str
         }
 
         if (!ctype_lower($value)) {
-            $value = preg_replace('/\s+/u', '', ucwords($value));
+            $value = \preg_replace('/\s+/u', '', ucwords($value));
 
-            $value = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value), 'UTF-8');
+            $value = \preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, (string)$value);
+            $value = \mb_strtolower((string)$value, 'UTF-8');
         }
 
         return static::$snakeCache[ $key ][ $delimiter ] = $value;

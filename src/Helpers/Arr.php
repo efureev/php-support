@@ -90,9 +90,7 @@ class Arr
      */
     public static function applyCls(array $array, string $cls, \Closure $fn = null)
     {
-        if (!$fn = self::getNoopClosureForApplyCls($fn)) {
-            return $array;
-        }
+        $fn = self::getNoopClosureForApplyCls($fn);
 
         return array_map(function ($element) use ($cls, $fn) {
             switch ($cls) {
@@ -122,7 +120,7 @@ class Arr
      */
     public static function getNoopClosureForApplyCls(\Closure $fn = null)
     {
-        if (!$fn) {
+        if (is_null($fn)) {
             $fn = function ($cls, $data) {
                 if (class_exists($cls)) {
                     return new $cls($data);
@@ -139,12 +137,12 @@ class Arr
      * Get an item from an array using "dot" notation.
      *
      * @param  \ArrayAccess|array $array
-     * @param  string             $key
+     * @param  null|string        $key
      * @param  mixed              $default
      *
      * @return mixed
      */
-    public static function get($array, $key, $default = null)
+    public static function get($array, ?string $key, $default = null)
     {
         if (!static::accessible($array)) {
             return value($default);
