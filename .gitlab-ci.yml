@@ -19,7 +19,7 @@ cache:
   - master
   script:
   - ./vendor/bin/phpunit --coverage-text --colors=never
-  - ./vendor/bin/phpstan analyze --ansi --level=1 ./src
+  - ./vendor/bin/phpstan analyze --ansi --level=max ./src
   artifacts:
     paths:
     - tests/_output/coverage
