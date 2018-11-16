@@ -200,4 +200,31 @@ class Arr
         return is_array($value) || $value instanceof \ArrayAccess;
     }
 
+    /**
+     * @param array $res          array to be merged to
+     * @param array $b            array to be merged from. You can specify additional
+     *                            arrays via third argument, fourth argument etc.
+     * @param bool  $replaceArray Replace or Add values into Array, if key existed.
+     *
+     * @return array the merged array (the original arrays are not changed.)
+     */
+    public static function merge($res, $b, $replaceArray = true)
+    {
+        foreach ($b as $key => $val) {
+            if (is_int($key)) {
+                if (isset($res[ $key ])) {
+                    $res[] = $val;
+                } else {
+                    $res[ $key ] = $val;
+                }
+            } elseif (is_array($val) && isset($res[ $key ]) && is_array($res[ $key ])) {
+                $res[ $key ] = ($replaceArray ? $val : self::merge($res[ $key ], $val, $replaceArray));
+            } else {
+                $res[ $key ] = $val;
+            }
+        }
+
+        return $res;
+    }
+
 }
