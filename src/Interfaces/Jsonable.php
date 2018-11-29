@@ -16,7 +16,7 @@ interface Jsonable
      *
      * @return Jsonable
      */
-    public static function fromJson(string $string): Jsonable;
+    public static function fromJson(string $string): ?Jsonable;
 
     /**
      * Convert the object to its JSON representation.

@@ -86,7 +86,7 @@ class ParamsJson extends Params
      *
      * @return \Php\Support\Interfaces\Jsonable|\Php\Support\Components\ParamsJson
      */
-    public static function fromJson(string $string): Jsonable
+    public static function fromJson(string $string): ?Jsonable
     {
         $array = Json::decode($string);
 

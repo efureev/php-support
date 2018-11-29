@@ -76,7 +76,7 @@ class BaseParams implements
      *
      * @return \Php\Support\Interfaces\Jsonable|\Php\Support\Components\Params
      */
-    public static function fromJson(string $string): Jsonable
+    public static function fromJson(string $string): ?Jsonable
     {
         return new static(Json::decode($string));
     }
