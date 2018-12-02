@@ -4,6 +4,9 @@ declare(strict_types=1);
 use Php\Support\Exceptions\MissingPropertyException;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class MissingPropertyTest
+ */
 final class MissingPropertyTest extends TestCase
 {
     public function testThrow()
