@@ -7,16 +7,16 @@ use PHPUnit\Framework\TestCase;
 final class ParamsJsonTest extends TestCase
 {
     protected static $contact_1 = [
-        "id"           => 1,
-        "type"         => "PHONE",
+        "id" => 1,
+        "type" => "PHONE",
         "notification" => "false",
-        "contact"      => "8-4912-25-97-22"
+        "contact" => "8-4912-25-97-22"
     ];
 
     protected static $contact_2 = [
-        "type"         => "email",
+        "type" => "email",
         "notification" => "true",
-        "contact"      => "mail@yahoo.com"
+        "contact" => "mail@yahoo.com"
     ];
 
     protected static $resultOneJson = '{"id":1,"type":"PHONE","notification":"false","contact":"8-4912-25-97-22"}';
@@ -72,7 +72,7 @@ final class ParamsJsonTest extends TestCase
         $contact->setElementsType('string')->fromJsonString(self::$resultOneJson);
 
         foreach ($contact->toArray() as $field => $element) {
-            $this->assertInternalType('string', $element);
+            $this->assertIsString($element);
         }
 
     }
@@ -82,16 +82,16 @@ final class ParamsJsonTest extends TestCase
         $contact = Contact::fromJson(self::$resultOneJson);
         $this->assertInstanceOf(Contact::class, Contact::fromJson(self::$resultOneJson));
 
-        $this->assertInternalType('integer', $contact->id);
+        $this->assertIsInt($contact->id);
 
         $contact->setElementsType('string');
         foreach ($contact->toArray() as $field => $element) {
-            $this->assertInternalType('string', $element);
+            $this->assertIsString($element);
         }
 
         $contact->setElementsType('array');
         foreach ($contact->toArray() as $field => $element) {
-            $this->assertInternalType('array', $element);
+            $this->assertIsArray($element);
         }
     }
 
@@ -102,7 +102,7 @@ final class ParamsJsonTest extends TestCase
         $this->assertInstanceOf(Contacts::class, $contacts);
 
         /**
-         * @var int     $key
+         * @var int $key
          * @var Contact $contact
          */
         foreach ($contacts as $key => $contact) {
@@ -124,7 +124,7 @@ final class ParamsJsonTest extends TestCase
         $this->assertEquals(self::$resultJson, $contacts->toJson());
 
         /**
-         * @var int     $key
+         * @var int $key
          * @var Contact $contact
          */
         foreach ($contacts as $key => $contact) {
