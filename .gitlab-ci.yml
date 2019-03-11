@@ -52,3 +52,12 @@ test:PHP-7.2:
   - php7
   except:
   - master
+
+# We test PHP7.3
+test:PHP-7.3:
+  <<: *job-template
+  image: php:7.3
+  only:
+  - php7
+  except:
+  - master

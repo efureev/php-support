@@ -97,7 +97,7 @@ class JwtParser
     {
         $data = explode('.', $this->token);
 
-        if (count($data) != 3) {
+        if (count($data) !== 3) {
             throw new InvalidArgumentException('The JWT string must have two dots');
         }
 
@@ -154,7 +154,7 @@ class JwtParser
      */
     private function parseSignature(array $header, string $data): ?string
     {
-        if ($data === '' || !isset($header['alg']) || $header['alg'] == 'none') {
+        if ($data === '' || !isset($header['alg']) || $header['alg'] === 'none') {
             return null;
         }
 

@@ -13,13 +13,13 @@ class Json
      * @var array
      */
     public static $jsonErrorMessages = [
-        'JSON_ERROR_DEPTH'            => 'The maximum stack depth has been exceeded.',
-        'JSON_ERROR_STATE_MISMATCH'   => 'Invalid or malformed JSON.',
-        'JSON_ERROR_CTRL_CHAR'        => 'Control character error, possibly incorrectly encoded.',
-        'JSON_ERROR_SYNTAX'           => 'Syntax error.',
-        'JSON_ERROR_UTF8'             => 'Malformed UTF-8 characters, possibly incorrectly encoded.', // PHP 5.3.3
-        'JSON_ERROR_RECURSION'        => 'One or more recursive references in the value to be encoded.', // PHP 5.5.0
-        'JSON_ERROR_INF_OR_NAN'       => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
+        'JSON_ERROR_DEPTH' => 'The maximum stack depth has been exceeded.',
+        'JSON_ERROR_STATE_MISMATCH' => 'Invalid or malformed JSON.',
+        'JSON_ERROR_CTRL_CHAR' => 'Control character error, possibly incorrectly encoded.',
+        'JSON_ERROR_SYNTAX' => 'Syntax error.',
+        'JSON_ERROR_UTF8' => 'Malformed UTF-8 characters, possibly incorrectly encoded.', // PHP 5.3.3
+        'JSON_ERROR_RECURSION' => 'One or more recursive references in the value to be encoded.', // PHP 5.5.0
+        'JSON_ERROR_INF_OR_NAN' => 'One or more NAN or INF values in the value to be encoded', // PHP 5.5.0
         'JSON_ERROR_UNSUPPORTED_TYPE' => 'A value of a type that cannot be encoded was given', // PHP 5.5.0
     ];
 
@@ -30,8 +30,8 @@ class Json
      * Note that data encoded as JSON must be UTF-8 encoded according to the JSON specification.
      * You must ensure strings passed to this method have proper encoding before passing them.
      *
-     * @param mixed $value   the data to be encoded.
-     * @param int   $options the encoding options. For more details please refer to
+     * @param mixed $value the data to be encoded.
+     * @param int $options the encoding options. For more details please refer to
      *                       <http://www.php.net/manual/en/function.json-encode.php>. Default is
      *                       `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      *
@@ -70,8 +70,8 @@ class Json
     /**
      * Decodes the given JSON string into a PHP data structure.
      *
-     * @param null|string $json    the JSON string to be decoded
-     * @param bool        $asArray whether to return objects in terms of associative arrays.
+     * @param null|string $json the JSON string to be decoded
+     * @param bool $asArray whether to return objects in terms of associative arrays.
      *
      * @return mixed the PHP data
      * @throws InvalidArgumentException if there is any decoding error
@@ -102,11 +102,11 @@ class Json
         $availableErrors = [];
         foreach (static::$jsonErrorMessages as $const => $message) {
             if (defined($const)) {
-                $availableErrors[ constant($const) ] = $message;
+                $availableErrors[constant($const)] = $message;
             }
         }
-        if (isset($availableErrors[ $lastError ])) {
-            throw new InvalidArgumentException($availableErrors[ $lastError ], $lastError);
+        if (isset($availableErrors[$lastError])) {
+            throw new InvalidArgumentException($availableErrors[$lastError], $lastError);
         }
         throw new InvalidArgumentException('Unknown JSON encoding/decoding error.');
     }
@@ -129,7 +129,7 @@ class Json
                 $result = [];
                 if (is_iterable($data)) {
                     foreach ($data as $name => $value) {
-                        $result[ $name ] = $value;
+                        $result[$name] = $value;
                     }
                 }
                 $data = $result;
@@ -139,7 +139,7 @@ class Json
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 if (is_array($value) || is_object($value)) {
-                    $data[ $key ] = static::dataToArray($value);
+                    $data[$key] = static::dataToArray($value);
                 }
             }
         }

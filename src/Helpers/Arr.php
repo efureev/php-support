@@ -98,10 +98,10 @@ class Arr
                     $result = (array)$element;
                     break;
                 case 'string':
-                    $result = \strval($element);
+                    $result = (string)$element;
                     break;
                 case 'integer':
-                    $result = \intval($element);
+                    $result = (int)$element;
                     break;
 
                 default:
@@ -120,7 +120,7 @@ class Arr
      */
     public static function getNoopClosureForApplyCls(\Closure $fn = null)
     {
-        if (is_null($fn)) {
+        if ($fn === null) {
             $fn = function ($cls, $data) {
                 if (class_exists($cls)) {
                     return new $cls($data);
@@ -148,7 +148,7 @@ class Arr
             return value($default);
         }
 
-        if (is_null($key)) {
+        if ($key === null) {
             return $array;
         }
 

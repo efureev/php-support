@@ -15,7 +15,7 @@ class Str
      * Value = replace value
      *
      * @param string $str
-     * @param array  $replace
+     * @param array $replace
      *
      * @return mixed
      */
@@ -38,17 +38,17 @@ class Str
      *
      * @return string
      */
-    public static function studly($value)
+    public static function studly($value): string
     {
         $key = $value;
 
-        if (isset(static::$studlyCache[ $key ])) {
-            return static::$studlyCache[ $key ];
+        if (isset(static::$studlyCache[$key])) {
+            return static::$studlyCache[$key];
         }
 
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
 
-        return static::$studlyCache[ $key ] = str_replace(' ', '', $value);
+        return static::$studlyCache[$key] = str_replace(' ', '', $value);
     }
 
     /**
@@ -66,12 +66,12 @@ class Str
      *
      * @return string
      */
-    public static function snake($value, $delimiter = '_')
+    public static function snake($value, $delimiter = '_'): string
     {
         $key = $value;
 
-        if (isset(static::$snakeCache[ $key ][ $delimiter ])) {
-            return static::$snakeCache[ $key ][ $delimiter ];
+        if (isset(static::$snakeCache[$key][$delimiter])) {
+            return static::$snakeCache[$key][$delimiter];
         }
 
         if (!ctype_lower($value)) {
@@ -81,6 +81,6 @@ class Str
             $value = \mb_strtolower((string)$value, 'UTF-8');
         }
 
-        return static::$snakeCache[ $key ][ $delimiter ] = $value;
+        return static::$snakeCache[$key][$delimiter] = $value;
     }
 }
