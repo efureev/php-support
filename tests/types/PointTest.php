@@ -41,8 +41,8 @@ final class PointTest extends TestCase
             $this->assertEquals($point->longitude, 54.94114600000000);
             $this->assertEquals($point->latitude, 63.57531800000000);
 
-            $this->assertInternalType('float', $point->latitude);
-            $this->assertInternalType('float', $point->longitude);
+            $this->assertIsFloat($point->latitude);
+            $this->assertIsFloat($point->longitude);
 
 //            $this->assertEquals($dbString, $point->toDB());
         }

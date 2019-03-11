@@ -9,18 +9,18 @@ final class ParamsTest extends TestCase
     public static function values()
     {
         return [
-            'key'        => 'value',
-            'int1'       => 2,
-            'int2'       => -12,
-            'array'      => [1, 2, 3, 4, 5],
-            'string'     => 'string value',
-            'null'       => null,
-            'false'      => false,
-            'true'       => true,
-            'float'      => 12.31,
-            'empty'      => '',
+            'key' => 'value',
+            'int1' => 2,
+            'int2' => -12,
+            'array' => [1, 2, 3, 4, 5],
+            'string' => 'string value',
+            'null' => null,
+            'false' => false,
+            'true' => true,
+            'float' => 12.31,
+            'empty' => '',
             'emptyArray' => [],
-            'cls'        => new stdClass(),
+            'cls' => new stdClass(),
         ];
     }
 
@@ -54,16 +54,16 @@ final class ParamsTest extends TestCase
     public function testCanBeCollect(): void
     {
         $phone1 = [
-            "id"           => 1,
-            "type"         => "PHONE",
+            "id" => 1,
+            "type" => "PHONE",
             "notification" => "false",
-            "phone"        => "8-4912-25-97-22"
+            "phone" => "8-4912-25-97-22"
         ];
         $phone2 = [
-            "id"           => 2,
-            "type"         => "FAX",
+            "id" => 2,
+            "type" => "FAX",
             "notification" => "false",
-            "phone"        => "8-4912-25-97-22"
+            "phone" => "8-4912-25-97-22"
         ];
 
         $phones = new Params([$phone1, $phone2]);
@@ -83,10 +83,10 @@ final class ParamsTest extends TestCase
     public function testCanBeJson(): void
     {
         $phone1 = new Params([
-            "id"           => 1,
-            "type"         => "PHONE",
+            "id" => 1,
+            "type" => "PHONE",
             "notification" => "false",
-            "phone"        => "8-4912-25-97-22"
+            "phone" => "8-4912-25-97-22"
         ]);
 
         $phones = new Params([$phone1]);
@@ -99,10 +99,10 @@ final class ParamsTest extends TestCase
     public function testFromJson(): void
     {
         $phone1 = new Phone([
-            "id"           => 1,
-            "type"         => "PHONE",
+            "id" => 1,
+            "type" => "PHONE",
             "notification" => "false",
-            "phone"        => "8-4912-25-97-22"
+            "phone" => "8-4912-25-97-22"
         ]);
 
         $phones = (new Phones)->fromArray([$phone1]);
@@ -115,13 +115,13 @@ final class ParamsTest extends TestCase
         $this->assertInstanceOf(Phones::class, $newPhones);
 
         /**
-         * @var int   $key
+         * @var int $key
          * @var Phone $element
          */
         foreach ($newPhones as $key => $element) {
-            $this->assertInternalType('array', $element);
+            $this->assertIsArray($element);
 
-            $this->assertEquals($phones[ $key ]['id'], $element['id']);
+            $this->assertEquals($phones[$key]['id'], $element['id']);
         }
     }
 
@@ -187,8 +187,8 @@ final class ParamsTest extends TestCase
         $hash1 = $phones->add(new Phone(['type' => 'phone', 'val' => '8-4912-25-97-21']));
         $hash2 = $phones->add(new Phone(['type' => 'fax', 'val' => '8-4912-25-97-22']));
 
-        $this->assertInternalType('string', $hash1);
-        $this->assertInternalType('string', $hash2);
+        $this->assertIsString($hash1);
+        $this->assertIsString($hash2);
         $this->assertNotNull($hash1);
         $this->assertNotNull($hash2);
 
@@ -212,9 +212,9 @@ final class ParamsTest extends TestCase
         $hash2 = $phones->add('phone 2');
         $hash3 = $phones->add(3);
 
-        $this->assertInternalType('integer', $hash1);
-        $this->assertInternalType('integer', $hash2);
-        $this->assertInternalType('integer', $hash3);
+        $this->assertIsInt($hash1);
+        $this->assertIsInt($hash2);
+        $this->assertIsInt($hash3);
         $this->assertNotNull($hash1);
         $this->assertNotNull($hash2);
         $this->assertNotNull($hash3);
@@ -222,11 +222,11 @@ final class ParamsTest extends TestCase
         $this->assertCount(3, $phones);
 
         $phone1 = $phones->get($hash1);
-        $this->assertInternalType('string', $phone1);
+        $this->assertIsString($phone1);
         $phone2 = $phones->get($hash2);
-        $this->assertInternalType('string', $phone2);
+        $this->assertIsString($phone2);
         $phone3 = $phones->get($hash3);
-        $this->assertInternalType('integer', $phone3);
+        $this->assertIsInt($phone3);
 
         $this->assertEquals('phone 2', $phone2);
         $this->assertEquals(3, $phone3);
@@ -240,9 +240,9 @@ final class ParamsTest extends TestCase
         $hash2 = $phones->add('phone 2');
         $hash3 = $phones->add(3);
 
-        $this->assertInternalType('integer', $hash1);
-        $this->assertInternalType('integer', $hash2);
-        $this->assertInternalType('integer', $hash3);
+        $this->assertIsInt($hash1);
+        $this->assertIsInt($hash2);
+        $this->assertIsInt($hash3);
         $this->assertNotNull($hash1);
         $this->assertNotNull($hash2);
         $this->assertNotNull($hash3);
@@ -250,11 +250,11 @@ final class ParamsTest extends TestCase
         $this->assertCount(3, $phones);
 
         $phone1 = $phones->get($hash1);
-        $this->assertInternalType('string', $phone1);
+        $this->assertIsString($phone1);
         $phone2 = $phones->get($hash2);
-        $this->assertInternalType('string', $phone2);
+        $this->assertIsString($phone2);
         $phone3 = $phones->get($hash3);
-        $this->assertInternalType('integer', $phone3);
+        $this->assertIsInt($phone3);
 
         $this->assertEquals('phone 2', $phone2);
         $this->assertEquals(3, $phone3);
@@ -268,9 +268,9 @@ final class ParamsTest extends TestCase
         $hash2 = $phones->add('phone 2');
         $hash3 = $phones->add(3);
 
-        $this->assertInternalType('integer', $hash1);
-        $this->assertInternalType('integer', $hash2);
-        $this->assertInternalType('integer', $hash3);
+        $this->assertIsInt($hash1);
+        $this->assertIsInt($hash2);
+        $this->assertIsInt($hash3);
         $this->assertNotNull($hash1);
         $this->assertNotNull($hash2);
         $this->assertNotNull($hash3);
@@ -278,11 +278,11 @@ final class ParamsTest extends TestCase
         $this->assertCount(3, $phones);
 
         $phone1 = $phones->get($hash1);
-        $this->assertInternalType('string', $phone1);
+        $this->assertIsString('string', $phone1);
         $phone2 = $phones->get($hash2);
-        $this->assertInternalType('string', $phone2);
+        $this->assertIsString($phone2);
         $phone3 = $phones->get($hash3);
-        $this->assertInternalType('integer', $phone3);
+        $this->assertIsInt($phone3);
 
         $this->assertEquals('phone 2', $phone2);
         $this->assertEquals(3, $phone3);
