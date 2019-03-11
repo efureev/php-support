@@ -51,7 +51,7 @@ class Arr
     public static function removeByValue(array &$array, $val)
     {
         if (($key = array_search($val, $array)) !== false) {
-            unset($array[ $key ]);
+            unset($array[$key]);
         }
     }
 
@@ -82,8 +82,8 @@ class Arr
     /**
      * Apply class or type to every element into collection
      *
-     * @param array         $array
-     * @param string        $cls
+     * @param array $array
+     * @param string $cls
      * @param \Closure|null $fn
      *
      * @return array
@@ -137,8 +137,8 @@ class Arr
      * Get an item from an array using "dot" notation.
      *
      * @param  \ArrayAccess|array $array
-     * @param  null|string        $key
-     * @param  mixed              $default
+     * @param  null|string $key
+     * @param  mixed $default
      *
      * @return mixed
      */
@@ -153,16 +153,16 @@ class Arr
         }
 
         if (static::exists($array, $key)) {
-            return $array[ $key ];
+            return $array[$key];
         }
 
         if (strpos($key, '.') === false) {
-            return $array[ $key ] ?? value($default);
+            return $array[$key] ?? value($default);
         }
 
         foreach (explode('.', $key) as $segment) {
             if (static::accessible($array) && static::exists($array, $segment)) {
-                $array = $array[ $segment ];
+                $array = $array[$segment];
             } else {
                 return value($default);
             }
@@ -175,7 +175,7 @@ class Arr
      * Determine if the given key exists in the provided array.
      *
      * @param  \ArrayAccess|array $array
-     * @param  string|int         $key
+     * @param  string|int $key
      *
      * @return bool
      */
@@ -201,10 +201,10 @@ class Arr
     }
 
     /**
-     * @param array $res          array to be merged to
-     * @param array $b            array to be merged from. You can specify additional
+     * @param array $res array to be merged to
+     * @param array $b array to be merged from. You can specify additional
      *                            arrays via third argument, fourth argument etc.
-     * @param bool  $replaceArray Replace or Add values into Array, if key existed.
+     * @param bool $replaceArray Replace or Add values into Array, if key existed.
      *
      * @return array the merged array (the original arrays are not changed.)
      */
@@ -212,19 +212,115 @@ class Arr
     {
         foreach ($b as $key => $val) {
             if (is_int($key)) {
-                if (isset($res[ $key ])) {
+                if (isset($res[$key])) {
                     $res[] = $val;
                 } else {
-                    $res[ $key ] = $val;
+                    $res[$key] = $val;
                 }
-            } elseif (is_array($val) && isset($res[ $key ]) && is_array($res[ $key ])) {
-                $res[ $key ] = ($replaceArray ? $val : self::merge($res[ $key ], $val, $replaceArray));
+            } elseif (is_array($val) && isset($res[$key]) && is_array($res[$key])) {
+                $res[$key] = ($replaceArray ? $val : self::merge($res[$key], $val, $replaceArray));
             } else {
-                $res[ $key ] = $val;
+                $res[$key] = $val;
             }
         }
 
         return $res;
     }
 
+    /**
+     * Changes PHP array to default Postgres array format
+     *
+     * @param array $array
+     *
+     * @return string
+     */
+    public static function toPostgresArray(array $array): string
+    {
+        $json = \json_encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE);
+
+        return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
+    }
+
+    /**
+     * @param string|null $s
+     * @param int $start
+     * @param null $end
+     *
+     * @return array
+     */
+    public static function fromPostgresArray(?string $s, $start = 0, &$end = null): array
+    {
+        if (empty($s) || $s[0] !== '{') {
+            return [];
+        }
+
+        $return = [];
+        $string = false;
+        $quote = '';
+        $len = strlen($s);
+        $v = '';
+
+        for ($i = $start + 1; $i < $len; $i++) {
+            $ch = $s[$i];
+            if (!$string && $ch === '}') {
+                if ($v !== '' || !empty($return)) {
+                    $return[] = $v;
+                }
+                $end = $i;
+                break;
+            } else {
+                if (!$string && $ch === '{') {
+                    $v = self::fromPostgresArray($s, $i, $i);
+                } else
+                    if (!$string && $ch === ',') {
+                        $return[] = $v;
+                        $v = '';
+                    } else
+                        if (!$string && ($ch === '"' || $ch === "'")) {
+                            $string = true;
+                            $quote = $ch;
+                        } else
+                            if ($string && $ch === $quote) {
+                                if ($s[$i - 1] === "\\") {
+                                    $v = substr($v, 0, -1) . $ch;
+                                } else {
+                                    $string = false;
+                                }
+                            } else {
+                                $v .= $ch;
+                            }
+            }
+        }
+
+        foreach ($return as &$r) {
+            if (is_numeric($r)) {
+                if (ctype_digit($r)) {
+                    $r = (int)$r;
+                } else {
+                    $r = (float)$r;
+                }
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Remove named keys from arrays
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function toIndexedArray(array $array): array
+    {
+        $array = array_values($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = static::toIndexedArray($value);
+            }
+        }
+
+        return $array;
+    }
 }
