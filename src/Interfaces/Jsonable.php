@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Interfaces;
 
 /**
@@ -21,9 +23,9 @@ interface Jsonable
     /**
      * Convert the object to its JSON representation.
      *
-     * @param  int $options
+     * @param int $options
      *
-     * @return string
+     * @return string|null
      */
-    public function toJson($options = 320);
+    public function toJson($options = 320): ?string;
 }

@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Helpers;
+
+use function mb_strtolower;
+use function preg_replace;
 
 /**
  * Class Str
@@ -9,6 +14,19 @@ namespace Php\Support\Helpers;
  */
 class Str
 {
+    /**
+     * The cache of studly-cased words.
+     *
+     * @var array
+     */
+    protected static $studlyCache = [];
+    /**
+     * The cache of snake-cased words.
+     *
+     * @var array
+     */
+    protected static $snakeCache = [];
+
     /**
      * Replace templates into string
      * Key = search value
@@ -25,16 +43,9 @@ class Str
     }
 
     /**
-     * The cache of studly-cased words.
-     *
-     * @var array
-     */
-    protected static $studlyCache = [];
-
-    /**
      * Convert a value to studly caps case.
      *
-     * @param  string $value
+     * @param string $value
      *
      * @return string
      */
@@ -52,17 +63,10 @@ class Str
     }
 
     /**
-     * The cache of snake-cased words.
-     *
-     * @var array
-     */
-    protected static $snakeCache = [];
-
-    /**
      * Convert a string to snake case.
      *
-     * @param  string $value
-     * @param  string $delimiter
+     * @param string $value
+     * @param string $delimiter
      *
      * @return string
      */
@@ -75,10 +79,10 @@ class Str
         }
 
         if (!ctype_lower($value)) {
-            $value = \preg_replace('/\s+/u', '', ucwords($value));
+            $value = preg_replace('/\s+/u', '', ucwords($value));
 
-            $value = \preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, (string)$value);
-            $value = \mb_strtolower((string)$value, 'UTF-8');
+            $value = preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, (string)$value);
+            $value = mb_strtolower((string)$value, 'UTF-8');
         }
 
         return static::$snakeCache[$key][$delimiter] = $value;

@@ -13,14 +13,14 @@ final class MissingPropertyTest extends TestCase
     {
         try {
             throw new MissingPropertyException('Invalid Arg');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingPropertyException::class, $e);
             $this->assertSame('Invalid Arg', $e->getMessage());
         }
 
         try {
             throw new MissingPropertyException(null, 'test');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingPropertyException::class, $e);
             $this->assertSame('Missing property', $e->getName());
             $this->assertSame('Missing property: "test"', $e->getMessage());
@@ -29,7 +29,7 @@ final class MissingPropertyTest extends TestCase
 
         try {
             throw new MissingPropertyException();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingPropertyException::class, $e);
             $this->assertSame('Missing property', $e->getName());
             $this->assertSame('Missing property', $e->getMessage());
@@ -38,7 +38,7 @@ final class MissingPropertyTest extends TestCase
 
         try {
             throw new MissingPropertyException(null, 'test', ['key' => 'val']);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingPropertyException::class, $e);
             $this->assertSame('Missing property', $e->getName());
             $this->assertSame('Missing property: "test"', $e->getMessage());

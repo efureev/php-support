@@ -13,27 +13,27 @@ final class NotSupportedTest extends TestCase
     {
         try {
             throw new NotSupportedException();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(NotSupportedException::class, $e);
             $this->assertSame('Not Supported', $e->getMessage());
         }
 
         try {
             throw new NotSupportedException(NotSupportedException::class);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(NotSupportedException::class, $e);
             $this->assertSame('Not Supported: ' . NotSupportedException::class, $e->getMessage());
         }
 
         try {
             throw new NotSupportedException(null, 'Test Message');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(NotSupportedException::class, $e);
             $this->assertSame('Test Message', $e->getMessage());
         }
         try {
             throw new NotSupportedException(NotSupportedException::class, 'Test Message');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(NotSupportedException::class, $e);
             $this->assertSame('Test Message: ' . NotSupportedException::class, $e->getMessage());
         }

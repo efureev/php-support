@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
 /**
@@ -17,7 +19,7 @@ class MissingPropertyException extends ConfigException
      *
      * @param null|string $message
      * @param null|string $property
-     * @param mixed       $config
+     * @param mixed $config
      */
     public function __construct(?string $message = null, ?string $property = null, $config = null)
     {
@@ -28,7 +30,7 @@ class MissingPropertyException extends ConfigException
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Missing property';
     }

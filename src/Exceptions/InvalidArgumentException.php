@@ -1,6 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
+
+use Throwable;
 
 /**
  * Class InvalidArgumentException
@@ -11,22 +15,22 @@ class InvalidArgumentException extends \InvalidArgumentException
 {
 
     /**
-     * @return string
+     * Exception constructor.
+     *
+     * @param null|string $message
+     * @param int $code
+     * @param Throwable|null $previous
      */
-    public function getName()
+    public function __construct(?string $message = null, $code = 0, Throwable $previous = null)
     {
-        return 'Invalid Argument';
+        parent::__construct($message ?? $this->getName(), $code, $previous);
     }
 
     /**
-     * Exception constructor.
-     *
-     * @param null|string     $message
-     * @param int             $code
-     * @param \Throwable|null $previous
+     * @return string
      */
-    public function __construct(?string $message = null, $code = 0, \Throwable $previous = null)
+    public function getName(): string
     {
-        parent::__construct($message ?? $this->getName(), $code, $previous);
+        return 'Invalid Argument';
     }
 }

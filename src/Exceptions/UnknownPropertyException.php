@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
 /**
@@ -27,7 +29,7 @@ class UnknownPropertyException extends Exception
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Unknown property';
     }

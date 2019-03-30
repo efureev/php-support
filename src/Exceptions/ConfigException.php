@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
 /**
@@ -18,7 +20,7 @@ class ConfigException extends Exception
      * ConfigException constructor.
      *
      * @param mixed|null $config
-     * @param string     $message
+     * @param string $message
      */
     public function __construct($message = 'Config Exception', $config = null)
     {

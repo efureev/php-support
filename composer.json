@@ -1,7 +1,9 @@
 {
-  "version": "1.2.12",
-  "name": "efureev/support",
+  "version": "2.0.0",
+  "name": "feugene/support",
   "description": "PHP Support Package",
+  "license": "MIT",
+  "type": "library",
   "keywords": [
     "php",
     "support",
@@ -9,8 +11,8 @@
   ],
   "authors": [
     {
-      "name": "Fureev",
-      "email": "fureev@gmail.com"
+      "name": "Eugene Fureev",
+      "homepage": "https://github.com/efureev"
     }
   ],
   "require": {
@@ -20,20 +22,26 @@
   "require-dev": {
     "phpunit/phpunit": "~8.0",
     "phpstan/phpstan": "~0.11",
-    "avto-dev/php-cs-fixer": "1.0.*"
+    "feugene/php-cs-fixer": "^1.0"
   },
   "autoload": {
     "files": [
-      "src/global.php"
+      "src/Global/base.php"
     ],
     "psr-4": {
-      "Php\\Support\\": "src/",
+      "Php\\Support\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "Php\\Support\\Tests\\": "tests/"
     }
   },
   "scripts": {
+    "phpstan": "@php ./vendor/bin/phpstan analyze --ansi --level=max ./src",
     "test": "@php ./vendor/bin/phpunit --no-coverage --testdox",
     "test-cover": "@php ./vendor/bin/phpunit --coverage-text --testdox",
-    "phpstan": "@php ./vendor/bin/phpstan analyze --ansi --level=max ./src"
+    "test-full": "composer test-cover && composer phpstan"
+
   }
 }

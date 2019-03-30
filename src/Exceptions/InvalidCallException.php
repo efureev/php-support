@@ -2,9 +2,18 @@
 
 namespace Php\Support\Exceptions;
 
-class InvalidCallException extends \BadMethodCallException
+use BadMethodCallException;
+
+/**
+ * Class InvalidCallException
+ * @package Php\Support\Exceptions
+ */
+class InvalidCallException extends BadMethodCallException
 {
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return 'Invalid Call';
     }

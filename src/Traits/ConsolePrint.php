@@ -1,17 +1,17 @@
 <?php
 
-namespace Php\Support\Traits;
+declare(strict_types=1);
 
+namespace Php\Support\Traits;
 /**
- * Trait ConsolePrintTrait
- *
- * @package Tests\Traits
+ * Trait ConsolePrint
+ * @package Php\Support\Traits
  */
 trait ConsolePrint
 {
     /**
      * @param mixed $msg
-     * @param bool  $newLine
+     * @param bool $newLine
      */
     public function print($msg, bool $newLine = true): void
     {
@@ -20,7 +20,7 @@ trait ConsolePrint
 
     /**
      * @param mixed $msg
-     * @param bool  $newLine
+     * @param bool $newLine
      */
     public function printError($msg, bool $newLine = true): void
     {

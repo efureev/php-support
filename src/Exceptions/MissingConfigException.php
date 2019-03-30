@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
 /**
@@ -15,13 +17,13 @@ class MissingConfigException extends ConfigException
     /**
      * MissingConfigException constructor.
      *
-     * @param mixed  $config
+     * @param mixed $config
      * @param string $needKey
      * @param string $message
      */
     public function __construct($config = null, $needKey = null, $message = 'Missing Config')
     {
-        parent::__construct($config, $message);
         $this->needKey = $needKey;
+        parent::__construct($config, $message);
     }
 }

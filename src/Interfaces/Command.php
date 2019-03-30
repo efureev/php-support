@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Php\Support\Interfaces;
 
 /**
- * Interface Arrayable
+ * Interface Command
  *
  * @package Php\Support\Interfaces
  */
-interface Arrayable
+interface Command
 {
-    /**
-     * @return array
-     */
-    public function toArray(): array;
+    public function execute(): void;
 }

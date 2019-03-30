@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Helpers;
 
+use ArrayAccess;
+use JsonSerializable;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
+use Traversable;
 
 /**
  * Class Arr
@@ -20,7 +25,7 @@ class Arr
      * @param array $array
      * @param array $replace
      */
-    public static function arrayReplaceByTemplate(array &$array, array $replace)
+    public static function arrayReplaceByTemplate(array &$array, array $replace): void
     {
         foreach ($array as &$item) {
             static::itemReplaceByTemplate($item, $replace);
@@ -33,7 +38,7 @@ class Arr
      * @param mixed $item
      * @param array $replace
      */
-    private static function itemReplaceByTemplate(&$item, array $replace)
+    private static function itemReplaceByTemplate(&$item, array $replace): void
     {
         if (is_array($item)) {
             self::arrayReplaceByTemplate($item, $replace);
@@ -48,97 +53,95 @@ class Arr
      * @param array $array
      * @param mixed $val
      */
-    public static function removeByValue(array &$array, $val)
+    public static function removeByValue(array &$array, $val): void
     {
-        if (($key = array_search($val, $array)) !== false) {
+        if (($key = array_search($val, $array, null)) !== false) {
             unset($array[$key]);
         }
     }
 
     /**
+     * Simple variable to array
+     *
      * @param mixed $items
      *
      * @return array
+     * @throws \Php\Support\Exceptions\JsonException
      */
     public static function toArray($items): array
     {
         if (is_array($items)) {
             $res = $items;
-        } elseif ($items instanceof Arrayable) {
+        } else if ($items instanceof Arrayable) {
             $res = $items->toArray();
-        } elseif ($items instanceof Jsonable) {
+        } else if ($items instanceof Jsonable) {
             $res = Json::decode($items->toJson());
-        } elseif ($items instanceof \JsonSerializable) {
+        } else if ($items instanceof JsonSerializable) {
             $res = $items->jsonSerialize();
-        } elseif ($items instanceof \Traversable) {
+        } else if ($items instanceof Traversable) {
             $res = iterator_to_array($items);
         } else {
             $res = (array)$items;
         }
 
+
         return $res;
     }
 
     /**
-     * Apply class or type to every element into collection
+     * Nested variable data to array
      *
-     * @param array $array
-     * @param string $cls
-     * @param \Closure|null $fn
+     * @param mixed $items
      *
-     * @return array
+     * @return array|mixed|null
+     * @throws \Php\Support\Exceptions\JsonException
      */
-    public static function applyCls(array $array, string $cls, \Closure $fn = null)
+    public static function dataToArray($items)
     {
-        $fn = self::getNoopClosureForApplyCls($fn);
-
-        return array_map(function ($element) use ($cls, $fn) {
-            switch ($cls) {
-                case 'array':
-                    $result = (array)$element;
-                    break;
-                case 'string':
-                    $result = (string)$element;
-                    break;
-                case 'integer':
-                    $result = (int)$element;
-                    break;
-
-                default:
-                    $result = $fn($cls, $element);
+        if (is_object($items)) {
+            if ($items instanceof JsonSerializable) {
+                return static::dataToArray($items->jsonSerialize());
             }
 
-            return $result;
+            if ($items instanceof Jsonable) {
+                return Json::decode($items->toJson());
+            }
 
-        }, $array);
-    }
-
-    /**
-     * @param \Closure|null $fn
-     *
-     * @return \Closure
-     */
-    public static function getNoopClosureForApplyCls(\Closure $fn = null)
-    {
-        if ($fn === null) {
-            $fn = function ($cls, $data) {
-                if (class_exists($cls)) {
-                    return new $cls($data);
+            if ($items instanceof Arrayable) {
+                $items = $items->toArray();
+            } else if ($items instanceof Traversable) {
+                $items = iterator_to_array($items);
+            } else {
+                $result = [];
+                if (is_iterable($items)) {
+                    foreach ($items as $name => $value) {
+                        $result[$name] = $value;
+                    }
                 }
-
-                return null;
-            };
+                $items = $result;
+            }
         }
 
-        return $fn;
+        if (!is_array($items)) {
+            return $items;
+        }
+
+        foreach ($items as $key => &$value) {
+            if (is_array($value) || is_object($value)) {
+                $value = static::dataToArray($value);
+            }
+        }
+
+        return $items;
     }
+
 
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array $array
-     * @param  null|string $key
-     * @param  mixed $default
+     * @param ArrayAccess|array $array
+     * @param null|string $key
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -172,32 +175,32 @@ class Arr
     }
 
     /**
-     * Determine if the given key exists in the provided array.
+     * Determine whether the given value is array accessible.
      *
-     * @param  \ArrayAccess|array $array
-     * @param  string|int $key
+     * @param mixed $value
      *
      * @return bool
      */
-    public static function exists($array, $key)
+    public static function accessible($value): bool
     {
-        if ($array instanceof \ArrayAccess) {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    /**
+     * Determine if the given key exists in the provided array.
+     *
+     * @param ArrayAccess|array $array
+     * @param string|int $key
+     *
+     * @return bool
+     */
+    public static function exists($array, $key): bool
+    {
+        if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
         }
 
         return array_key_exists($key, $array);
-    }
-
-    /**
-     * Determine whether the given value is array accessible.
-     *
-     * @param  mixed $value
-     *
-     * @return bool
-     */
-    public static function accessible($value)
-    {
-        return is_array($value) || $value instanceof \ArrayAccess;
     }
 
     /**
@@ -208,7 +211,7 @@ class Arr
      *
      * @return array the merged array (the original arrays are not changed.)
      */
-    public static function merge($res, $b, $replaceArray = true)
+    public static function merge($res, $b, $replaceArray = true): array
     {
         foreach ($b as $key => $val) {
             if (is_int($key)) {
@@ -217,7 +220,7 @@ class Arr
                 } else {
                     $res[$key] = $val;
                 }
-            } elseif (is_array($val) && isset($res[$key]) && is_array($res[$key])) {
+            } else if (is_array($val) && isset($res[$key]) && is_array($res[$key])) {
                 $res[$key] = ($replaceArray ? $val : self::merge($res[$key], $val, $replaceArray));
             } else {
                 $res[$key] = $val;
@@ -233,12 +236,32 @@ class Arr
      * @param array $array
      *
      * @return string
+     * @throws \Php\Support\Exceptions\JsonException
      */
     public static function toPostgresArray(array $array): string
     {
-        $json = \json_encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE);
+        $json = Json::encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE);
 
         return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
+    }
+
+    /**
+     * Remove named keys from arrays
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function toIndexedArray(array $array): array
+    {
+        $array = array_values($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = static::toIndexedArray($value);
+            }
+        }
+
+        return $array;
     }
 
     /**
@@ -303,24 +326,5 @@ class Arr
         }
 
         return $return;
-    }
-
-    /**
-     * Remove named keys from arrays
-     *
-     * @param array $array
-     *
-     * @return array
-     */
-    public static function toIndexedArray(array $array): array
-    {
-        $array = array_values($array);
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                $value = static::toIndexedArray($value);
-            }
-        }
-
-        return $array;
     }
 }

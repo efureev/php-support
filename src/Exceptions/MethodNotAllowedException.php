@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
 /**
@@ -12,9 +14,15 @@ class MethodNotAllowedException extends Exception
     /** @var string */
     protected $reason;
 
+    /**
+     * MethodNotAllowedException constructor.
+     *
+     * @param string $reason
+     * @param string $message
+     */
     public function __construct(string $reason, $message = 'Method Not Allowed')
     {
-        parent::__construct($message);
         $this->reason = $reason;
+        parent::__construct($message);
     }
 }

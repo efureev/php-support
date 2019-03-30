@@ -1,10 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
 
-class InvalidValueException extends \UnexpectedValueException
+use UnexpectedValueException;
+
+/**
+ * Class InvalidValueException
+ * @package Php\Support\Exceptions
+ */
+class InvalidValueException extends UnexpectedValueException
 {
-    public function getName()
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return 'Invalid Return Value';
     }

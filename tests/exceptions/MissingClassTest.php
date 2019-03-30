@@ -13,27 +13,27 @@ final class MissingClassTest extends TestCase
     {
         try {
             throw new MissingClassException();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingClassException::class, $e);
             $this->assertSame('Missing Class', $e->getMessage());
         }
 
         try {
             throw new MissingClassException(MissingClassException::class);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingClassException::class, $e);
             $this->assertSame('Missing Class: ' . MissingClassException::class, $e->getMessage());
         }
 
         try {
             throw new MissingClassException(null, 'Test Message');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingClassException::class, $e);
             $this->assertSame('Test Message', $e->getMessage());
         }
         try {
             throw new MissingClassException(MissingClassException::class, 'Test Message');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(MissingClassException::class, $e);
             $this->assertSame('Test Message: ' . MissingClassException::class, $e->getMessage());
         }

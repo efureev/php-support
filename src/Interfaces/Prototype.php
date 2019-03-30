@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Php\Support\Interfaces;
 
 /**
- * Interface Arrayable
+ * Interface Prototype
  *
  * @package Php\Support\Interfaces
  */
-interface Arrayable
+interface Prototype
 {
-    /**
-     * @return array
-     */
-    public function toArray(): array;
+    public function __clone();
 }

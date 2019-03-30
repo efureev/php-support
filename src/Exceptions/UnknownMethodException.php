@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Exceptions;
+
+use BadMethodCallException;
 
 /**
  * Class UnknownMethodException
  *
  * @package Php\Support\Exceptions
  */
-class UnknownMethodException extends \BadMethodCallException
+class UnknownMethodException extends BadMethodCallException
 {
     /** @var string|null */
     protected $method;
@@ -27,7 +31,7 @@ class UnknownMethodException extends \BadMethodCallException
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return 'Unknown method';
     }
