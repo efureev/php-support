@@ -55,7 +55,7 @@ class Arr
      */
     public static function removeByValue(array &$array, $val): void
     {
-        if (($key = array_search($val, $array, null)) !== false) {
+        if (($key = array_search($val, $array, false)) !== false) {
             unset($array[$key]);
         }
     }
@@ -240,9 +240,11 @@ class Arr
      */
     public static function toPostgresArray(array $array): string
     {
-        $json = Json::encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE);
+        if (!$json = Json::encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE)) {
+            return '{}';
+        }
 
-        return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
+        return is_string($str = str_replace(['[', ']', '"'], ['{', '}', ''], $json)) ? $str : '{}';
     }
 
     /**
@@ -317,7 +319,7 @@ class Arr
 
         foreach ($return as &$r) {
             if (is_numeric($r)) {
-                if (ctype_digit($r)) {
+                if (ctype_digit((string)$r)) {
                     $r = (int)$r;
                 } else {
                     $r = (float)$r;

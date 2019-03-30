@@ -44,11 +44,11 @@ final class JsonException extends Exception
     }
 
     /**
-     * @param int|null $code
+     * @param int $code
      *
      * @return JsonException
      */
-    public static function byCode(?int $code): self
+    public static function byCode(int $code): self
     {
         return new self($code, self::ERRORS_MESSAGES[$code] ?? null);
     }

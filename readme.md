@@ -1,5 +1,5 @@
 # PHP Support
-![](https://img.shields.io/badge/php->=7.1-blue.svg)
+![](https://img.shields.io/badge/php->=7.2-blue.svg)
 [![Latest Stable Version](https://poser.pugx.org/efureev/support/v/stable?format=flat)](https://packagist.org/packages/efureev/support)
 
 [![Build Status](https://travis-ci.org/efureev/php-support.svg?branch=master)](https://travis-ci.org/efureev/php-support)
