@@ -15,7 +15,7 @@ trait Singleton
     /**
      * @var array
      */
-    private static $instances = [];
+    protected static $instances = [];
 
     /**
      * prevent the creation of an object through the new operator
@@ -27,7 +27,7 @@ trait Singleton
     /**
      * @return Singleton
      */
-    public static function getInstance(): Singleton
+    public static function getInstance(): self
     {
         $cls = static::class;
         if (!isset(static::$instances[$cls])) {

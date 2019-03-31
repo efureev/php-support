@@ -342,6 +342,9 @@ final class ArrTest extends TestCase
     }
 
 
+    /**
+     * @throws \Php\Support\Exceptions\JsonException
+     */
     public function testToPostgresArray(): void
     {
         static::assertEquals('{val1,test,null,,null}', Arr::ToPostgresArray([
@@ -369,5 +372,101 @@ final class ArrTest extends TestCase
             '',
             null,
         ]));
+    }
+
+    /**
+     * @return array
+     */
+    public function providerRemoveByValue(): array
+    {
+        return [
+            [[0 => 1, 2 => 3], 1, [1, 2, 3], 2],
+            [[1 => 'val 21', 2 => 'vat', 3 => 'test'], 0, ['val 2', 'val 21', 'vat', 'test'], 'val 2'],
+            [[1 => 'val 2', 2 => 'val 21', 3 => 'vat', 4 => 'test'], 0, ['val 2', 'val 2', 'val 21', 'vat', 'test'], 'val 2'],
+            [['val 2', 'val 21', 'vat'], 3, ['val 2', 'val 21', 'vat', null], null],
+            [['val 2', 'val 21', 'vat', null], null, ['val 2', 'val 21', 'vat', null], 1],
+            [
+                [
+                    'key 1' => 'val 1',
+                    'key 2' => 'val 2',
+                ], 'key 4',
+                [
+                    'key 1' => 'val 1',
+                    'key 2' => 'val 2',
+                    'key 4' => 'val 4',
+                ], 'val 4'],
+            [['a'], null, ['a'], 'c'],
+            [['a'], null, ['a'], null],
+            [['a'], null, ['a'], ''],
+            [['a'], null, ['a'], '1'],
+            [['a'], null, ['a'], 1],
+            [[2], null, [2], 1],
+            [[], null, [], 'c'],
+            [[], null, [], null],
+        ];
+    }
+
+    /**
+     * @dataProvider providerRemoveByValue
+     *
+     * @param $expArray
+     * @param $expIdx
+     * @param $array
+     * @param $val
+     */
+    public function testRemoveByValue($expArray, $expIdx, $array, $val): void
+    {
+        $idx = Arr::removeByValue($array, $val);
+        static::assertEquals($expArray, $array);
+        static::assertEquals($expIdx, $idx);
+    }
+
+    /**
+     * @return array
+     */
+    public function providerRemoveByValueAndReindex(): array
+    {
+        return [
+            [[1, 3], 1, [1, 2, 3], 2],
+            [['val 21', 'vat', 'test'], 0, ['val 2', 'val 21', 'vat', 'test'], 'val 2'],
+            [['val 2', 'val 21', 'vat', 'test'], 0, ['val 2', 'val 2', 'val 21', 'vat', 'test'], 'val 2'],
+            [['val 2', 'val 21', 'vat'], 3, ['val 2', 'val 21', 'vat', null], null],
+            [['val 2', 'val 21', 'vat', null], null, ['val 2', 'val 21', 'vat', null], 1],
+            [
+                [
+                    'val 1',
+                    'val 2',
+                ], 'key 4',
+                [
+                    'key 1' => 'val 1',
+                    'key 2' => 'val 2',
+                    'key 4' => 'val 4',
+                ], 'val 4'],
+
+            [['a'], null, ['a'], 'c'],
+            [['a'], null, ['a'], null],
+            [['a'], null, ['a'], ''],
+            [['a'], null, ['a'], '1'],
+            [['a'], null, ['a'], 1],
+            [[2], null, [2], 1],
+            [[], null, [], 'c'],
+            [[], null, [], null],
+        ];
+    }
+
+    /**
+     * @dataProvider providerRemoveByValueAndReindex
+     *
+     * @param $expArray
+     * @param $expIdx
+     * @param $array
+     * @param $val
+     */
+    public function testRemoveByValueAndReindex($expArray, $expIdx, $array, $val): void
+    {
+        $idx = Arr::removeByValue($array, $val, true);
+
+        static::assertEquals($expArray, $array);
+        static::assertEquals($expIdx, $idx);
     }
 }

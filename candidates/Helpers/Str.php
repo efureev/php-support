@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Helpers;
+namespace Php\Support\Candidates\Helpers;
 
 use function mb_strtolower;
 use function preg_replace;
