@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Php\Support\Candidates\Helpers;
 
-use ArrayAccess;
-
 /**
  * Class Arr
  *
@@ -42,59 +40,6 @@ class Arr
             $item = Str::stringReplaceByTemplate($item, $replace);
         }
     }
-
-    /**
-     * Remove elements from array by value
-     *
-     * @param array $array
-     * @param mixed $val
-     */
-    public static function removeByValue(array &$array, $val): void
-    {
-        if (($key = array_search($val, $array, false)) !== false) {
-            unset($array[$key]);
-        }
-    }
-
-
-    /**
-     * Get an item from an array using "dot" notation.
-     *
-     * @param ArrayAccess|array $array
-     * @param null|string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    public static function get($array, ?string $key, $default = null)
-    {
-        if (!static::accessible($array)) {
-            return value($default);
-        }
-
-        if ($key === null) {
-            return $array;
-        }
-
-        if (static::exists($array, $key)) {
-            return $array[$key];
-        }
-
-        if (strpos($key, '.') === false) {
-            return $array[$key] ?? value($default);
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (static::accessible($array) && static::exists($array, $segment)) {
-                $array = $array[$segment];
-            } else {
-                return value($default);
-            }
-        }
-
-        return $array;
-    }
-
 
     /**
      * @param string|null $s

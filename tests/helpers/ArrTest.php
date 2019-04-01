@@ -469,4 +469,53 @@ final class ArrTest extends TestCase
         static::assertEquals($expArray, $array);
         static::assertEquals($expIdx, $idx);
     }
+
+    /**
+     * @return array
+     */
+    public function providerGet(): array
+    {
+        $array = [
+            'key' => ['sub1' => 'val1', 'sub2' => ['val2', 'val3'], 'sub4' => ['sub4sub' => 'val3']],
+            'key2' => 2,
+            'key4' => 1,
+        ];
+
+        return [
+            [2, $array, 'key2'],
+            [1, $array, 'key4'],
+            ['val1', $array, 'key.sub1'],
+            [['val2', 'val3'], $array, 'key.sub2'],
+            ['val3', $array, 'key.sub4.sub4sub'],
+            [null, $array, 'key.sub3.sub4sub'],
+            ['val3', new ArrayObject($array), 'key.sub4.sub4sub'],
+
+            [$array, $array, null],
+
+            [null, $array, 'key3'],
+
+            [null, 1, '1'],
+            [null, 1, '2'],
+            [null, null, '2'],
+            [null, null, null],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGet
+     *
+     * @param $expVal
+     * @param $array
+     * @param $key
+     */
+    public function testGet($expVal, $array, $key): void
+    {
+        $val = Arr::get($array, $key);
+
+        static::assertEquals($expVal, $val);
+
+        $val = Arr::get($array, $key, 'test');
+
+        static::assertEquals($expVal ?? 'test', $val);
+    }
 }
