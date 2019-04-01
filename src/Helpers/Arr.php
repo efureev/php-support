@@ -183,7 +183,7 @@ class Arr
             return '{}';
         }
 
-        return is_string($str = str_replace(['[', ']', '"'], ['{', '}', ''], $json)) ? $str : '{}';
+        return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
     }
 
     /**
