@@ -251,4 +251,32 @@ class Str
         return static::$delimitedCache[$str][$initCase] = $res;
     }
 
+    /**
+     * Replace substr by start and finish indents
+     *
+     * @param string $str
+     * @param int $from_start
+     * @param int $from_end
+     * @param string $toStr
+     *
+     * @return string
+     */
+    public static function replaceStrTo(string $str, int $from_start, int $from_end, string $toStr = '*'): string
+    {
+        $from_start = $from_start < 0 ? 0 : $from_start;
+        $from_end = $from_end < 0 ? 0 : $from_end;
+        $len = \mb_strlen($str);
+
+        if ($from_start + $from_end >= $len) {
+            return $str;
+        }
+
+        $start_str = \mb_substr($str, 0, $from_start);
+        $end_str = $from_end ? \mb_substr($str, -$from_end) : '';
+
+        $replace_str = str_repeat($toStr, \mb_strlen(\mb_substr($str, $from_start, $len - $from_end - $from_start)));
+
+        return $start_str . $replace_str . $end_str;
+    }
+
 }

@@ -163,7 +163,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
- public function providerLowerCamel(): array
+    public function providerLowerCamel(): array
     {
         return [
             ['', ''],
@@ -203,15 +203,52 @@ final class StrTest extends TestCase
     {
         $result = Str::toSnake(' ets_Case12');
         static::assertEquals('ets_case_12', $result);
-//        var_dump(Str::$delimitedCache,count(Str::$delimitedCache));
 
         $result = Str::toSnake('ets_Case  12');
         static::assertEquals('ets_case_12', $result);
-//        var_dump(Str::$delimitedCache,count(Str::$delimitedCache));
 
         $result = Str::toSnake('  ets_Case 12 ');
         static::assertEquals('ets_case_12', $result);
-//        var_dump(Str::$delimitedCache, count(Str::$delimitedCache));
+    }
+
+
+    /**
+     * @return array
+     */
+    public function dataReplaceStrTo(): array
+    {
+        return [
+            ['1234567890', 1, 1, '*', '1********0'],
+            ['1234567890', 5, 3, '*', '12345**890'],
+            ['1234567890', 3, 2, '(*)', '123(*)(*)(*)(*)(*)90'],
+            ['1234567890', 5, 5, '*', '1234567890'],
+            ['eqwopcsvbamx', 5, 4, '*', 'eqwop***bamx'],
+            ['карточка', 3, 3, '*', 'кар**чка'],
+            ['карточка', -2, 3, '*', '*****чка'],
+            ['карточка', 0, 0, '*', '********'],
+            ['карточка', 3, -3, '*', 'кар*****'],
+            ['карточка', -22, -3, '*', '********'],
+            ['карточка', 3, 20, '*', 'карточка'],
+            ['карточка', 32, 3, '*', 'карточка'],
+            ['карточка', 32, 20, '*', 'карточка'],
+        ];
+
+    }
+
+    /**
+     * @dataProvider  dataReplaceStrTo
+     *
+     *
+     * @param string $val
+     * @param int $fromStart
+     * @param int $fromEnd
+     * @param string $to
+     * @param string $exp
+     */
+    public function testReplaceStrTo(string $val, int $fromStart, int $fromEnd, string $to, string $exp): void
+    {
+        $result = Str::replaceStrTo($val, $fromStart, $fromEnd, $to);
+        static::assertEquals($exp, $result);
     }
 
 }
