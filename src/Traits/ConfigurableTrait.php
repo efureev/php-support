@@ -21,7 +21,7 @@ trait ConfigurableTrait
     public function configurable(array $attributes, ?bool $exceptOnMiss = true): self
     {
         foreach ($attributes as $key => $value) {
-            if (!$this->setProp($key, $value) && $exceptOnMiss) {
+            if (!$this->applyValue($key, $value) && $exceptOnMiss) {
                 throw new InvalidParamException("Property $key is absent at class: " . get_class($this));
             }
         }
@@ -30,14 +30,12 @@ trait ConfigurableTrait
     }
 
     /**
-     * Set properties to object
-     *
      * @param string $key
      * @param        $value
      *
      * @return bool
      */
-    private function setProp(string $key, $value): bool
+    protected function setProp(string $key, $value): bool
     {
         if (property_exists($this, $key)) {
             $this->{$key} = $value;
@@ -46,5 +44,32 @@ trait ConfigurableTrait
         }
 
         return false;
+    }
+
+    /**
+     * @param string $key
+     * @param $value
+     *
+     * @return bool
+     */
+    protected function callMethod(string $key, $value): bool
+    {
+        if (method_exists($this, $method = 'set' . ucfirst($key))) {
+            $this->$method($value);
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $key
+     * @param $value
+     *
+     * @return bool
+     */
+    protected function applyValue(string $key, $value): bool
+    {
+        return $this->setProp($key, $value) || $this->callMethod($key, $value);
     }
 }
