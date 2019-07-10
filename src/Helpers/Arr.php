@@ -242,4 +242,42 @@ class Arr
 
         return $array;
     }
+
+    /**
+     * Replace templates into array
+     * Key = search value
+     * Value = replace value
+     *
+     * @param array $array
+     * @param array $replace
+     *
+     * @return array
+     */
+    public static function replaceByTemplate(array $array, array $replace): array
+    {
+        $res = [];
+        foreach ($array as $key => $item) {
+            $res[$key] = static::itemReplaceByTemplate($item, $replace);
+        }
+        return $res;
+    }
+
+    /**
+     * Replace templates into item
+     *
+     * @param mixed $item
+     * @param array $replace
+     *
+     * @return array|mixed
+     */
+    private static function itemReplaceByTemplate($item, array $replace)
+    {
+        if (is_array($item)) {
+            $item = self::replaceByTemplate($item, $replace);
+        } else if (is_string($item)) {
+            $item = Str::replaceByTemplate($item, $replace);
+        }
+
+        return $item;
+    }
 }

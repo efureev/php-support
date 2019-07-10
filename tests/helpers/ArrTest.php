@@ -518,4 +518,54 @@ final class ArrTest extends TestCase
 
         static::assertEquals($expVal ?? 'test', $val);
     }
+
+    /**
+     * @return array
+     */
+    public function dataReplaceByTemplate(): array
+    {
+        return [
+            [['text {{%TOKEN%}} value'], ['{{%TOKEN%}}' => 'token'], ['text token value']],
+            [['key' => '{{%KEY%}}', 'token' => '{{%TOKEN%}}'], ['{{%KEY%}}' => 'vKey', '{{%TOKEN%}}' => 'vToken'], ['key' => 'vKey', 'token' => 'vToken']],
+            [['key' => '{{%KEY%}}', 'token' => '{{%TOKEN%}}'], ['{{%KEY%}}' => 'vKey'], ['key' => 'vKey', 'token' => '{{%TOKEN%}}']],
+            [['key' => '{{%KEY%}}', 'token' => '{{%TOKEN%}}'], ['{{%KEY%}}' => ''], ['key' => '', 'token' => '{{%TOKEN%}}']],
+            [['key' => '{{%KEY%}}', 'token' => '{{%TOKEN%}}'], ['{{%KEY%}}' => null], ['key' => '', 'token' => '{{%TOKEN%}}']],
+            [
+                [
+                    'step1' => ['key' => '{{%KEY%}}', 'token' => '{{%TOKEN%}}'],
+                    'step2' => [
+                        'subStep2' => ['token' => '{{%TOKEN%}}', 'key' => '{{%KEY%}}'],
+                    ],
+                    'step3' => ['val' => '{{%VALUE%}}'],
+                ], ['{{%KEY%}}' => 'vKey', '{{%TOKEN%}}' => 'vToken', '{{%VALUE%}}' => 12],
+                [
+                    'step1' => ['key' => 'vKey', 'token' => 'vToken'],
+                    'step2' => [
+                        'subStep2' => ['token' => 'vToken', 'key' => 'vKey'],
+                    ],
+                    'step3' => ['val' => '12'],
+                ],
+            ],
+            [['sdasdas'], ['{{%KEY%}}' => 'key', '{{%TOKEN%}}' => 'token'], ['sdasdas']],
+            [['sdaas'], [], ['sdaas']],
+        ];
+    }
+
+    /**
+     * @dataProvider dataReplaceByTemplate
+     *
+     * @param $array
+     * @param $replace
+     * @param $exp
+     */
+    public function testReplaceByTemplate(array $array, array $replace, array $exp): void
+    {
+        $res = Arr::replaceByTemplate($array, $replace);
+
+//        var_dump($res);
+//        var_dump($exp);
+//        static::assertEquals($exp, $res);
+        static::assertJsonStringEqualsJsonString(\json_encode($exp), \json_encode($res));
+//        static::assertEquals($exp, $res);
+    }
 }

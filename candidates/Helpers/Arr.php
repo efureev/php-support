@@ -12,36 +12,6 @@ namespace Php\Support\Candidates\Helpers;
 class Arr
 {
     /**
-     * Replace templates into array
-     * Key = search value
-     * Value = replace value
-     *
-     * @param array $array
-     * @param array $replace
-     */
-    public static function arrayReplaceByTemplate(array &$array, array $replace): void
-    {
-        foreach ($array as &$item) {
-            static::itemReplaceByTemplate($item, $replace);
-        }
-    }
-
-    /**
-     * Replace templates into item
-     *
-     * @param mixed $item
-     * @param array $replace
-     */
-    private static function itemReplaceByTemplate(&$item, array $replace): void
-    {
-        if (is_array($item)) {
-            self::arrayReplaceByTemplate($item, $replace);
-        } else if (is_string($item)) {
-            $item = Str::stringReplaceByTemplate($item, $replace);
-        }
-    }
-
-    /**
      * @param string|null $s
      * @param int $start
      * @param null $end

@@ -279,4 +279,19 @@ class Str
         return $start_str . $replace_str . $end_str;
     }
 
+    /**
+     * Replace templates into string
+     * Key = search value
+     * Value = replace value
+     *
+     * @param string $str
+     * @param array $replace
+     *
+     * @return mixed
+     */
+    public static function replaceByTemplate(string $str, array $replace)
+    {
+        return str_replace(array_keys($replace), array_values($replace), $str);
+    }
+
 }

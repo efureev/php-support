@@ -232,12 +232,10 @@ final class StrTest extends TestCase
             ['карточка', 32, 3, '*', 'карточка'],
             ['карточка', 32, 20, '*', 'карточка'],
         ];
-
     }
 
     /**
      * @dataProvider  dataReplaceStrTo
-     *
      *
      * @param string $val
      * @param int $fromStart
@@ -248,6 +246,32 @@ final class StrTest extends TestCase
     public function testReplaceStrTo(string $val, int $fromStart, int $fromEnd, string $to, string $exp): void
     {
         $result = Str::replaceStrTo($val, $fromStart, $fromEnd, $to);
+        static::assertEquals($exp, $result);
+    }
+
+    /**
+     * @return array
+     */
+    public function dataReplaceByTemplate(): array
+    {
+        return [
+            ['text {{%TOKEN%}} value', ['{{%TOKEN%}}' => 'token'], 'text token value'],
+            ['"{{%KEY%}}-{{%TOKEN%}}" - test', ['{{%KEY%}}' => 'key','{{%TOKEN%}}' => 'token'], '"key-token" - test'],
+            ['sdasdas', ['{{%KEY%}}' => 'key','{{%TOKEN%}}' => 'token'], 'sdasdas'],
+            ['sdaas', [], 'sdaas'],
+        ];
+    }
+
+    /**
+     * @dataProvider  dataReplaceByTemplate
+     *
+     * @param string $str
+     * @param array $replaced
+     * @param string $exp
+     */
+    public function testReplaceByTemplate(string $str, array $replaced, string $exp): void
+    {
+        $result = Str::replaceByTemplate($str, $replaced);
         static::assertEquals($exp, $result);
     }
 

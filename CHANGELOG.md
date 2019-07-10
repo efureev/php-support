@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.0.5
+
+### Added
+
+- Add new String helpers:
+    + `replaceByTemplate` Replace templates into string
+- Add new Array helpers:
+    + `replaceByTemplate` Replace templates into array
+
 ## v2.0.2
 
 ### Added
