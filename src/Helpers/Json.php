@@ -46,9 +46,8 @@ class Json
      */
     public static function encode($value, $options = 320): ?string
     {
-//        $value = static::dataToArray($value);
         $value = Arr::dataToArray($value);
-        set_error_handler(static function (): void {
+        set_error_handler(static function () {
             static::handleJsonError(JSON_ERROR_SYNTAX);
         }, E_WARNING);
         $json = json_encode($value, $options);
@@ -57,43 +56,6 @@ class Json
 
         return $json ?: null;
     }
-
-    /**
-     * Pre-processes the data before sending it to `json_encode()`.
-     *
-     * @param mixed $data the data to be processed
-     *
-     * @return mixed the processed data
-     */
-    /* public static function dataToArray($data)
-     {
-         if (is_object($data)) {
-             if ($data instanceof JsonSerializable) {
-                 return static::dataToArray($data->jsonSerialize());
-             }
-             if ($data instanceof Arrayable) {
-                 $data = $data->toArray();
-             } else {
-                 $result = [];
-                 if (is_iterable($data)) {
-                     foreach ($data as $name => $value) {
-                         $result[$name] = $value;
-                     }
-                 }
-                 $data = $result;
-             }
-         }
-
-         if (is_array($data)) {
-             foreach ($data as $key => $value) {
-                 if (is_array($value) || is_object($value)) {
-                     $data[$key] = static::dataToArray($value);
-                 }
-             }
-         }
-
-         return $data;
-     }*/
 
     /**
      * @param int $lastError
