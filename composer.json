@@ -41,6 +41,5 @@
     "test": "@php ./vendor/bin/phpunit --no-coverage --testdox",
     "test-cover": "@php ./vendor/bin/phpunit --coverage-text --testdox",
     "test-full": "composer test-cover && composer phpstan"
-
   }
 }

@@ -8,7 +8,7 @@
 
 ## Install
 ```bash
-composer require fureev/support "^2.0"
+composer require efureev/support "^2.0"
 ```
 
 ## Test
