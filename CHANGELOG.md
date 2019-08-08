@@ -4,16 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.1.1
+
+### Added
+- Add trait Maker:
+
 ## v2.1.0
 
 ### Added
-
 - Add trait Metable:
 
 ## v2.0.5
 
 ### Added
-
 - Add new String helpers:
     + `replaceByTemplate` Replace templates into string
 - Add new Array helpers:
@@ -22,14 +25,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ## v2.0.2
 
 ### Added
-
 - Add new String helpers:
     + `replaceStrTo` Replace substr by start and finish indents
 
 ## v2.0.1
 
 ### Added
-
 - Add `CHANGELOG.md`
 - Add new Array helpers:
     + `get` Get an item from an array using "dot" notation.
