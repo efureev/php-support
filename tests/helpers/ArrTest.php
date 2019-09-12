@@ -565,11 +565,7 @@ final class ArrTest extends TestCase
      */
     public function providerSet(): array
     {
-        $array = [
-//            'key' => ['sub1' => 'val1', 'sub2' => ['val2', 'val3'], 'sub4' => ['sub4sub' => 'val3']],
-//            'key2' => 2,
-//            'key4' => 1,
-        ];
+        $array = [];
 
         return [
             [2, $array, 'key2'],
@@ -579,13 +575,8 @@ final class ArrTest extends TestCase
             ['val3', $array, 'key.sub4.sub4sub'],
             [null, $array, 'key.sub3.sub4sub'],
             ['val3', new ArrayObject($array), 'key.sub4.sub4sub'],
-
             [$array, $array, null],
-
             [null, $array, 'key3'],
-
-//            [null, 1, '1'],
-//            [null, 1, '2'],
             [null, null, '2'],
             [$array, $array, null],
 
@@ -614,6 +605,51 @@ final class ArrTest extends TestCase
 
         $array = [];
         static::assertEquals($array, Arr::set($array, null, 1));
+    }
+
+    /**
+     * @return array
+     */
+    public function providerRemove(): array
+    {
+        $array = [
+            'key' => ['sub1' => 'val1', 'sub2' => ['val2', 'val3'], 'sub4' => ['sub4sub' => 'val3']],
+            'key2' => 2,
+            'key4' => 1,
+        ];
+
+        return [
+            [$array, 'key2'],
+            [$array, 'key4'],
+            [$array, 'key.sub1'],
+            [$array, 'key.sub2'],
+            [$array, 'test'],
+            [$array, 'key.sub4.sub4sub'],
+            [$array, 'key.sub3.sub4sub'],
+            [new ArrayObject($array), 'key.sub4.sub4sub'],
+        ];
+    }
+
+
+    /**
+     * @dataProvider providerRemove
+     *
+     * @param $array
+     * @param $key
+     */
+    public function testRemove($array, $key): void
+    {
+        Arr::remove($array, $key);
+
+        static::assertNull(Arr::get($array, $key));
+    }
+
+    public function testRemove2(): void
+    {
+        $array = ['key2' => 2, 'key4' => 1];
+        Arr::remove($array, null);
+
+        static::assertEquals($array, Arr::get($array, null));
     }
 
     /**

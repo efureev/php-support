@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 - Add function `has` to `Array` Helper
 - Add function `set` to `Array` Helper
+- Add function `remove` to `Array` Helper
 
 ## v2.1.1
 
