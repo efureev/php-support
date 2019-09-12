@@ -55,6 +55,7 @@ trait ArrayStorage
     {
         if ($this->propertyExists($name)) {
             $this->$name = $value;
+            return;
         }
 
         Arr::set($this->data, $name, $value);
@@ -77,9 +78,10 @@ trait ArrayStorage
     {
         if ($this->propertyExists($name)) {
             $this->$name = null;
-        } else {
-            Arr::remove($this->data, $name);
+            return;
         }
+
+        Arr::remove($this->data, $name);
     }
 
     /**

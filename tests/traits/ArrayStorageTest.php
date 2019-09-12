@@ -62,11 +62,16 @@ final class ArrayStorageTest extends TestCase
         static::assertEquals($expected, $config->getData());
     }
 
-    public function testUnset2(): void
+    public function testUnset(): void
     {
         $config = new ArrayStorageClassTest;
-        $key = 'test.sub.key';
 
+        $config->name = 'name';
+        unset($config->name);
+        static::assertTrue(isset($config->name));
+        static::assertNull($config->name);
+
+        $key = 'test.sub.key';
         $config->$key = 1;
 
         static::assertEquals(1, $config->$key);
@@ -106,6 +111,9 @@ final class ArrayStorageTest extends TestCase
         $config->null = null;
         static::assertTrue(isset($config->null));
 
+        $config->name = 'name';
+        static::assertTrue(isset($config->name));
+
         static::assertFalse(isset($config->{'nullable.one.1'}));
     }
 
@@ -117,4 +125,6 @@ final class ArrayStorageTest extends TestCase
 class ArrayStorageClassTest
 {
     use \Php\Support\Traits\ArrayStorage;
+
+    protected $name;
 }
