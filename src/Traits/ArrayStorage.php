@@ -76,8 +76,7 @@ trait ArrayStorage
         if ($this->propertyExists($name)) {
             $this->$name = null;
         } else {
-
-            unset($this->data[$name]);
+            Arr::remove($this->data, $name);
         }
     }
 

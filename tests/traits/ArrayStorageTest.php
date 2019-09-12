@@ -45,16 +45,38 @@ final class ArrayStorageTest extends TestCase
         $config = new ArrayStorageClassTest;
         $key = 'test.sub.key';
 
+        static::assertFalse(isset($config->$key));
+
+        $config->$key = 1;
+        static::assertTrue(isset($config->$key));
+
+        static::assertEquals(1, $config->$key);
+
+        unset($config->$key);
+
+        static::assertFalse(isset($config->$key));
+
+    }
+
+    public function testUnset2(): void
+    {
+        $config = new ArrayStorageClassTest;
+        $key = 'test.sub.key';
+
         $config->$key = 1;
 
         static::assertEquals(1, $config->$key);
 
         unset($config->$key);
 
+        static::assertFalse(isset($config->$key));
+
         $this->expectException(Notice::class);
         static::assertNull($config->$key);
 
         unset($config->{'tst.sdf'});
+
+        static::assertFalse(isset($config->{'tst.sdf'}));
 
         $this->expectException(Notice::class);
         static::assertNull($config->$key);
