@@ -15,7 +15,12 @@ trait ArrayStorage
     /** @var array */
     private $data = [];
 
-    private function propertyExists($name): bool
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function propertyExists(string $name): bool
     {
         return $name !== 'data' && property_exists($this, $name);
     }
@@ -31,16 +36,13 @@ trait ArrayStorage
             return $this->$name;
         }
 
-        if (array_key_exists($name, $this->data)) {
-            $val = Arr::get($this->data, $name);
-            return $this->data[$name];
+        if (Arr::has($this->data, $name)) {
+            return Arr::get($this->data, $name);
         }
 
         $trace = debug_backtrace();
         trigger_error(
-            'Undefined property in __get(): ' . $name .
-            ' in file ' . $trace[0]['file'] .
-            ' in line ' . $trace[0]['line'],
+            "Undefined property in __get(): $name in file {$trace[0]['file']} in line {$trace[0]['line']}",
             E_USER_NOTICE);
         return null;
     }
@@ -55,7 +57,7 @@ trait ArrayStorage
             $this->$name = $value;
         }
 
-        $this->data[$name] = $value;
+        Arr::set($this->data, $name, $value);
     }
 
     /**

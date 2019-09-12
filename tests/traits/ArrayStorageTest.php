@@ -40,22 +40,26 @@ final class ArrayStorageTest extends TestCase
         static::assertEquals('test', $config->{'upper.sad.as'});
     }
 
-    public function testUnset(): void
+    public function testGetData(): void
     {
         $config = new ArrayStorageClassTest;
-        $key = 'test.sub.key';
 
-        static::assertFalse(isset($config->$key));
+        $config->{'test.sub.key'} = 1;
+        $config->{'test.sub.val'} = 'value';
 
-        $config->$key = 1;
-        static::assertTrue(isset($config->$key));
+        $config->{'test.next'} = 'next value';
+        $expected = [
+            'test' => [
+                'sub' => [
+                    'key' => 1,
+                    'val' => 'value',
+                ],
+                'next' => 'next value',
+            ],
+        ];
 
-        static::assertEquals(1, $config->$key);
-
-        unset($config->$key);
-
-        static::assertFalse(isset($config->$key));
-
+        static::assertEquals($expected['test'], $config->test);
+        static::assertEquals($expected, $config->getData());
     }
 
     public function testUnset2(): void
