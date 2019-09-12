@@ -9,7 +9,7 @@
 
 ## Install
 ```bash
-composer require efureev/support "^2.0"
+composer require efureev/support "^2.2"
 ```
 
 ## Test

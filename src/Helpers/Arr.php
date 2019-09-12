@@ -244,6 +244,75 @@ class Arr
     }
 
     /**
+     * Check if an item or items exist in an array using "dot" notation.
+     *
+     * @param \ArrayAccess|array $array
+     * @param string|array $keys
+     *
+     * @return bool
+     */
+    public static function has($array, $keys): bool
+    {
+        $keys = (array)$keys;
+
+        if (!$array || $keys === []) {
+            return false;
+        }
+
+        foreach ($keys as $key) {
+            $subKeyArray = $array;
+
+            if (static::exists($array, $key)) {
+                continue;
+            }
+
+            foreach (explode('.', $key) as $segment) {
+                if (static::accessible($subKeyArray) && static::exists($subKeyArray, $segment)) {
+                    $subKeyArray = $subKeyArray[$segment];
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Set an array item to a given value using "dot" notation.
+     *
+     * If no key is given to the method, the entire array will be replaced.
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return array|null
+     */
+    public static function set(&$array, $key, $value): ?array
+    {
+        if ($key === null || $array === null) {
+            return $array;
+        }
+
+        $keys = explode('.', $key);
+
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+
+            if (!isset($array[$key]) || !is_array($array[$key])) {
+                $array[$key] = [];
+            }
+
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
+
+        return $array;
+    }
+
+    /**
      * Replace templates into array
      * Key = search value
      * Value = replace value

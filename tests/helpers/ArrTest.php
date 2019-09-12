@@ -522,6 +522,103 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
+    public function providerHas(): array
+    {
+        $array = [
+            'key' => ['sub1' => 'val1', 'sub2' => ['val2', 'val3'], 'sub4' => ['sub4sub' => 'val3']],
+            'key2' => 2,
+            'key4' => 1,
+        ];
+
+        return [
+            [true, $array, 'key2'],
+            [true, $array, 'key4'],
+            [false, $array, 'key3'],
+            [true, $array, 'key.sub1'],
+            [true, $array, 'key.sub2'],
+            [false, $array, 'key.sub12'],
+            [false, $array, null],
+            [false, null, null],
+            [false, null, []],
+            [false, null, 0],
+            [false, '', 0],
+
+            [true, $array, 'key.sub4.sub4sub'],
+            [false, $array, 'key.sub3.sub4sub'],
+        ];
+    }
+
+    /**
+     * @dataProvider providerHas
+     *
+     * @param $expVal
+     * @param $array
+     * @param $key
+     */
+    public function testHas($expVal, $array, $key): void
+    {
+        static::assertEquals($expVal, Arr::has($array, $key));
+    }
+
+    /**
+     * @return array
+     */
+    public function providerSet(): array
+    {
+        $array = [
+//            'key' => ['sub1' => 'val1', 'sub2' => ['val2', 'val3'], 'sub4' => ['sub4sub' => 'val3']],
+//            'key2' => 2,
+//            'key4' => 1,
+        ];
+
+        return [
+            [2, $array, 'key2'],
+            [1, $array, 'key4'],
+            ['val1', $array, 'key.sub1'],
+            [['val2', 'val3'], $array, 'key.sub2'],
+            ['val3', $array, 'key.sub4.sub4sub'],
+            [null, $array, 'key.sub3.sub4sub'],
+            ['val3', new ArrayObject($array), 'key.sub4.sub4sub'],
+
+            [$array, $array, null],
+
+            [null, $array, 'key3'],
+
+//            [null, 1, '1'],
+//            [null, 1, '2'],
+            [null, null, '2'],
+            [$array, $array, null],
+
+        ];
+    }
+
+    /**
+     * @dataProvider providerSet
+     *
+     * @param $expVal
+     * @param $array
+     * @param $key
+     * @param $val
+     */
+    public function testSet($expVal, $array, $key): void
+    {
+        Arr::set($array, $key, $expVal);
+
+        static::assertEquals($expVal, Arr::get($array, $key));
+    }
+
+    public function testSet2(): void
+    {
+        $array = null;
+        static::assertNull(Arr::set($array, null, 1));
+
+        $array = [];
+        static::assertEquals($array, Arr::set($array, null, 1));
+    }
+
+    /**
+     * @return array
+     */
     public function dataReplaceByTemplate(): array
     {
         return [

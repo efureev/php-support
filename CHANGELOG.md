@@ -3,16 +3,21 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
+## v2.2.0
+
+### Added
+- Add function `has` to `Array` Helper
+- Add function `set` to `Array` Helper
 
 ## v2.1.1
 
 ### Added
-- Add trait Maker:
+- Add trait Maker
 
 ## v2.1.0
 
 ### Added
-- Add trait Metable:
+- Add trait Metable
 
 ## v2.0.5
 
