@@ -575,10 +575,8 @@ final class ArrTest extends TestCase
             ['val3', $array, 'key.sub4.sub4sub'],
             [null, $array, 'key.sub3.sub4sub'],
             ['val3', new ArrayObject($array), 'key.sub4.sub4sub'],
-            [$array, $array, null],
             [null, $array, 'key3'],
             [null, null, '2'],
-            [$array, $array, null],
 
         ];
     }
@@ -601,10 +599,10 @@ final class ArrTest extends TestCase
     public function testSet2(): void
     {
         $array = null;
-        static::assertNull(Arr::set($array, null, 1));
+        static::assertNull(Arr::set($array, '', 1));
 
         $array = [];
-        static::assertEquals($array, Arr::set($array, null, 1));
+        static::assertEquals(['' => 1], Arr::set($array, '', 1));
     }
 
     /**

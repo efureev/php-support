@@ -283,15 +283,15 @@ class Arr
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param array $array
+     * @param ?array $array
      * @param string $key
      * @param mixed $value
      *
      * @return array|null
      */
-    public static function set(&$array, $key, $value): ?array
+    public static function set(&$array, string $key, $value): ?array
     {
-        if ($key === null || $array === null) {
+        if ($array === null) {
             return $array;
         }
 
