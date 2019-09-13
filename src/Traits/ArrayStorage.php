@@ -20,7 +20,7 @@ trait ArrayStorage
      *
      * @return bool
      */
-    private function propertyExists(string $name): bool
+    protected function propertyExists(string $name): bool
     {
         return $name !== 'data' && property_exists($this, $name);
     }
@@ -31,6 +31,16 @@ trait ArrayStorage
      * @return mixed|null
      */
     public function __get(string $name)
+    {
+        return $this->get($name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function get(string $name)
     {
         if ($this->propertyExists($name)) {
             return $this->$name;
@@ -52,6 +62,15 @@ trait ArrayStorage
      * @param mixed $value
      */
     public function __set(string $name, $value): void
+    {
+        $this->set($name, $value);
+    }
+
+    /**
+     * @param string $name
+     * @param $value
+     */
+    public function set(string $name, $value): void
     {
         if ($this->propertyExists($name)) {
             $this->$name = $value;

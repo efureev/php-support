@@ -31,19 +31,41 @@ trait ConfigurableTrait
 
     /**
      * @param string $key
+     * @param $value
+     *
+     * @return bool
+     */
+    protected function applyValue(string $key, $value): bool
+    {
+        return $this->setProp($key, $value) || $this->callMethod($key, $value);
+    }
+
+    /**
+     * @param string $key
      * @param        $value
+     * @param callable|null $fn
      *
      * @return bool
      */
     protected function setProp(string $key, $value): bool
     {
-        if (property_exists($this, $key)) {
+        if ($this->propertyExists($key)) {
             $this->{$key} = $value;
-
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * @param string $key
+     * @param callable|null $func
+     *
+     * @return bool
+     */
+    protected function propertyExists(string $key): bool
+    {
+        return property_exists($this, $key);
     }
 
     /**
@@ -60,16 +82,5 @@ trait ConfigurableTrait
             return true;
         }
         return false;
-    }
-
-    /**
-     * @param string $key
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function applyValue(string $key, $value): bool
-    {
-        return $this->setProp($key, $value) || $this->callMethod($key, $value);
     }
 }

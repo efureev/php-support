@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\TestCase;
+use Sitesoft\Hub\Modules\Entity\ModuleConfig;
 
 /**
  * Class ArrayStorageTest

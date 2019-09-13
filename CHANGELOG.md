@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
+## v2.2.3
+
+### Added
+- Add trait `ArrayStorageConfigurableTrait`
+
+## v2.2.2
+
+### Added
+- Fix CI
+
 ## v2.2.0
 
 ### Added
