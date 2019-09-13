@@ -51,7 +51,6 @@ matrix:
       env: setup=lowest
     - php: 7.4
       env: setup=stable
-    - php: 7.4
 
     - php: nightly
 
