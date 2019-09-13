@@ -23,6 +23,7 @@ class MissingConfigException extends ConfigException
     public function __construct($config = null, $needKey = null, $message = 'Missing Config')
     {
         $this->needKey = $needKey;
-        parent::__construct($config, $message);
+
+        parent::__construct($message, $config);
     }
 }

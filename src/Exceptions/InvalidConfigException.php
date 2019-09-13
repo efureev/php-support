@@ -18,6 +18,6 @@ class InvalidConfigException extends ConfigException
      */
     public function __construct($config = null, $message = 'Invalid Configuration')
     {
-        parent::__construct($config, $message);
+        parent::__construct($message, $config);
     }
 }
