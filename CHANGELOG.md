@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
+## v2.2.4
+
+### Added
+- Add functionality to trait `ArrayStorage`: now it implements `ArrayAccess`
+
 ## v2.2.3
 
 ### Added

@@ -9,8 +9,9 @@ use Php\Support\Helpers\Arr;
  * Class ArrayStorage
  *
  * @package Php\Support\Traits
+ * @mixin \ArrayAccess
  */
-trait ArrayStorage
+trait ArrayStorage // implements ArrayAccess
 {
     /** @var array */
     private $data = [];
@@ -23,6 +24,16 @@ trait ArrayStorage
     protected function propertyExists(string $name): bool
     {
         return $name !== 'data' && property_exists($this, $name);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function valueExists(string $name): bool
+    {
+        return $this->propertyExists($name) || Arr::has($this->data, $name);
     }
 
     /**
@@ -109,5 +120,54 @@ trait ArrayStorage
     public function getData(): array
     {
         return $this->data;
+    }
+
+    /**
+     * Determine if an item exists at an offset.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function offsetExists($key): bool
+    {
+        return $this->valueExists($key);
+    }
+
+    /**
+     * Get an item at a given offset.
+     *
+     * @param mixed $key
+     *
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /**
+     * Set the item at a given offset.
+     *
+     * @param mixed $key
+     * @param mixed $value
+     *
+     * @return void
+     */
+    public function offsetSet($key, $value): void
+    {
+        $this->set($key, $value);
+    }
+
+    /**
+     * Unset the item at a given offset.
+     *
+     * @param string $key
+     *
+     * @return void
+     */
+    public function offsetUnset($key): void
+    {
+        unset($this->$key);
     }
 }

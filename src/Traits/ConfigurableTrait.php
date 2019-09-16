@@ -13,12 +13,12 @@ use Php\Support\Exceptions\InvalidParamException;
 trait ConfigurableTrait
 {
     /**
-     * @param array $attributes
+     * @param array|\ArrayAccess $attributes
      * @param bool $exceptOnMiss
      *
      * @return $this
      */
-    public function configurable(array $attributes, ?bool $exceptOnMiss = true): self
+    public function configurable($attributes, ?bool $exceptOnMiss = true): self
     {
         foreach ($attributes as $key => $value) {
             if (!$this->applyValue($key, $value) && $exceptOnMiss) {

@@ -118,12 +118,87 @@ final class ArrayStorageTest extends TestCase
         static::assertFalse(isset($config->{'nullable.one.1'}));
     }
 
+    public function testValueExist(): void
+    {
+        $config = new ArrayStorageClassTest;
+
+        $config->test = 'test2';
+
+        static::assertTrue($config->valueExists('name'));
+        static::assertTrue($config->valueExists('test'));
+        static::assertFalse($config->valueExists('data'));
+        static::assertFalse($config->valueExists('test2'));
+        unset($config->test);
+
+        static::assertFalse($config->valueExists('test'));
+    }
+
+
+    public function testOffsetExists(): void
+    {
+        $config = new ArrayStorageClassTest;
+        $config->test2 = 'test2';
+
+        static::assertTrue($config->offsetExists('test2'));
+        static::assertTrue(isset($config['test2']));
+
+        $config->null = null;
+        static::assertTrue($config->offsetExists('null'));
+        static::assertFalse($config->offsetExists('null2'));
+    }
+
+    public function testOffsetGet(): void
+    {
+        $config = new ArrayStorageClassTest;
+        $config->test2 = 'test2';
+
+        static::assertEquals('test2', $config->offsetGet('test2'));
+        static::assertEquals('test2', $config['test2']);
+
+        $config->null = null;
+        static::assertNull($config['null']);
+
+        $this->expectException(Notice::class);
+        static::assertNull($config['null2']);
+    }
+
+    public function testOffsetSet(): void
+    {
+        $config = new ArrayStorageClassTest;
+        $config['test2'] = 'val2';
+
+        static::assertEquals('val2', $config->test2);
+        static::assertEquals('val2', $config->offsetGet('test2'));
+        static::assertEquals('val2', $config['test2']);
+
+        $config['null'] = null;
+        static::assertNull($config['null']);
+
+        $this->expectException(Notice::class);
+        static::assertNull($config['null2']);
+    }
+
+    public function testOffsetUnset(): void
+    {
+        $config = new ArrayStorageClassTest;
+        $config['test2'] = 'val2';
+
+        static::assertEquals('val2', $config->test2);
+        static::assertEquals('val2', $config->offsetGet('test2'));
+        static::assertEquals('val2', $config['test2']);
+
+        unset($config['test2']);
+
+        $this->expectException(Notice::class);
+        static::assertNull($config['test2']);
+    }
+
 }
 
 /**
  * Class ArrayStorageClassTest
  */
-class ArrayStorageClassTest
+class ArrayStorageClassTest implements ArrayAccess
 {
     use \Php\Support\Traits\ArrayStorage;
 
