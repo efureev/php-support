@@ -11,7 +11,7 @@ use Php\Support\Helpers\Arr;
  * @package Php\Support\Traits
  * @mixin \ArrayAccess
  */
-trait ArrayStorage // implements ArrayAccess
+trait ArrayStorage // implements ArrayAccess, Arrayable
 {
     /** @var array */
     private $data = [];
@@ -169,5 +169,13 @@ trait ArrayStorage // implements ArrayAccess
     public function offsetUnset($key): void
     {
         unset($this->$key);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->getData();
     }
 }
