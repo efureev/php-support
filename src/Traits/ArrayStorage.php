@@ -181,6 +181,14 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     }
 
     /**
+     * @return int
+     */
+    public function count(): int
+    {
+        return count($this->getData());
+    }
+
+    /**
      * @return string
      * @throws \Php\Support\Exceptions\JsonException
      */
