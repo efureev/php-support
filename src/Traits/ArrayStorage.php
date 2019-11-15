@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Php\Support\Traits;
 
 use Php\Support\Helpers\Arr;
+use Php\Support\Helpers\Json;
 
 /**
  * Class ArrayStorage
@@ -11,7 +12,7 @@ use Php\Support\Helpers\Arr;
  * @package Php\Support\Traits
  * @mixin \ArrayAccess
  */
-trait ArrayStorage // implements ArrayAccess, Arrayable
+trait ArrayStorage  // implements ArrayAccess, Arrayable
 {
     /** @var array */
     private $data = [];
@@ -177,5 +178,14 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
     public function toArray(): array
     {
         return $this->getData();
+    }
+
+    /**
+     * @return string
+     * @throws \Php\Support\Exceptions\JsonException
+     */
+    public function __toString(): string
+    {
+        return (string)Json::encode($this->toArray());
     }
 }
