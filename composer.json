@@ -45,7 +45,6 @@
       "@phpunit"
     ],
     "test-cover": [
-      "@phpstan",
       "@phpunit-cover"
     ]
   }
