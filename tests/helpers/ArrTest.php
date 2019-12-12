@@ -97,8 +97,7 @@ final class ArrTest extends TestCase
 
     public function providerDataToArray(): array
     {
-        $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable
-        {
+        $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable {
             private $data = ['1', 2, 'test'];
 
             public function toArray(): array
@@ -107,8 +106,7 @@ final class ArrTest extends TestCase
             }
 
         };
-        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable
-        {
+        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = ['32', 12, 'test'];
 
             public static function fromJson(string $json): ?Jsonable
@@ -151,8 +149,7 @@ final class ArrTest extends TestCase
             ],
             [$arrayableClass, ['1', 2, 'test']],
             [$jsonableClass, ['32', 12, 'test']],
-            [new class () implements \JsonSerializable
-            {
+            [new class () implements \JsonSerializable {
                 private $data = ['132', 12, 'test'];
 
                 public function jsonSerialize()
@@ -185,8 +182,7 @@ final class ArrTest extends TestCase
      */
     public function providerToArray(): array
     {
-        $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable
-        {
+        $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable {
             private $data = ['1', 2, 'test'];
 
             public function toArray(): array
@@ -195,8 +191,7 @@ final class ArrTest extends TestCase
             }
 
         };
-        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable
-        {
+        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = ['32', 12, 'test'];
 
             public static function fromJson(string $json): ?Jsonable
@@ -219,8 +214,7 @@ final class ArrTest extends TestCase
             ['test', ['test']],
             [$arrayableClass, ['1', 2, 'test']],
             [$jsonableClass, ['32', 12, 'test']],
-            [new class () implements \JsonSerializable
-            {
+            [new class () implements \JsonSerializable {
                 private $data = ['132', 12, 'test'];
 
                 public function jsonSerialize()
@@ -263,8 +257,7 @@ final class ArrTest extends TestCase
         static::assertFalse(Arr::accessible(12.3));
         static::assertFalse(Arr::accessible(function () {
         }));
-        static::assertFalse(Arr::accessible(new class()
-        {
+        static::assertFalse(Arr::accessible(new class() {
         }));
         static::assertFalse(Arr::accessible(new \stdClass));
     }
@@ -372,6 +365,16 @@ final class ArrTest extends TestCase
             '',
             null,
         ]));
+
+        static::assertEquals('{}', Arr::ToPostgresArray([]));
+    }
+
+
+    public function testFromPostgresArray(): void
+    {
+        static::assertEquals(['val1', 'test', 'null', '', 'null',], Arr::fromPostgresArray('{val1,test,null,,null}'));
+        static::assertEquals(['val1', '1', '', '3', 'null', '', 'null',], Arr::fromPostgresArray('{val1,1,,3,null,,null}'));
+        static::assertEquals([], Arr::fromPostgresArray('{}'));
     }
 
     /**
