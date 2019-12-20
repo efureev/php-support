@@ -29,6 +29,17 @@ trait Metable
     }
 
     /**
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public function metaAttribute(string $key, $default = null)
+    {
+        return Arr::get($this->meta, $key, $default);
+    }
+
+    /**
      * Set additional meta information for the element.
      *
      * @param array $meta
