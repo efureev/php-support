@@ -17,6 +17,11 @@ if (!function_exists('value')) {
 }
 
 if (!function_exists('classNamespace')) {
+    /**
+     * @param object|string $class
+     *
+     * @return string
+     */
     function classNamespace($class): string
     {
         if (is_object($class)) {
