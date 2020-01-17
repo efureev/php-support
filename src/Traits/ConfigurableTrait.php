@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Traits;
 
+use ArrayAccess;
 use Php\Support\Exceptions\InvalidParamException;
 
 /**
@@ -13,7 +14,7 @@ use Php\Support\Exceptions\InvalidParamException;
 trait ConfigurableTrait
 {
     /**
-     * @param array|\ArrayAccess $attributes
+     * @param array|ArrayAccess $attributes
      * @param bool $exceptOnMiss
      *
      * @return $this

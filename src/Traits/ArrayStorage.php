@@ -1,8 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Php\Support\Traits;
 
+use ArrayAccess;
+use Php\Support\Exceptions\JsonException;
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 
@@ -10,32 +13,12 @@ use Php\Support\Helpers\Json;
  * Class ArrayStorage
  *
  * @package Php\Support\Traits
- * @mixin \ArrayAccess
+ * @mixin ArrayAccess
  */
-trait ArrayStorage  // implements ArrayAccess, Arrayable
+trait ArrayStorage // implements ArrayAccess, Arrayable
 {
     /** @var array */
     private $data = [];
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    protected function propertyExists(string $name): bool
-    {
-        return $name !== 'data' && property_exists($this, $name);
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function valueExists(string $name): bool
-    {
-        return $this->propertyExists($name) || Arr::has($this->data, $name);
-    }
 
     /**
      * @param string $name
@@ -45,6 +28,15 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     public function __get(string $name)
     {
         return $this->get($name);
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     */
+    public function __set(string $name, $value): void
+    {
+        $this->set($name, $value);
     }
 
     /**
@@ -65,17 +57,19 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
         $trace = debug_backtrace();
         trigger_error(
             "Undefined property in __get(): $name in file {$trace[0]['file']} in line {$trace[0]['line']}",
-            E_USER_NOTICE);
+            E_USER_NOTICE
+        );
         return null;
     }
 
     /**
      * @param string $name
-     * @param mixed $value
+     *
+     * @return bool
      */
-    public function __set(string $name, $value): void
+    protected function propertyExists(string $name): bool
     {
-        $this->set($name, $value);
+        return $name !== 'data' && property_exists($this, $name);
     }
 
     /**
@@ -116,14 +110,6 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     }
 
     /**
-     * @return array
-     */
-    public function getData(): array
-    {
-        return $this->data;
-    }
-
-    /**
      * Determine if an item exists at an offset.
      *
      * @param string $key
@@ -133,6 +119,16 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     public function offsetExists($key): bool
     {
         return $this->valueExists($key);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function valueExists(string $name): bool
+    {
+        return $this->propertyExists($name) || Arr::has($this->data, $name);
     }
 
     /**
@@ -173,14 +169,6 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     }
 
     /**
-     * @return array
-     */
-    public function toArray(): array
-    {
-        return $this->getData();
-    }
-
-    /**
      * @return int
      */
     public function count(): int
@@ -189,11 +177,27 @@ trait ArrayStorage  // implements ArrayAccess, Arrayable
     }
 
     /**
+     * @return array
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @return string
-     * @throws \Php\Support\Exceptions\JsonException
+     * @throws JsonException
      */
     public function __toString(): string
     {
         return (string)Json::encode($this->toArray());
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return $this->getData();
     }
 }

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace Php\Support\Traits;
+
 /**
  * Trait ConsolePrint
  * @package Php\Support\Traits

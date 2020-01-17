@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Php\Support\Helpers;
 
 use Php\Support\Exceptions\JsonException;
+
 use function json_decode;
 use function json_encode;
 
@@ -27,7 +28,10 @@ class Json
      */
     public static function htmlEncode($value): ?string
     {
-        return static::encode($value, JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS);
+        return static::encode(
+            $value,
+            JSON_UNESCAPED_UNICODE | JSON_HEX_QUOT | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS
+        );
     }
 
     /**
@@ -47,9 +51,12 @@ class Json
     public static function encode($value, $options = 320): ?string
     {
         $value = Arr::dataToArray($value);
-        set_error_handler(static function () {
-            static::handleJsonError(JSON_ERROR_SYNTAX);
-        }, E_WARNING);
+        set_error_handler(
+            static function () {
+                static::handleJsonError(JSON_ERROR_SYNTAX);
+            },
+            E_WARNING
+        );
         $json = json_encode($value, $options);
         restore_error_handler();
         static::handleJsonError(json_last_error());
@@ -82,7 +89,7 @@ class Json
      */
     public static function decode(?string $json, $asArray = true)
     {
-        if (null === $json || $json === '') {
+        if ($json === null || $json === '') {
             return null;
         }
         $decode = json_decode($json, $asArray);

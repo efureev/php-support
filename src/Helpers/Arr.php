@@ -6,6 +6,7 @@ namespace Php\Support\Helpers;
 
 use ArrayAccess;
 use JsonSerializable;
+use Php\Support\Exceptions\JsonException;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
 use Traversable;
@@ -43,22 +44,30 @@ class Arr
      * @param mixed $items
      *
      * @return array
-     * @throws \Php\Support\Exceptions\JsonException
+     * @throws JsonException
      */
     public static function toArray($items): array
     {
         if (is_array($items)) {
             $res = $items;
-        } else if ($items instanceof Arrayable) {
-            $res = $items->toArray();
-        } else if ($items instanceof Jsonable) {
-            $res = Json::decode($items->toJson());
-        } else if ($items instanceof JsonSerializable) {
-            $res = $items->jsonSerialize();
-        } else if ($items instanceof Traversable) {
-            $res = iterator_to_array($items);
         } else {
-            $res = (array)$items;
+            if ($items instanceof Arrayable) {
+                $res = $items->toArray();
+            } else {
+                if ($items instanceof Jsonable) {
+                    $res = Json::decode($items->toJson());
+                } else {
+                    if ($items instanceof JsonSerializable) {
+                        $res = $items->jsonSerialize();
+                    } else {
+                        if ($items instanceof Traversable) {
+                            $res = iterator_to_array($items);
+                        } else {
+                            $res = (array)$items;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -71,7 +80,7 @@ class Arr
      * @param mixed $items
      *
      * @return array|mixed|null
-     * @throws \Php\Support\Exceptions\JsonException
+     * @throws JsonException
      */
     public static function dataToArray($items)
     {
@@ -86,16 +95,18 @@ class Arr
 
             if ($items instanceof Arrayable) {
                 $items = $items->toArray();
-            } else if ($items instanceof Traversable) {
-                $items = iterator_to_array($items);
             } else {
-                $result = [];
-                if (is_iterable($items)) {
-                    foreach ($items as $name => $value) {
-                        $result[$name] = $value;
+                if ($items instanceof Traversable) {
+                    $items = iterator_to_array($items);
+                } else {
+                    $result = [];
+                    if (is_iterable($items)) {
+                        foreach ($items as $name => $value) {
+                            $result[$name] = $value;
+                        }
                     }
+                    $items = $result;
                 }
-                $items = $result;
             }
         }
 
@@ -110,36 +121,6 @@ class Arr
         }
 
         return $items;
-    }
-
-
-    /**
-     * Determine whether the given value is array accessible.
-     *
-     * @param mixed $value
-     *
-     * @return bool
-     */
-    public static function accessible($value): bool
-    {
-        return is_array($value) || $value instanceof ArrayAccess;
-    }
-
-    /**
-     * Determine if the given key exists in the provided array.
-     *
-     * @param ArrayAccess|array $array
-     * @param string|int $key
-     *
-     * @return bool
-     */
-    public static function exists($array, $key): bool
-    {
-        if ($array instanceof ArrayAccess) {
-            return $array->offsetExists($key);
-        }
-
-        return array_key_exists($key, $array);
     }
 
     /**
@@ -159,10 +140,12 @@ class Arr
                 } else {
                     $res[$key] = $val;
                 }
-            } else if (is_array($val) && isset($res[$key]) && is_array($res[$key])) {
-                $res[$key] = ($replaceArray ? $val : self::merge($res[$key], $val, $replaceArray));
             } else {
-                $res[$key] = $val;
+                if (is_array($val) && isset($res[$key]) && is_array($res[$key])) {
+                    $res[$key] = ($replaceArray ? $val : self::merge($res[$key], $val, $replaceArray));
+                } else {
+                    $res[$key] = $val;
+                }
             }
         }
 
@@ -175,7 +158,7 @@ class Arr
      * @param array $array
      *
      * @return string
-     * @throws \Php\Support\Exceptions\JsonException
+     * @throws JsonException
      */
     public static function toPostgresArray(array $array): string
     {
@@ -184,72 +167,6 @@ class Arr
         }
 
         return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
-    }
-
-    /**
-     * Load from PG array to PHP array
-     *
-     * @param string|null $s
-     * @param int $start
-     * @param null $end
-     *
-     * @return array
-     */
-    public static function fromPostgresArray(?string $s, $start = 0, &$end = null): array
-    {
-        if (empty($s) || $s[0] !== '{') {
-            return [];
-        }
-
-        $return = [];
-        $string = false;
-        $quote = '';
-        $len = strlen($s);
-        $v = '';
-
-        for ($i = $start + 1; $i < $len; $i++) {
-            $ch = $s[$i];
-            if (!$string && $ch === '}') {
-                if ($v !== '' || !empty($return)) {
-                    $return[] = $v;
-                }
-                $end = $i;
-                break;
-            } else {
-                if (!$string && $ch === '{') {
-                    $v = self::fromPostgresArray($s, $i, $i);
-                } else
-                    if (!$string && $ch === ',') {
-                        $return[] = $v;
-                        $v = '';
-                    } else
-                        if (!$string && ($ch === '"' || $ch === "'")) {
-                            $string = true;
-                            $quote = $ch;
-                        } else
-                            if ($string && $ch === $quote) {
-                                if ($s[$i - 1] === "\\") {
-                                    $v = substr($v, 0, -1) . $ch;
-                                } else {
-                                    $string = false;
-                                }
-                            } else {
-                                $v .= $ch;
-                            }
-            }
-        }
-
-        foreach ($return as &$r) {
-            if (is_numeric($r)) {
-                if (ctype_digit((string)$r)) {
-                    $r = (int)$r;
-                } else {
-                    $r = (float)$r;
-                }
-            }
-        }
-
-        return $return;
     }
 
     /**
@@ -269,6 +186,75 @@ class Arr
         }
 
         return $array;
+    }
+
+    /**
+     * Load from PG array to PHP array
+     *
+     * @param string|null $s
+     * @param int $start
+     * @param null $end
+     *
+     * @return array
+     */
+    public static function fromPostgresArray(?string $s, $start = 0, &$end = null): array
+    {
+        if (empty($s) || $s[0] !== '{') {
+            return [];
+        }
+
+        $return = [];
+        $string = false;
+        $quote  = '';
+        $len    = strlen($s);
+        $v      = '';
+
+        for ($i = $start + 1; $i < $len; $i++) {
+            $ch = $s[$i];
+            if (!$string && $ch === '}') {
+                if ($v !== '' || !empty($return)) {
+                    $return[] = $v;
+                }
+                $end = $i;
+                break;
+            } else {
+                if (!$string && $ch === '{') {
+                    $v = self::fromPostgresArray($s, $i, $i);
+                } else {
+                    if (!$string && $ch === ',') {
+                        $return[] = $v;
+                        $v        = '';
+                    } else {
+                        if (!$string && ($ch === '"' || $ch === "'")) {
+                            $string = true;
+                            $quote  = $ch;
+                        } else {
+                            if ($string && $ch === $quote) {
+                                if ($s[$i - 1] === "\\") {
+                                    $v = substr($v, 0, -1) . $ch;
+                                } else {
+                                    $string = false;
+                                }
+                            } else {
+                                $v .= $ch;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($return as &$r) {
+            if (is_numeric($r)) {
+                if (ctype_digit((string)$r)) {
+                    $r = (int)$r;
+                } else {
+                    $r = (float)$r;
+                }
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -310,9 +296,38 @@ class Arr
     }
 
     /**
+     * Determine whether the given value is array accessible.
+     *
+     * @param mixed $value
+     *
+     * @return bool
+     */
+    public static function accessible($value): bool
+    {
+        return is_array($value) || $value instanceof ArrayAccess;
+    }
+
+    /**
+     * Determine if the given key exists in the provided array.
+     *
+     * @param ArrayAccess|array $array
+     * @param string|int $key
+     *
+     * @return bool
+     */
+    public static function exists($array, $key): bool
+    {
+        if ($array instanceof ArrayAccess) {
+            return $array->offsetExists($key);
+        }
+
+        return array_key_exists($key, $array);
+    }
+
+    /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param \ArrayAccess|array $array
+     * @param ArrayAccess|array $array
      * @param string|array $keys
      *
      * @return bool
@@ -389,7 +404,7 @@ class Arr
     public static function remove(&$array, $keys): void
     {
         $original = &$array;
-        $keys = (array)$keys;
+        $keys     = (array)$keys;
 
         if (count($keys) === 0) {
             return;
@@ -453,8 +468,10 @@ class Arr
     {
         if (is_array($item)) {
             $item = self::replaceByTemplate($item, $replace);
-        } else if (is_string($item)) {
-            $item = Str::replaceByTemplate($item, $replace);
+        } else {
+            if (is_string($item)) {
+                $item = Str::replaceByTemplate($item, $replace);
+            }
         }
 
         return $item;

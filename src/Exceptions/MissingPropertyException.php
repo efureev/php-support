@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Php\Support\Exceptions;
@@ -23,7 +24,10 @@ class MissingPropertyException extends ConfigException
     public function __construct(?string $message = null, ?string $property = null, $config = null)
     {
         $this->property = $property;
-        parent::__construct($message ?? ($this->getName() . ($this->property ? ': "' . $this->property . '"' : '')), $config);
+        parent::__construct(
+            $message ?? ($this->getName() . ($this->property ? ': "' . $this->property . '"' : '')),
+            $config
+        );
     }
 
     /**

@@ -8,3 +8,5 @@ composer.lock
 /storage
 /vendor
 clover.xml
+
+/.git-hooks

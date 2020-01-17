@@ -8,6 +8,7 @@ use Php\Support\Exceptions\Exception;
 
 /**
  * Trait Singleton
+ *
  * @package Php\Support\Traits
  */
 trait Singleton
@@ -31,7 +32,7 @@ trait Singleton
     {
         $cls = static::class;
         if (!isset(static::$instances[$cls])) {
-            static::$instances[$cls] = new static;
+            static::$instances[$cls] = new static();
         }
 
         return static::$instances[$cls];

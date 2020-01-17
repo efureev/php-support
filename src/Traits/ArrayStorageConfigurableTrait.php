@@ -6,6 +6,7 @@ namespace Php\Support\Traits;
 
 /**
  * Trait ArrayStorageConfigurableTrait
+ *
  * @package Php\Support\Traits
  */
 trait ArrayStorageConfigurableTrait
@@ -26,5 +27,4 @@ trait ArrayStorageConfigurableTrait
 
         return true;
     }
-
 }
