@@ -15,3 +15,14 @@ if (!function_exists('value')) {
             : $value;
     }
 }
+
+if (!function_exists('classNamespace')) {
+    function classNamespace($class): string
+    {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
+        return implode('\\', array_slice(explode("\\", $class), 0, -1));
+    }
+}
