@@ -19,7 +19,7 @@ trait ConfigurableTrait
      *
      * @return $this
      */
-    public function configurable($attributes, ?bool $exceptOnMiss = true): self
+    public function configurable($attributes, ?bool $exceptOnMiss = true)
     {
         foreach ($attributes as $key => $value) {
             if (!$this->applyValue($key, $value) && $exceptOnMiss) {
