@@ -11,7 +11,7 @@
 
 ## Install
 ```bash
-composer require efureev/support "^2.2"
+composer require efureev/support "^2.5"
 ```
 
 ## Test
