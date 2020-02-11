@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -22,8 +23,8 @@ final class ConsolePrint extends TestCase
         $this->assertEquals($str1, Intercept::$cache);
 
         $array = [
-            'key' => 'value',
-            'int' => 323,
+            'key'   => 'value',
+            'int'   => 323,
             'float' => 3.12,
         ];
 
@@ -50,7 +51,7 @@ final class ConsolePrint extends TestCase
 
     private function cls()
     {
-        return new class()
+        return new class ()
         {
             use \Php\Support\Traits\ConsolePrint;
         };
@@ -76,7 +77,7 @@ class Intercept extends \php_user_filter
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
             self::$cache = $bucket->data;
-            $consumed += $bucket->datalen;
+            $consumed   += $bucket->datalen;
             stream_bucket_append($out, $bucket);
         }
 

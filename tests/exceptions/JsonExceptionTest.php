@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Php\Support\Exceptions\JsonException;
@@ -18,7 +19,7 @@ final class JsonExceptionTest extends TestCase
         $this->expectExceptionMessage('Unknown JSON encoding/decoding error');
         $this->expectExceptionCode(JsonException::UNKNOWN_ERROR);
 
-        throw new JsonException;
+        throw new JsonException();
     }
 
     /**

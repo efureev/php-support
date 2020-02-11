@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -40,6 +41,7 @@ class MakerClassTest
 class MakerArgClassTest
 {
     use \Php\Support\Traits\Maker;
+
     public $public;
 
     /**

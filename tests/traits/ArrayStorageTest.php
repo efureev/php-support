@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\Error\Notice;
@@ -12,7 +13,7 @@ final class ArrayStorageTest extends TestCase
 {
     public function testSetAndGet(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
         $config->name = 'test';
         static::assertEquals('test', $config->name);
@@ -29,8 +30,8 @@ final class ArrayStorageTest extends TestCase
 
     public function testDeepData(): void
     {
-        $config = new ArrayStorageClassTest;
-        $key = 'test.sub.key';
+        $config = new ArrayStorageClassTest();
+        $key    = 'test.sub.key';
 
         $config->$key = 1;
 
@@ -43,7 +44,7 @@ final class ArrayStorageTest extends TestCase
 
     public function testGetData(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
         $config->{'test.sub.key'} = 1;
         $config->{'test.sub.val'} = 'value';
@@ -51,7 +52,7 @@ final class ArrayStorageTest extends TestCase
         $config->{'test.next'} = 'next value';
         $expected = [
             'test' => [
-                'sub' => [
+                'sub'  => [
                     'key' => 1,
                     'val' => 'value',
                 ],
@@ -65,14 +66,14 @@ final class ArrayStorageTest extends TestCase
 
     public function testUnset(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
         $config->name = 'name';
         unset($config->name);
         static::assertTrue(isset($config->name));
         static::assertNull($config->name);
 
-        $key = 'test.sub.key';
+        $key          = 'test.sub.key';
         $config->$key = 1;
 
         static::assertEquals(1, $config->$key);
@@ -81,28 +82,28 @@ final class ArrayStorageTest extends TestCase
 
         static::assertFalse(isset($config->$key));
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config->$key);
 
         unset($config->{'tst.sdf'});
 
         static::assertFalse(isset($config->{'tst.sdf'}));
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config->$key);
     }
 
     public function testAbsent(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config->test);
     }
 
     public function testIsset(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
         static::assertFalse(isset($config->test));
 
@@ -120,7 +121,7 @@ final class ArrayStorageTest extends TestCase
 
     public function testValueExist(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config = new ArrayStorageClassTest();
 
         $config->test = 'test2';
 
@@ -136,7 +137,7 @@ final class ArrayStorageTest extends TestCase
 
     public function testOffsetExists(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config        = new ArrayStorageClassTest();
         $config->test2 = 'test2';
 
         static::assertTrue($config->offsetExists('test2'));
@@ -149,7 +150,7 @@ final class ArrayStorageTest extends TestCase
 
     public function testOffsetGet(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config        = new ArrayStorageClassTest();
         $config->test2 = 'test2';
 
         static::assertEquals('test2', $config->offsetGet('test2'));
@@ -158,13 +159,13 @@ final class ArrayStorageTest extends TestCase
         $config->null = null;
         static::assertNull($config['null']);
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config['null2']);
     }
 
     public function testOffsetSet(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config          = new ArrayStorageClassTest();
         $config['test2'] = 'val2';
 
         static::assertEquals('val2', $config->test2);
@@ -174,13 +175,13 @@ final class ArrayStorageTest extends TestCase
         $config['null'] = null;
         static::assertNull($config['null']);
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config['null2']);
     }
 
     public function testOffsetUnset(): void
     {
-        $config = new ArrayStorageClassTest;
+        $config          = new ArrayStorageClassTest();
         $config['test2'] = 'val2';
 
         static::assertEquals('val2', $config->test2);
@@ -189,10 +190,9 @@ final class ArrayStorageTest extends TestCase
 
         unset($config['test2']);
 
-        $this->expectException(Notice::class);
+        $this->expectNotice();
         static::assertNull($config['test2']);
     }
-
 }
 
 /**

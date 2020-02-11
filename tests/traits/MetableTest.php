@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -10,10 +11,10 @@ final class MetableTest extends TestCase
 {
     public function testBase(): void
     {
-        $instance = new MetableClassTest;
+        $instance = new MetableClassTest();
 
         $meta = [
-            'key' => 'val',
+            'key'  => 'val',
             '2key' => 'val2',
         ];
         $instance->withMeta($meta);
@@ -21,33 +22,36 @@ final class MetableTest extends TestCase
         static::assertEquals($instance->meta(), $meta);
 
         $meta = [
-            'key' => 'val2',
-            'array' => null,
+            'key'    => 'val2',
+            'array'  => null,
             'key333' => '3',
         ];
 
         $instance->withMeta($meta);
 
 
-        static::assertEquals($instance->meta(), [
-            'key' => 'val2',
-            'array' => null,
-            '2key' => 'val2',
-            'key333' => '3',
-        ]);
+        static::assertEquals(
+            $instance->meta(),
+            [
+                'key'    => 'val2',
+                'array'  => null,
+                '2key'   => 'val2',
+                'key333' => '3',
+            ]
+        );
     }
 
     public function testRecursive(): void
     {
-        $instance = new MetableClassTest;
+        $instance = new MetableClassTest();
 
         $meta = [
-            'key' => 'val',
+            'key'   => 'val',
             'array' => [
-                'sk' => 1,
+                'sk'  => 1,
                 'sk2' => 2,
             ],
-            '2key' => 'val2',
+            '2key'  => 'val2',
         ];
 
         $instance->withMeta($meta);
@@ -55,26 +59,24 @@ final class MetableTest extends TestCase
         static::assertEquals($instance->meta(), $meta);
 
         $meta = [
-            'key' => 'val2',
-            'array' => null,
-            'array_2' => [
-                'sk' => 1,
-            ],
-            'key333' => '3',
+            'key'     => 'val2',
+            'array'   => null,
+            'array_2' => ['sk' => 1],
+            'key333'  => '3',
         ];
 
         $instance->withMeta($meta);
 
-        static::assertEquals($instance->meta(), [
-            'key' => 'val2',
-            'array' => null,
-            '2key' => 'val2',
-            'key333' => '3',
-            'array_2' => [
-                'sk' => 1,
-            ],
-        ]);
-
+        static::assertEquals(
+            $instance->meta(),
+            [
+                'key'     => 'val2',
+                'array'   => null,
+                '2key'    => 'val2',
+                'key333'  => '3',
+                'array_2' => ['sk' => 1],
+            ]
+        );
     }
 }
 

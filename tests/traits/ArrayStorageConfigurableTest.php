@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -28,7 +29,6 @@ final class ArrayStorageConfigurableTest extends TestCase
         static::assertTrue(isset($config->id));
         static::assertTrue(isset($config->k));
     }
-
 }
 
 

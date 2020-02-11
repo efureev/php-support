@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Php\Support\Exceptions\JsonException;
@@ -26,12 +27,18 @@ final class JsonTest extends TestCase
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
         // simple array encoding
-        $data = [1, 2];
+        $data = [
+            1,
+            2,
+        ];
         $this->assertSame('[1,2]', Json::encode($data));
-        $data = ['a' => 1, 'b' => 2];
+        $data = [
+            'a' => 1,
+            'b' => 2,
+        ];
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
         // simple object encoding
-        $data = new \stdClass();
+        $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
         $this->assertSame('[]', Json::encode($data));
@@ -47,10 +54,10 @@ final class JsonTest extends TestCase
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
 
-        $data = new JsonModel();
+        $data       = new JsonModel();
         $data->data = [];
         $this->assertSame('[]', Json::encode($data));
-        $data = new JsonModel();
+        $data       = new JsonModel();
         $data->data = (object)null;
         $this->assertSame('[]', Json::encode($data));
     }
@@ -67,12 +74,18 @@ final class JsonTest extends TestCase
         $data = '1';
         $this->assertSame('"1"', Json::htmlEncode($data));
         // simple array encoding
-        $data = [1, 2];
+        $data = [
+            1,
+            2,
+        ];
         $this->assertSame('[1,2]', Json::htmlEncode($data));
-        $data = ['a' => 1, 'b' => 2];
+        $data = [
+            'a' => 1,
+            'b' => 2,
+        ];
         $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
         // simple object encoding
-        $data = new \stdClass();
+        $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
         $this->assertSame('[]', Json::htmlEncode($data));
@@ -95,7 +108,7 @@ final class JsonTest extends TestCase
     public function testDecode(): void
     {
         // empty value
-        $json = '';
+        $json   = '';
         $actual = Json::decode($json);
         $this->assertNull($actual);
         // basic data decoding
@@ -137,7 +150,7 @@ final class JsonTest extends TestCase
 
         // Unsupported type since PHP 5.5
         try {
-            $fp = fopen('php://stdin', 'rb');
+            $fp   = fopen('php://stdin', 'rb');
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
@@ -218,8 +231,6 @@ final class JsonTest extends TestCase
             empty(array_diff_key($exp, $result)) && empty(array_diff_key($result, $exp))
         );
     }*/
-
-
 }
 
 /**
@@ -241,13 +252,17 @@ class JsonModel implements \JsonSerializable
     public function rules(): array
     {
         return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100],
+            [
+                'name',
+                'required',
+            ],
+            [
+                'name', 'string', 'max' => 100
+            ],
         ];
     }
 
     public function init(): void
     {
-
     }
 }

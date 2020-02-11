@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -25,6 +26,5 @@ final class ArrayableTest extends TestCase
 
         $actual = json_encode($data_arrayable->toArray());
         $this->assertSame('{"key":"value"}', $actual);
-
     }
 }

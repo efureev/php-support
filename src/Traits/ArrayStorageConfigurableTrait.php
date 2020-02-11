@@ -21,7 +21,7 @@ trait ArrayStorageConfigurableTrait
      *
      * @return bool
      */
-    protected function setProp(string $key, $value): bool
+    protected function setPropConfigurable(string $key, $value): bool
     {
         $this->set($key, $value);
 

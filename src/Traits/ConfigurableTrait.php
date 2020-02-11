@@ -38,7 +38,10 @@ trait ConfigurableTrait
      */
     protected function applyValue(string $key, $value): bool
     {
-        return $this->setProp($key, $value) || $this->callMethod($key, $value);
+        if (!$res = $this->callMethod($key, $value)) {
+            $res = $this->setPropConfigurable($key, $value);
+        }
+        return $res;
     }
 
     /**
@@ -48,7 +51,7 @@ trait ConfigurableTrait
      *
      * @return bool
      */
-    protected function setProp(string $key, $value): bool
+    protected function setPropConfigurable(string $key, $value): bool
     {
         if ($this->propertyExists($key)) {
             $this->{$key} = $value;
@@ -82,6 +85,7 @@ trait ConfigurableTrait
 
             return true;
         }
+
         return false;
     }
 }

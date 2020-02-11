@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Php\Support\Exceptions\Exception;
@@ -35,13 +36,13 @@ final class SingletonTest extends TestCase
     public function testPreventCreate(): void
     {
         $this->expectException(\Error::class);
-        $parent = new SingletonParentClassTest;
+        $parent = new SingletonParentClassTest();
     }
 
     public function testPreventClone(): void
     {
         $this->expectException(\Error::class);
-        $instance = SingletonParentClassTest::getInstance();
+        $instance  = SingletonParentClassTest::getInstance();
         $instance2 = clone $instance;
     }
 
@@ -76,6 +77,9 @@ final class SingletonChildClassTest extends SingletonParentClassTest
 
     public function __sleep()
     {
-        return ['username', 'password'];
+        return [
+            'username',
+            'password',
+        ];
     }
 }
