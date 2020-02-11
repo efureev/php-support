@@ -62,7 +62,7 @@ class Str
      *
      * @param string $str
      * @param string $delimiter
-     * @param bool   $screaming
+     * @param bool $screaming
      *
      * @return string
      */
@@ -86,13 +86,24 @@ class Str
         for ($i = 0; $i < $len; $i++) {
             // treat acronyms as words, eg for JSONData -> JSON is a whole word
             $next_case_is_changed = false;
+
             $letter = $get_letter($i, $str);
 
             if ($i + 1 < $len) {
                 $next_letter = $get_letter($i + 1, $str);
                 if (
-                    ($letter >= 'A' && $letter <= 'Z' && $next_letter >= 'a' && $next_letter <= 'z')
-                    || ($letter >= 'a' && $letter <= 'z' && $next_letter >= 'A' && $next_letter <= 'Z')
+                    (
+                        $letter >= 'A'
+                        && $letter <= 'Z'
+                        && $next_letter >= 'a'
+                        && $next_letter <= 'z'
+                    )
+                    || (
+                        $letter >= 'a'
+                        && $letter <= 'z'
+                        && $next_letter >= 'A'
+                        && $next_letter <= 'Z'
+                    )
                 ) {
                     $next_case_is_changed = true;
                 }
@@ -190,7 +201,7 @@ class Str
      * Converts a string to CamelCase
      *
      * @param string $str
-     * @param bool   $initCase
+     * @param bool $initCase
      *
      * @return string
      */
@@ -264,8 +275,8 @@ class Str
      * Replace substr by start and finish indents
      *
      * @param string $str
-     * @param int    $from_start
-     * @param int    $from_end
+     * @param int $from_start
+     * @param int $from_end
      * @param string $toStr
      *
      * @return string
@@ -294,7 +305,7 @@ class Str
      * Value = replace value
      *
      * @param string $str
-     * @param array  $replace
+     * @param array $replace
      *
      * @return mixed
      */
