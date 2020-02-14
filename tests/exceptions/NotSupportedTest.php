@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use Php\Support\Exceptions\NotSupportedException;
 use PHPUnit\Framework\TestCase;
 

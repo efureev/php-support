@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;

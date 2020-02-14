@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -32,8 +34,7 @@ final class BaseTest extends TestCase
             'float'      => 12.31,
             'empty'      => '',
             'emptyArray' => [],
-            'cls'        => new class
-            {
+            'cls'        => new class {
                 function __invoke()
                 {
                     return 'cls.test';
@@ -47,7 +48,6 @@ final class BaseTest extends TestCase
 
     public function testValue(): void
     {
-
         foreach (static::values() as $key => $val) {
             $result = value($val);
 

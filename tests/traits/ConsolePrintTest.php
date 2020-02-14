@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -51,8 +53,7 @@ final class ConsolePrint extends TestCase
 
     private function cls()
     {
-        return new class ()
-        {
+        return new class () {
             use \Php\Support\Traits\ConsolePrint;
         };
     }
@@ -77,7 +78,8 @@ class Intercept extends \php_user_filter
     {
         while ($bucket = stream_bucket_make_writeable($in)) {
             self::$cache = $bucket->data;
-            $consumed   += $bucket->datalen;
+
+            $consumed += $bucket->datalen;
             stream_bucket_append($out, $bucket);
         }
 

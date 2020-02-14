@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.6.0
+
+### Added
+
+- Helper `Bit`: contains operations with bits and bit-masks
+
 ## v2.5.0
 
 ### Changed
 
-- Logic has been changed for the trait `ConfigurableTrait::configurable`: 
+- Logic has been changed for the trait `ConfigurableTrait::configurable`:
 at first, on applying props, checking a magic method and then a property
-
 
 ## v2.4.2
 

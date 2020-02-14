@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use Php\Support\Exceptions\JsonException;
 use Php\Support\Helpers\Json;
 use PHPUnit\Framework\TestCase;
@@ -96,10 +98,10 @@ final class JsonTest extends TestCase
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
 
-//        $postsStack = new \SplStack();
-//        $postsStack->push(new Post(915, 'record1'));
-//        $postsStack->push(new Post(456, 'record2'));
-//        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
+        //        $postsStack = new \SplStack();
+        //        $postsStack->push(new Post(915, 'record1'));
+        //        $postsStack->push(new Post(456, 'record2'));
+        //        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
     /**
@@ -157,7 +159,10 @@ final class JsonTest extends TestCase
         } catch (Throwable $exception) {
             $this->assertInstanceOf(JsonException::class, $exception);
             if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_UNSUPPORTED_TYPE], $exception->getMessage());
+                $this->assertSame(
+                    JsonException::ERRORS_MESSAGES[JSON_ERROR_UNSUPPORTED_TYPE],
+                    $exception->getMessage()
+                );
             } else {
                 $this->assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
             }
@@ -257,7 +262,9 @@ class JsonModel implements \JsonSerializable
                 'required',
             ],
             [
-                'name', 'string', 'max' => 100
+                'name',
+                'string',
+                'max' => 100,
             ],
         ];
     }

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use Php\Support\Helpers\Str;
 use PHPUnit\Framework\TestCase;
 
@@ -611,14 +613,16 @@ final class StrTest extends TestCase
                 [
                     '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
-                ], '"key-token" - test',
+                ],
+                '"key-token" - test',
             ],
             [
                 'sdasdas',
                 [
                     '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
-                ], 'sdasdas',
+                ],
+                'sdasdas',
             ],
             [
                 'sdaas',

@@ -10,11 +10,85 @@
 [![codecov](https://codecov.io/gh/efureev/php-support/branch/v2/graph/badge.svg)](https://codecov.io/gh/efureev/php-support/tree/v2)
 
 ## Install
+
 ```bash
-composer require efureev/support "^2.5"
+composer require efureev/support "^2.6"
 ```
 
+## Content
+
+- Helpers
+  + Array
+    - get
+    - set
+    - exists
+    - has
+    - remove
+    - removeByValue
+    - toArray
+    - dataToArray
+    - merge
+    - fromPostgresArray
+    - toPostgresArray
+    - toIndexedArray
+    - accessible
+    - replaceByTemplate
+  + String
+    - toSnake
+    - toDelimited
+    - toScreamingDelimited
+    - toScreamingSnake
+    - toKebab
+    - toCamel
+    - toLowerCamel
+    - removeMultiSpace
+    - replaceStrTo
+    - replaceByTemplate
+  + Json
+    - htmlEncode
+    - encode
+    - decode
+  + Bit
+    - removeFlag
+    - addFlag
+    - checkFlag
+    - exist
+    - grant
+- Global functions
+  + value
+  + classNamespace
+- Exceptions
+  + ConfigException
+  + Exception
+  + InvalidArgumentException
+  + InvalidCallException
+  + InvalidConfigException
+  + InvalidParamException
+  + InvalidValueException
+  + JsonException
+  + MethodNotAllowedException
+  + MissingClassException
+  + MissingConfigException
+  + MissingPropertyException
+  + NotSupportedException
+  + UnknownMethodException
+  + UnknownPropertyException
+- Interfaces
+  + Arrayable
+  + Jsonable
+  + Prototype
+  + Command
+- Traits
+  + Maker
+  + Metable
+  + ConfigurableTrait
+  + ArrayStorage
+  + ArrayStorageConfigurableTrait
+  + Singleton
+  + ConsolePrint
+
 ## Test
+
 ```bash
 composer test
 composer test-cover # with coverage

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use PHPUnit\Framework\Error\Notice;
+namespace Php\Support\Tests;
+
 use PHPUnit\Framework\TestCase;
-use Sitesoft\Hub\Modules\Entity\ModuleConfig;
 
 /**
  * Class ArrayStorageTest
@@ -50,6 +50,7 @@ final class ArrayStorageTest extends TestCase
         $config->{'test.sub.val'} = 'value';
 
         $config->{'test.next'} = 'next value';
+
         $expected = [
             'test' => [
                 'sub'  => [

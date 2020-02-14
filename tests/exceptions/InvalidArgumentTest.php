@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Php\Support\Tests;
+
 use Php\Support\Exceptions\InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
