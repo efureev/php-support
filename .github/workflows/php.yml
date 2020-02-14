@@ -79,6 +79,9 @@ jobs:
         if: matrix.setup == 'stable'
         run: composer update --prefer-dist --no-interaction --no-suggest --prefer-stable
 
+      - name: Composer DUMP
+        run: composer dump-autoload -o
+
       - name: Show most important packages' versions
         run: composer info | grep -e phpunit/phpunit
 
