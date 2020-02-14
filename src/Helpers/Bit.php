@@ -17,29 +17,39 @@ class Bit
     /**
      * Remove bit from $value
      *
-     * @param int $value
+     * @param int|string $value
      * @param int $bit
      *
      * @return int
      */
-    public static function removeFlag(int $value, int $bit): int
+    public static function removeFlag($value, int $bit): int
     {
-        $value &= ~$bit;
-
-        return $value;
+        return static::toInt($value) & ~$bit;
     }
 
     /**
      * Set bit to $value
      *
-     * @param int $value
+     * @param int|string $value
      * @param int $bit
      *
      * @return int
      */
-    public static function addFlag(int $value, int $bit): int
+    public static function addFlag($value, int $bit): int
     {
-        $value |= $bit;
+        return static::toInt($value) | $bit;
+    }
+
+    /**
+     * @param string|int $value
+     *
+     * @return int
+     */
+    protected static function toInt($value): int
+    {
+        if (is_string($value)) {
+            return bindec($value);
+        }
 
         return $value;
     }
@@ -47,14 +57,14 @@ class Bit
     /**
      * Check bit into $value
      *
-     * @param int $value
+     * @param int|string $value
      * @param int $bit
      *
      * @return bool
      */
-    public static function checkFlag(int $value, int $bit): bool
+    public static function checkFlag($value, int $bit): bool
     {
-        return ($value & $bit) > 0;
+        return (static::toInt($value) & $bit) > 0;
     }
 
 

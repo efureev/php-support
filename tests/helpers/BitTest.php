@@ -55,7 +55,7 @@ final class BitTest extends TestCase
         static::assertTrue(($val & self::LOGIN) > 0);
         static::assertTrue(Bit::checkFlag($val, self::LOGIN));
 
-        $val = Bit::addFlag($val, self::READ);
+        $val = Bit::addFlag(Bit::decBinPad($val, count(self::permissions())), self::READ);
         static::assertEquals(3, $val);
         static::assertTrue(($val & self::READ) > 0);
         static::assertTrue(Bit::checkFlag($val, self::READ));
@@ -73,7 +73,7 @@ final class BitTest extends TestCase
         $val = Bit::removeFlag(0, self::CREATE);
         static::assertEquals(0, $val);
 
-        $val = Bit::addFlag($val, self::LOGIN);
+        $val = Bit::addFlag(Bit::decBinPad($val, count(self::permissions())), self::LOGIN);
         static::assertTrue(Bit::checkFlag($val, self::LOGIN));
 
         $val1 = Bit::removeFlag($val, self::CREATE);
