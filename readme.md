@@ -54,6 +54,7 @@ composer require efureev/support "^2.6"
     - checkFlag
     - exist
     - grant
+    - decBinPad
 - Global functions
   + value
   + classNamespace

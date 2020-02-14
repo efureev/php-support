@@ -88,4 +88,17 @@ class Bit
             0
         );
     }
+
+    /**
+     * Convert decimal to binary string with left pad zero-filling
+     *
+     * @param int $bit
+     * @param int $length
+     *
+     * @return string
+     */
+    public static function decBinPad(int $bit, int $length): string
+    {
+        return sprintf("%0{$length}d", decbin($bit));
+    }
 }

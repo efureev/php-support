@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.6.3
+
+### Added
+
+- Helper `Bit`: function `decBinPad`. Convert decimal to binary string with left pad zero-filling
+
 ## v2.6.0
 
 ### Added

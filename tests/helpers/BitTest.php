@@ -117,4 +117,21 @@ final class BitTest extends TestCase
             static::assertFalse(Bit::exist(self::permissions(), 1 << $i));
         }
     }
+
+    public function testDecBinPad(): void
+    {
+        $perms = [
+            self::LOGIN  => '00001',
+            self::READ   => '00010',
+            self::CREATE => '00100',
+            self::UPDATE => '01000',
+            self::DELETE => '10000',
+        ];
+
+        $padLength = count($perms);
+
+        foreach ($perms as $flag => $expected) {
+            static::assertEquals($expected, Bit::decBinPad($flag, $padLength));
+        }
+    }
 }
