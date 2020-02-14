@@ -20,7 +20,8 @@ before_install:
 install:
   - if [[ $setup = 'basic'  ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest; fi
   - if [[ $setup = 'stable' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-stable; fi
-#  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest; fi
+  - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --no-suggest --prefer-lowest; fi
+  - composer dump-autoload -o
 
 script:
   - if [[ $coverage = 'true' ]]; then composer test-cover; else composer test; fi
@@ -33,22 +34,22 @@ after_success:
 
 matrix:
   include:
-#    - php: 7.2
-#      env: setup=lowest
+    #    - php: 7.2
+    #      env: setup=lowest
     - php: 7.2
       env: setup=stable
     - php: 7.2
       env: coverage=true
 
-#    - php: 7.3
-#      env: setup=lowest
+    #    - php: 7.3
+    #      env: setup=lowest
     - php: 7.3
       env: setup=stable
     - php: 7.3
       env: coverage=true
 
-#    - php: 7.4
-#      env: setup=lowest
+    #    - php: 7.4
+    #      env: setup=lowest
     - php: 7.4
       env: setup=stable
 
