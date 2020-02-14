@@ -197,7 +197,7 @@ class Arr
      *
      * @return array
      */
-    public static function fromPostgresArray(?string $s, $start = 0, &$end = null): array
+    public static function fromPostgresArray(?string $s, int $start = 0, &$end = null): array
     {
         if (empty($s) || $s[0] !== '{') {
             return [];
@@ -219,7 +219,7 @@ class Arr
                 break;
             } else {
                 if (!$string && $ch === '{') {
-                    $v = self::fromPostgresArray($s, $i, $i);
+                    $v = self::fromPostgresArray($s, (int)$i, $i);
                 } else {
                     if (!$string && $ch === ',') {
                         $return[] = $v;

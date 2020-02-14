@@ -6,6 +6,7 @@ namespace Php\Support\Tests;
 
 use Php\Support\Exceptions\UnknownPropertyException;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Class UnknownPropertyTest

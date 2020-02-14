@@ -199,7 +199,7 @@ final class ArrayStorageTest extends TestCase
 /**
  * Class ArrayStorageClassTest
  */
-class ArrayStorageClassTest implements ArrayAccess
+class ArrayStorageClassTest implements \ArrayAccess
 {
     use \Php\Support\Traits\ArrayStorage;
 

@@ -7,6 +7,7 @@ namespace Php\Support\Tests;
 use Php\Support\Exceptions\JsonException;
 use Php\Support\Helpers\Json;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Class JsonTest

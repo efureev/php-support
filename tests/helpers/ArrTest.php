@@ -8,6 +8,7 @@ use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;
 use PHPUnit\Framework\TestCase;
+use ArrayObject;
 
 /**
  * Class ArrTest

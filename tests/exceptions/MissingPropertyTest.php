@@ -6,6 +6,7 @@ namespace Php\Support\Tests;
 
 use Php\Support\Exceptions\MissingPropertyException;
 use PHPUnit\Framework\TestCase;
+use Throwable;
 
 /**
  * Class MissingPropertyTest
