@@ -87,6 +87,9 @@ composer require efureev/support "^2.6"
   + ArrayStorageConfigurableTrait
   + Singleton
   + ConsolePrint
+- Types
+  + Point
+  + GeoPoint
 
 ## Test
 
