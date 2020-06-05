@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.8.0
+
+### Added
+
+- Add Helper for base64: `B64`
+
 ## v2.7.0
 
 ### Added

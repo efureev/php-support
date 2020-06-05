@@ -55,6 +55,11 @@ composer require efureev/support "^2.6"
     - exist
     - grant
     - decBinPad
+  + B64
+    - encode
+    - decode
+    - encodeSafe
+    - decodeSafe
 - Global functions
   + value
   + classNamespace
