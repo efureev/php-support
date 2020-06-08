@@ -63,6 +63,7 @@ composer require efureev/support "^2.6"
 - Global functions
   + value
   + classNamespace
+  + isTrue
 - Exceptions
   + ConfigException
   + Exception

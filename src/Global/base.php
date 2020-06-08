@@ -31,3 +31,21 @@ if (!function_exists('classNamespace')) {
         return implode('\\', array_slice(explode("\\", $class), 0, -1));
     }
 }
+
+if (!function_exists('isTrue')) {
+    /**
+     * Returns bool value of a value
+     *
+     * @param mixed $val
+     * @param bool $return_null
+     *
+     * @return bool|null
+     */
+    function isTrue($val, bool $return_null = false): ?bool
+    {
+        $boolVal = (is_string($val)
+            ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
+            : (bool)$val);
+        return ($boolVal === null && !$return_null ? false : $boolVal);
+    }
+}

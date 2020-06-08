@@ -58,4 +58,41 @@ final class BaseTest extends TestCase
             }
         }
     }
+
+    public function testIsTrue(): void
+    {
+        foreach (
+            [
+                ['val' => new \stdClass, 'res' => true,],
+                ['val' => [1, 2], 'res' => true,],
+                ['val' => [1], 'res' => true,],
+                ['val' => [0], 'res' => true,],
+                ['val' => 1, 'res' => true,],
+                ['val' => 42, 'res' => true,],
+                ['val' => -42, 'res' => true,],
+                ['val' => 'true', 'res' => true,],
+                ['val' => 'off', 'res' => false,],
+                ['val' => 'yes', 'res' => true,],
+                ['val' => 'no', 'res' => false,],
+                ['val' => 'ja', 'res' => false,],
+                ['val' => 'nein', 'res' => false,],
+                ['val' => 'нет', 'res' => false,],
+                ['val' => 'да', 'res' => false,],
+                ['val' => '1', 'res' => true,],
+                ['val' => null, 'res' => false,],
+                ['val' => 0, 'res' => false,],
+                ['val' => 'false', 'res' => false,],
+                ['val' => 'string', 'res' => false,],
+                ['val' => 'bool', 'res' => false,],
+                ['val' => '0.0', 'res' => false,],
+                ['val' => '4.2', 'res' => false,],
+                ['val' => '0', 'res' => false,],
+                ['val' => '', 'res' => false,],
+                ['val' => '[]', 'res' => false,],
+                ['val' => '{}', 'res' => false,],
+            ] as $data
+        ) {
+            $this->assertEquals(isTrue($data['val']), $data['res']);
+        }
+    }
 }
