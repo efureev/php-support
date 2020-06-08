@@ -43,6 +43,10 @@ if (!function_exists('isTrue')) {
      */
     function isTrue($val, bool $return_null = false): ?bool
     {
+        if ($val === null && $return_null) {
+            return null;
+        }
+
         $boolVal = (is_string($val)
             ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
             : (bool)$val);
