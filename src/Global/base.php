@@ -16,6 +16,25 @@ if (!function_exists('value')) {
     }
 }
 
+if (! function_exists('when')) {
+    /**
+     * Returns a value when a condition is truthy.
+     *
+     * @param  mixed|bool|\Closure  $condition
+     * @param  mixed|\Closure  $value
+     * @param  mixed|\Closure|null  $default
+     * @return mixed
+     */
+    function when($condition, $value, $default = null)
+    {
+        if ($result = value($condition)) {
+            return $value instanceof Closure ? $value($result) : $value;
+        }
+
+        return value($default);
+    }
+}
+
 if (!function_exists('classNamespace')) {
     /**
      * @param object|string $class

@@ -12,7 +12,7 @@
 ## Install
 
 ```bash
-composer require efureev/support "^2.6"
+composer require efureev/support "^2.10"
 ```
 
 ## Content
@@ -64,6 +64,7 @@ composer require efureev/support "^2.6"
   + value
   + classNamespace
   + isTrue
+  + when
 - Exceptions
   + ConfigException
   + Exception
