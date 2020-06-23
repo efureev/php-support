@@ -94,6 +94,7 @@ composer require efureev/support "^2.10"
   + ArrayStorageConfigurableTrait
   + Singleton
   + ConsolePrint
+  + Whener
 - Types
   + Point
   + GeoPoint
