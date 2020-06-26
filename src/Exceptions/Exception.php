@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Exceptions;
 
+use Php\Support\Traits\Maker;
 use Php\Support\Traits\Thrower;
 use Throwable;
 
@@ -14,6 +15,7 @@ use Throwable;
  */
 class Exception extends \Exception
 {
+    use Maker;
     use Thrower;
 
     /**
