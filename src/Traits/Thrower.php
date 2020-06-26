@@ -17,6 +17,7 @@ trait Thrower
      */
     public static function throw(...$arguments): void
     {
+        // @phpstan-ignore-next-line
         throw new static(...$arguments);
     }
 }
