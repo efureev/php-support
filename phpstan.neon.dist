@@ -5,5 +5,7 @@ parameters:
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false
   excludes_analyse:
+    - 'src/Traits/Thrower.php'
+    - 'src/Traits/Maker.php'
     - 'src/Types/Point.php'
     - 'src/Types/GeoPoint.php'
