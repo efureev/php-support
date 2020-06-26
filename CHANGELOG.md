@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Add trait `Whener`
+- Add trait `Thrower`
 
 ## v2.10.0
 
