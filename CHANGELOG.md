@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## master
+
+### Added
+
+- Add into `Arr` helper function for finding duplicates: `duplicates`
+
 ## v2.11.0
 
 ### Added

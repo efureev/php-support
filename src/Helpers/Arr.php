@@ -476,4 +476,16 @@ class Arr
 
         return $item;
     }
+
+    /**
+     * Find duplicates into an array
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    public static function duplicates(array $array): array
+    {
+        return array_unique(array_diff_assoc($array, array_unique($array)));
+    }
 }
