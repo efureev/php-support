@@ -313,4 +313,14 @@ class Str
     {
         return str_replace(array_keys($replace), array_values($replace), $str);
     }
+
+    /**
+     * @param string $regex
+     *
+     * @return false|int
+     */
+    public static function isRegExp(string $regex): bool
+    {
+        return preg_match($regex, null) !== false;
+    }
 }

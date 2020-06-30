@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.11.3
+
+### Added
+
+- Add into `Str` helper function for define Regular Expression `isRegExp`
+
 ## v2.11.2
 
 ### Added
