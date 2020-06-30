@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
-## master
+## v2.11.2
+
+### Added
+
+- Add into `Arr` helper function for fill a keyed array by values from another array: `fillKeysByValues`
+
+## v2.11.1
 
 ### Added
 

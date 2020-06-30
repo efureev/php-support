@@ -488,4 +488,23 @@ class Arr
     {
         return array_unique(array_diff_assoc($array, array_unique($array)));
     }
+
+    /**
+     * Fill a keyed array by values from another array
+     *
+     * @param array $keys
+     * @param array $values
+     *
+     * @return array
+     */
+    public static function fillKeysByValues(array $keys, array $values): array
+    {
+        $result = [];
+
+        foreach ($keys as $key => $keyName) {
+            $result[$keyName] = $values[$key] ?? null;
+        }
+
+        return $result;
+    }
 }
