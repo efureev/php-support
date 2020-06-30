@@ -644,4 +644,30 @@ final class StrTest extends TestCase
         $result = Str::replaceByTemplate($str, $replaced);
         static::assertEquals($exp, $result);
     }
+
+    public function dataRegExps(): array
+    {
+        return [
+            ['/^(\d+)$/', true],
+            ['/([A-Z])\w+/', true],
+            ['/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?))?}/', true],
+
+            ['^(\d+)$', false],
+            ['\d+)$', false],
+            ['', false],
+            ['test', false],
+            ['/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?)?}/', false],
+        ];
+    }
+
+    /**
+     * @dataProvider dataRegExps
+     *
+     * @param string $regexp
+     * @param bool $result
+     */
+    public function testIsRegExp(string $regexp, bool $result): void
+    {
+        static::assertEquals($result, Str::isRegExp($regexp));
+    }
 }

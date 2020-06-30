@@ -317,10 +317,10 @@ class Str
     /**
      * @param string $regex
      *
-     * @return false|int
+     * @return bool
      */
     public static function isRegExp(string $regex): bool
     {
-        return preg_match($regex, null) !== false;
+        return empty($regex) ? false : @preg_match($regex, '') !== false;
     }
 }
