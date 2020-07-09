@@ -10,3 +10,7 @@ composer.lock
 clover.xml
 
 /.git-hooks
+
+summary.log
+per-mutator.md
+infection.log

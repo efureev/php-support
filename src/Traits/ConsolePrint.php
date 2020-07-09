@@ -22,6 +22,7 @@ trait ConsolePrint
     /**
      * @param mixed $msg
      * @param bool $newLine
+     * @codeCoverageIgnore
      */
     public function printError($msg, bool $newLine = true): void
     {

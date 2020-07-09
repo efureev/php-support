@@ -7,6 +7,8 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
+         executionOrder="random"
+         resolveDependencies="true"
          stopOnFailure="false">
     <testsuites>
         <testsuite name="Unit Tests">
@@ -20,8 +22,9 @@
     </filter>
     <logging>
         <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
-        <log type="coverage-xml" target="./storage/coverage/xml"/>
+        <log type="coverage-xml" target="./storage/coverage/coverage-xml" />
         <log type="coverage-html" target="./storage/coverage/html"/>
         <log type="coverage-clover" target="./clover.xml"/>
+        <log type="junit" target="./storage/coverage/junit.xml"/>
     </logging>
 </phpunit>
