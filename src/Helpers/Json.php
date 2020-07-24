@@ -44,11 +44,12 @@ class Json
      * @param int $options the encoding options. For more details please refer to
      *                       <http://www.php.net/manual/en/function.json-encode.php>. Default is
      *                       `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
+     * @param int $depth
      *
      * @return string|null
      * @throws JsonException
      */
-    public static function encode($value, $options = 320): ?string
+    public static function encode($value, $options = 320, int $depth = 512): ?string
     {
         $value = Arr::dataToArray($value);
         set_error_handler(
@@ -57,7 +58,7 @@ class Json
             },
             E_WARNING
         );
-        $json = json_encode($value, $options);
+        $json = json_encode($value, $options, $depth);
         restore_error_handler();
         static::handleJsonError(json_last_error());
 
@@ -83,16 +84,18 @@ class Json
      *
      * @param null|string $json the JSON string to be decoded
      * @param bool $asArray whether to return objects in terms of associative arrays.
+     * @param int $options
+     * @param int $depth
      *
      * @return mixed|null
      * @throws JsonException
      */
-    public static function decode(?string $json, $asArray = true)
+    public static function decode(?string $json, $asArray = true, int $options = 0, int $depth = 512)
     {
         if ($json === null || $json === '') {
             return null;
         }
-        $decode = json_decode($json, $asArray);
+        $decode = json_decode($json, $asArray, $depth, $options);
 
         static::handleJsonError(json_last_error());
 
