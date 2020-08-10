@@ -20,4 +20,16 @@ trait Thrower
         // @phpstan-ignore-next-line
         throw new static(...$arguments);
     }
+
+
+    /**
+     * @param mixed $value
+     * @param mixed ...$arguments
+     */
+    public static function throwIf($value, ...$arguments): void
+    {
+        if ($value) {
+            static::throw(...$arguments);
+        }
+    }
 }
