@@ -20,6 +20,9 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
     /** @var array */
     private $data = [];
 
+    /** @var bool Показывать ошибку не взятие из get */
+    protected $showErrorOnGetIfNull = true;
+
     /**
      * @param string $name
      *
@@ -54,11 +57,14 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
             return Arr::get($this->data, $name);
         }
 
-        $trace = debug_backtrace();
-        trigger_error(
-            "Undefined property in __get(): $name in file {$trace[0]['file']} in line {$trace[0]['line']}",
-            E_USER_NOTICE
-        );
+        if ($this->showErrorOnGetIfNull) {
+            $trace = debug_backtrace();
+            trigger_error(
+                "Undefined property in __get(): $name in file {$trace[0]['file']} in line {$trace[0]['line']}",
+                E_USER_NOTICE
+            );
+        }
+
         return null;
     }
 
