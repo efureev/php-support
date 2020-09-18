@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests;
 
+use Php\Support\Types\Point;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -121,6 +122,13 @@ final class BaseTest extends TestCase
         static::assertEquals(\get_class($cls), \get_class($cls2));
         static::assertEquals($cls, $cls2);
         static::assertTrue(is_object($cls2));
+
+        /** @var Point $point */
+        $point = instance(Point::class, 1, 10);
+        static::assertEquals(Point::class, \get_class($point));
+        static::assertTrue(is_object($point));
+        static::assertEquals(1, $point->x);
+        static::assertEquals(10, $point->y);
 
         foreach (
             [
