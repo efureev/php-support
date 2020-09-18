@@ -65,6 +65,7 @@ composer require efureev/support "^2.10"
   + isTrue
   + value
   + when
+  + instance
 - Exceptions
   + ConfigException
   + Exception

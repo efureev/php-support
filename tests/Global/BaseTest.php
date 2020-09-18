@@ -109,4 +109,36 @@ final class BaseTest extends TestCase
             $this->assertEquals(isTrue($data['val'], true), $data['resNull']);
         }
     }
+
+
+    public function testInstance(): void
+    {
+        $cls = instance(\stdClass::class);
+        static::assertEquals(\stdClass::class, \get_class($cls));
+        static::assertTrue(is_object($cls));
+
+        $cls2 = instance($cls);
+        static::assertEquals(\get_class($cls), \get_class($cls2));
+        static::assertEquals($cls, $cls2);
+        static::assertTrue(is_object($cls2));
+
+        foreach (
+            [
+                1,
+                0,
+                -1,
+                12.21,
+                true,
+                false,
+                null,
+                '1',
+                'true',
+                'false',
+                'null',
+                '0',
+            ] as $val
+        ) {
+            static::assertNull(instance($val));
+        }
+    }
 }

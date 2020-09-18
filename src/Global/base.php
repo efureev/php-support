@@ -16,13 +16,14 @@ if (!function_exists('value')) {
     }
 }
 
-if (! function_exists('when')) {
+if (!function_exists('when')) {
     /**
      * Returns a value when a condition is truthy.
      *
-     * @param  mixed|bool|\Closure  $condition
-     * @param  mixed|\Closure  $value
-     * @param  mixed|\Closure|null  $default
+     * @param mixed|bool|\Closure $condition
+     * @param mixed|\Closure $value
+     * @param mixed|\Closure|null $default
+     *
      * @return mixed
      */
     function when($condition, $value, $default = null)
@@ -70,5 +71,20 @@ if (!function_exists('isTrue')) {
             ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE)
             : (bool)$val);
         return ($boolVal === null && !$return_null ? false : $boolVal);
+    }
+}
+
+if (!function_exists('instance')) {
+    function instance($instance, ...$params)
+    {
+        if (is_object($instance)) {
+            return $instance;
+        }
+
+        if (is_string($instance) && class_exists($instance)) {
+            return new $instance(...$params);
+        }
+
+        return null;
     }
 }
