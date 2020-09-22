@@ -75,6 +75,12 @@ if (!function_exists('isTrue')) {
 }
 
 if (!function_exists('instance')) {
+    /**
+     * @param string|object $instance
+     * @param mixed ...$params
+     *
+     * @return object|null
+     */
     function instance($instance, ...$params)
     {
         if (is_object($instance)) {
@@ -89,11 +95,12 @@ if (!function_exists('instance')) {
     }
 }
 
-if (! function_exists('class_basename')) {
+if (!function_exists('class_basename')) {
     /**
      * Get the class "basename" of the given object / class.
      *
-     * @param  string|object  $class
+     * @param string|object $class
+     *
      * @return string
      */
     function class_basename($class)
