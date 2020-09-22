@@ -62,10 +62,13 @@ composer require efureev/support "^2.10"
     - encodeSafe
 - Global functions
   + classNamespace
+  + class_basename
+  + class_uses_recursive
+  + instance
   + isTrue
+  + trait_uses_recursive
   + value
   + when
-  + instance
 - Exceptions
   + ConfigException
   + Exception
@@ -97,6 +100,8 @@ composer require efureev/support "^2.10"
   + ReadOnlyProperties
   + Singleton
   + Thrower
+  + TraitBooter
+  + TraitInitializer
   + Whener
 - Types
   + GeoPoint

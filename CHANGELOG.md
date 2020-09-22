@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v2.14.0
+
+### Added
+
+- Add new global function `class_basename`. Get the class "basename" of the given object / class.
+- Add new global function `trait_uses_recursive`. Returns all traits used by a trait and its traits.
+- Add new global function `class_uses_recursive`. Returns all traits used by a class, its parent classes and trait of their traits.
+- Add trait `TraitBooter`. Helps to boot trait's static `boot-function`.
+- Add trait `TraitInitializer`. Helps to init trait's `initialize-function`.
+
 ## v2.13.0
 
 ### Added

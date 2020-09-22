@@ -149,4 +149,60 @@ final class BaseTest extends TestCase
             static::assertNull(instance($val));
         }
     }
+
+
+    public function testTraitUsesRecursive(): void
+    {
+        $traits = trait_uses_recursive(TraitUsesRecursiveClass::class);
+
+        static::assertEquals(
+            [
+                \Php\Support\Traits\Singleton::class                     => \Php\Support\Traits\Singleton::class,
+                \Php\Support\Traits\ArrayStorageConfigurableTrait::class => \Php\Support\Traits\ArrayStorageConfigurableTrait::class,
+                \Php\Support\Traits\ArrayStorage::class                  => \Php\Support\Traits\ArrayStorage::class,
+                \Php\Support\Traits\ConfigurableTrait::class             => \Php\Support\Traits\ConfigurableTrait::class,
+            ],
+            $traits
+        );
+    }
+
+    public function testClassUsesRecursive(): void
+    {
+        $traits = class_uses_recursive(RecursiveClass::class);
+
+        static::assertEquals(
+            [
+                \Php\Support\Traits\Singleton::class                     => \Php\Support\Traits\Singleton::class,
+                \Php\Support\Traits\ArrayStorageConfigurableTrait::class => \Php\Support\Traits\ArrayStorageConfigurableTrait::class,
+                \Php\Support\Traits\ArrayStorage::class                  => \Php\Support\Traits\ArrayStorage::class,
+                \Php\Support\Traits\ConfigurableTrait::class             => \Php\Support\Traits\ConfigurableTrait::class,
+                \Php\Support\Traits\Maker::class                         => \Php\Support\Traits\Maker::class,
+            ],
+            $traits
+        );
+    }
+
+    public function testClassBasename(): void
+    {
+        $name = class_basename(RecursiveClass::class);
+        static::assertEquals('RecursiveClass', $name);
+        $name = class_basename(new \stdClass());
+        static::assertEquals('stdClass', $name);
+    }
+
+}
+
+
+class TraitUsesRecursiveClass
+{
+
+    protected $username;
+
+    use \Php\Support\Traits\Singleton;
+    use \Php\Support\Traits\ArrayStorageConfigurableTrait;
+}
+
+class RecursiveClass extends TraitUsesRecursiveClass
+{
+    use \Php\Support\Traits\Maker;
 }
