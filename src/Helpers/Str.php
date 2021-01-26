@@ -23,13 +23,13 @@ class Str
      *
      * @var array
      */
-    protected static $delimitedCache = [];
+    protected static array $delimitedCache = [];
     /**
      * The cache of camel-cased words.
      *
      * @var array
      */
-    protected static $camelCache = [];
+    protected static array $camelCache = [];
 
     /**
      * Converts a string to snake_case

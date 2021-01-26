@@ -16,20 +16,20 @@ use Php\Support\Interfaces\Jsonable;
  */
 class Point implements Jsonable, Arrayable
 {
-    /**
-     * @var float
-     */
-    public $x = 0;
+    public float $x = 0;
+
+    public float $y = 0;
 
     /**
-     * @var float
+     * Point constructor.
+     *
+     * @param float $x
+     * @param float $y
      */
-    public $y = 0;
-
-    public function __construct($x, $y)
+    public function __construct(float $x, float $y)
     {
-        $this->x = (float)$x;
-        $this->y = (float)$y;
+        $this->x = $x;
+        $this->y = $y;
     }
 
 

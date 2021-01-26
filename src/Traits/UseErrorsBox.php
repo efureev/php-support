@@ -12,7 +12,7 @@ namespace Php\Support\Traits;
  */
 trait UseErrorsBox
 {
-    private $errors = [];
+    private array $errors = [];
 
     public function setError($message): self
     {

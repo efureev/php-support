@@ -17,7 +17,7 @@ trait Metable
      *
      * @var array
      */
-    protected $meta = [];
+    protected array $meta = [];
 
     /**
      * Get additional meta information to merge with the element payload.

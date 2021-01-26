@@ -11,7 +11,8 @@ namespace Php\Support\Traits;
  */
 trait ArrayStorageConfigurableTrait
 {
-    use ArrayStorage, ConfigurableTrait {
+    use ArrayStorage;
+    use ConfigurableTrait {
         ArrayStorage::propertyExists insteadof ConfigurableTrait;
     }
 

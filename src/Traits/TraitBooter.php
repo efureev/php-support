@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Php\Support\Traits;
 
+/**
+ * Trait TraitBooter
+ * @package Php\Support\Traits
+ */
 trait TraitBooter
 {
     /**
@@ -11,14 +15,7 @@ trait TraitBooter
      *
      * @var array
      */
-    protected static $booted = [];
-
-    /**
-     * The array of trait initializers that will be called on each new instance.
-     *
-     * @var array
-     */
-    //    protected static $traitInitializers = [];
+    protected static array $booted = [];
 
     /**
      * The array of trait initializers that will be called on each new instance.
@@ -44,7 +41,7 @@ trait TraitBooter
         return $traits;
     }
 
-    protected function bootIfNotBooted()
+    protected function bootIfNotBooted(): void
     {
         if (!isset(static::$booted[static::class])) {
             static::$booted[static::class] = true;
@@ -90,7 +87,7 @@ trait TraitBooter
      *
      * @return void
      */
-    public static function clearBooted()
+    public static function clearBooted(): void
     {
         static::$booted = [];
     }

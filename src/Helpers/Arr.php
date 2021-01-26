@@ -70,7 +70,6 @@ class Arr
             }
         }
 
-
         return $res;
     }
 
@@ -95,18 +94,16 @@ class Arr
 
             if ($items instanceof Arrayable) {
                 $items = $items->toArray();
+            } elseif ($items instanceof Traversable) {
+                $items = iterator_to_array($items);
             } else {
-                if ($items instanceof Traversable) {
-                    $items = iterator_to_array($items);
-                } else {
-                    $result = [];
-                    if (is_iterable($items)) {
-                        foreach ($items as $name => $value) {
-                            $result[$name] = $value;
-                        }
+                $result = [];
+                if (is_iterable($items)) {
+                    foreach ($items as $name => $value) {
+                        $result[$name] = $value;
                     }
-                    $items = $result;
                 }
+                $items = $result;
             }
         }
 

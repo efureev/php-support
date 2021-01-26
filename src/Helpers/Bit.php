@@ -90,13 +90,7 @@ class Bit
      */
     public static function grant(array $list): int
     {
-        return array_reduce(
-            $list,
-            static function ($prev, $next) {
-                return $prev | $next;
-            },
-            0
-        );
+        return array_reduce($list, fn($prev, $next) => $prev | $next, 0);
     }
 
     /**

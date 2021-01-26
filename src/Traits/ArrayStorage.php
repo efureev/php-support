@@ -18,10 +18,10 @@ use Php\Support\Helpers\Json;
 trait ArrayStorage // implements ArrayAccess, Arrayable
 {
     /** @var array */
-    private $data = [];
+    private array $data = [];
 
     /** @var bool Показывать ошибку не взятие из get */
-    protected $showErrorOnGetIfNull = true;
+    protected bool $showErrorOnGetIfNull = true;
 
     /**
      * @param string $name

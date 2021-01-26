@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Php\Support\Traits;
 
+/**
+ * Trait TraitInitializer
+ * @package Php\Support\Traits
+ */
 trait TraitInitializer
 {
     use TraitBooter {
@@ -16,7 +20,7 @@ trait TraitInitializer
      *
      * @var array
      */
-    protected static $traitInitializers = [];
+    protected static array $traitInitializers = [];
 
     protected static function bootTraits(): array
     {
@@ -52,7 +56,7 @@ trait TraitInitializer
         }
     }
 
-    protected function bootIfNotBooted()
+    protected function bootIfNotBooted(): void
     {
         $this->parentBootIfNotBooted();
 

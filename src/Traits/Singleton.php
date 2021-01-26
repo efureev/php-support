@@ -16,7 +16,7 @@ trait Singleton
     /**
      * @var array
      */
-    protected static $instances = [];
+    protected static array $instances = [];
 
     /**
      * prevent the creation of an object through the new operator
