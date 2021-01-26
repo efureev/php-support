@@ -48,10 +48,10 @@ class Bit
     protected static function toInt($value): int
     {
         if (is_string($value)) {
-            return bindec($value);
+            return (int)bindec($value);
         }
 
-        return $value;
+        return (int)$value;
     }
 
     /**

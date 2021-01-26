@@ -53,11 +53,17 @@ class Json
     {
         $value = Arr::dataToArray($value);
         set_error_handler(
-            static function () {
+            static function (): bool {
                 static::handleJsonError(JSON_ERROR_SYNTAX);
+                return true;
             },
             E_WARNING
         );
+
+        /*set_error_handler(
+
+            E_WARNING
+        );*/
         $json = json_encode($value, $options, $depth);
         restore_error_handler();
         static::handleJsonError(json_last_error());
@@ -70,7 +76,7 @@ class Json
      *
      * @throws JsonException
      */
-    protected static function handleJsonError($lastError): void
+    protected static function handleJsonError(int $lastError): void
     {
         if ($lastError === JSON_ERROR_NONE) {
             return;

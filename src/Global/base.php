@@ -121,10 +121,12 @@ if (!function_exists('trait_uses_recursive')) {
      */
     function trait_uses_recursive(string $trait): array
     {
-        $traits = class_uses($trait);
+        if (!$traits = class_uses($trait)) {
+            return [];
+        }
 
-        foreach ($traits as $trait) {
-            $traits += trait_uses_recursive($trait);
+        foreach ((array)$traits as $trt) {
+            $traits += trait_uses_recursive($trt);
         }
 
         return $traits;
@@ -147,8 +149,8 @@ if (!function_exists('class_uses_recursive')) {
 
         $results = [];
 
-        foreach (array_reverse(class_parents($class)) + [$class => $class] as $class) {
-            $results += trait_uses_recursive($class);
+        foreach (array_reverse((array)class_parents($class)) + [$class => $class] as $cls) {
+            $results += trait_uses_recursive((string)$cls);
         }
 
         return array_unique($results);
