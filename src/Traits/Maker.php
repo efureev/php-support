@@ -17,7 +17,7 @@ trait Maker
      *
      * @return static
      */
-    public static function make(...$arguments): self
+    public static function make(...$arguments)
     {
         // @phpstan-ignore-next-line
         return new static(...$arguments);
