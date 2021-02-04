@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Php\Support\Traits;
 
 use ArrayAccess;
@@ -17,7 +15,7 @@ trait ConfigurableTrait
      * @param array|ArrayAccess $attributes
      * @param bool $exceptOnMiss
      *
-     * @return $this
+     * @return self
      */
     public function configurable($attributes, ?bool $exceptOnMiss = true)
     {
