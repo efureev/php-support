@@ -121,10 +121,9 @@ final class JsonTest extends TestCase
         $json = '{"a":1,"b":2}';
         self::assertSame(['a' => 1, 'b' => 2], Json::decode($json));
 
-        self::assertEquals([], Json::decode('{}'));
-        self::assertEquals([], Json::decode("{}"));
-        self::assertEquals([], Json::decode("{}"));
-        self::assertEquals([], Json::decode("[]"));
+        self::assertEquals([], Json::decode('{}', true, JSON_THROW_ON_ERROR, 2));
+        self::assertEquals([], Json::decode("{}", true, JSON_THROW_ON_ERROR, 2));
+        self::assertEquals([], Json::decode("[]", true, JSON_THROW_ON_ERROR, 2));
         // exception
         $json = '{"a":1,"b":2';
         $this->expectException(JsonException::class);
