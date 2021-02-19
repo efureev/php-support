@@ -25,44 +25,44 @@ final class JsonTest extends TestCase
         $data_arrayable->method('toArray')->willReturn([]);
 
         $actual = Json::encode($data_arrayable);
-        $this->assertSame('[]', $actual);
+        self::assertSame('[]', $actual);
         // basic data encoding
         $data = '1';
-        $this->assertSame('"1"', Json::encode($data));
+        self::assertSame('"1"', Json::encode($data));
         // simple array encoding
         $data = [
             1,
             2,
         ];
-        $this->assertSame('[1,2]', Json::encode($data));
+        self::assertSame('[1,2]', Json::encode($data));
         $data = [
             'a' => 1,
             'b' => 2,
         ];
-        $this->assertSame('{"a":1,"b":2}', Json::encode($data));
+        self::assertSame('{"a":1,"b":2}', Json::encode($data));
         // simple object encoding
         $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
         // empty data encoding
         $data = [];
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
         $data = new \stdClass();
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
 
         $data = (object)null;
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
         // JsonSerializable
         $data = new JsonModel();
-        $this->assertSame('{"json":"serializable"}', Json::encode($data));
+        self::assertSame('{"json":"serializable"}', Json::encode($data));
 
         $data       = new JsonModel();
         $data->data = [];
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
         $data       = new JsonModel();
         $data->data = (object)null;
-        $this->assertSame('[]', Json::encode($data));
+        self::assertSame('[]', Json::encode($data));
     }
 
     /**
@@ -72,37 +72,37 @@ final class JsonTest extends TestCase
     {
         // HTML escaped chars
         $data = '&<>"\'/';
-        $this->assertSame('"\u0026\u003C\u003E\u0022\u0027\/"', Json::htmlEncode($data));
+        self::assertSame('"\u0026\u003C\u003E\u0022\u0027\/"', Json::htmlEncode($data));
         // basic data encoding
         $data = '1';
-        $this->assertSame('"1"', Json::htmlEncode($data));
+        self::assertSame('"1"', Json::htmlEncode($data));
         // simple array encoding
         $data = [
             1,
             2,
         ];
-        $this->assertSame('[1,2]', Json::htmlEncode($data));
+        self::assertSame('[1,2]', Json::htmlEncode($data));
         $data = [
             'a' => 1,
             'b' => 2,
         ];
-        $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
+        self::assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
         // simple object encoding
         $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
-        $this->assertSame('[]', Json::htmlEncode($data));
+        self::assertSame('[]', Json::htmlEncode($data));
 
         $data = (object)null;
-        $this->assertSame('[]', Json::htmlEncode($data));
+        self::assertSame('[]', Json::htmlEncode($data));
         // JsonSerializable
         $data = new JsonModel();
-        $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
+        self::assertSame('{"json":"serializable"}', Json::htmlEncode($data));
 
         //        $postsStack = new \SplStack();
         //        $postsStack->push(new Post(915, 'record1'));
         //        $postsStack->push(new Post(456, 'record2'));
-        //        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
+        //        self::assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
     /**
@@ -113,13 +113,18 @@ final class JsonTest extends TestCase
         // empty value
         $json   = '';
         $actual = Json::decode($json);
-        $this->assertNull($actual);
+        self::assertNull($actual);
         // basic data decoding
         $json = '"1"';
-        $this->assertSame('1', Json::decode($json));
+        self::assertSame('1', Json::decode($json));
         // array decoding
         $json = '{"a":1,"b":2}';
-        $this->assertSame(['a' => 1, 'b' => 2], Json::decode($json));
+        self::assertSame(['a' => 1, 'b' => 2], Json::decode($json));
+
+        self::assertEquals([], Json::decode('{}'));
+        self::assertEquals([], Json::decode("{}"));
+        self::assertEquals([], Json::decode("{}"));
+        self::assertEquals([], Json::decode("[]"));
         // exception
         $json = '{"a":1,"b":2';
         $this->expectException(JsonException::class);
@@ -147,8 +152,8 @@ final class JsonTest extends TestCase
             $json = "{'a': '1'}";
             Json::decode($json);
         } catch (Throwable $exception) {
-            $this->assertInstanceOf(JsonException::class, $exception);
-            $this->assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
+            self::assertInstanceOf(JsonException::class, $exception);
+            self::assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
         }
 
         // Unsupported type since PHP 5.5
@@ -158,14 +163,14 @@ final class JsonTest extends TestCase
             Json::encode($data);
             fclose($fp);
         } catch (Throwable $exception) {
-            $this->assertInstanceOf(JsonException::class, $exception);
+            self::assertInstanceOf(JsonException::class, $exception);
             if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(
+                self::assertSame(
                     JsonException::ERRORS_MESSAGES[JSON_ERROR_UNSUPPORTED_TYPE],
                     $exception->getMessage()
                 );
             } else {
-                $this->assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
+                self::assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
             }
         }
     }
