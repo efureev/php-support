@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v3.1.0
+
+### Changed
+
+- Changed behavior on `JSON::encode` & `JSON::decode`: add default option `JSON_THROW_ON_ERROR`. Remove
+  custom `JsonException`
+
 ## v3.0.0
 
 ### Added
@@ -16,7 +23,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Add new global function `class_basename`. Get the class "basename" of the given object / class.
 - Add new global function `trait_uses_recursive`. Returns all traits used by a trait and its traits.
-- Add new global function `class_uses_recursive`. Returns all traits used by a class, its parent classes and trait of their traits.
+- Add new global function `class_uses_recursive`. Returns all traits used by a class, its parent classes and trait of
+  their traits.
 - Add trait `TraitBooter`. Helps to boot trait's static `boot-function`.
 - Add trait `TraitInitializer`. Helps to init trait's `initialize-function`.
 
@@ -104,7 +112,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Changed
 
 - Logic has been changed for the trait `ConfigurableTrait::configurable`:
-at first, on applying props, checking a magic method and then a property
+  at first, on applying props, checking a magic method and then a property
 
 ## v2.4.2
 
@@ -198,10 +206,11 @@ at first, on applying props, checking a magic method and then a property
     + `toCamel` Converts a string to `CamelCase`
     + `toLowerCamel` Converts a string to `lowerCamelCase`
     + `removeMultiSpace` Converts all multi-spaced characters to once
-    
+
 ## v2.0.0
 
 ### Reformat
 
 [keepachangelog]:https://keepachangelog.com/en/1.0.0/
+
 [semver]:https://semver.org/spec/v2.0.0.html

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Php\Support\Helpers;
 
-use Php\Support\Exceptions\JsonException;
-
 use function json_decode;
 use function json_encode;
 
@@ -24,7 +22,6 @@ class Json
      * @param mixed $value the data to be encoded
      *
      * @return string|null
-     * @throws JsonException
      */
     public static function htmlEncode($value): ?string
     {
@@ -47,42 +44,13 @@ class Json
      * @param int $depth
      *
      * @return string|null
-     * @throws JsonException
      */
-    public static function encode($value, $options = 320, int $depth = 512): ?string
+    public static function encode($value, $options = 320 | JSON_THROW_ON_ERROR, int $depth = 512): ?string
     {
         $value = Arr::dataToArray($value);
-        set_error_handler(
-            static function (): bool {
-                static::handleJsonError(JSON_ERROR_SYNTAX);
-                return true;
-            },
-            E_WARNING
-        );
 
-        /*set_error_handler(
-
-            E_WARNING
-        );*/
         $json = json_encode($value, $options, $depth);
-        restore_error_handler();
-        static::handleJsonError(json_last_error());
-
         return $json ?: null;
-    }
-
-    /**
-     * @param int $lastError
-     *
-     * @throws JsonException
-     */
-    protected static function handleJsonError(int $lastError): void
-    {
-        if ($lastError === JSON_ERROR_NONE) {
-            return;
-        }
-
-        throw JsonException::byCode($lastError);
     }
 
     /**
@@ -94,17 +62,13 @@ class Json
      * @param int $depth
      *
      * @return mixed|null
-     * @throws JsonException
      */
-    public static function decode(?string $json, $asArray = true, int $options = 0, int $depth = 512)
+    public static function decode(?string $json, $asArray = true, int $options = JSON_THROW_ON_ERROR, int $depth = 512)
     {
         if ($json === null || $json === '') {
             return null;
         }
-        $decode = json_decode($json, $asArray, $depth, $options);
 
-        static::handleJsonError(json_last_error());
-
-        return $decode;
+        return json_decode($json, $asArray, $depth, $options);
     }
 }

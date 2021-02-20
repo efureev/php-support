@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests;
 
-use Php\Support\Exceptions\JsonException;
+use JsonException;
 use Php\Support\Helpers\Json;
 use PHPUnit\Framework\TestCase;
 use Throwable;
+
 
 /**
  * Class JsonTest
@@ -16,7 +17,6 @@ final class JsonTest extends TestCase
 {
     /**
      * @throws ReflectionException
-     * @throws JsonException
      */
     public function testEncode(): void
     {
@@ -66,7 +66,6 @@ final class JsonTest extends TestCase
     }
 
     /**
-     * @throws JsonException
      */
     public function testHtmlEncode(): void
     {
@@ -106,7 +105,6 @@ final class JsonTest extends TestCase
     }
 
     /**
-     * @throws JsonException
      */
     public function testDecode(): void
     {
@@ -131,12 +129,11 @@ final class JsonTest extends TestCase
     }
 
     /**
-     * @throws JsonException
      */
     public function testDecodeInvalidParamException(): void
     {
         $this->expectException(JsonException::class);
-        $this->expectExceptionMessage('Syntax error.');
+        $this->expectExceptionMessage('Syntax error');
 
         Json::decode('sa');
     }
@@ -151,25 +148,22 @@ final class JsonTest extends TestCase
             $json = "{'a': '1'}";
             Json::decode($json);
         } catch (Throwable $exception) {
-            self::assertInstanceOf(JsonException::class, $exception);
-            self::assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
+            self::assertInstanceOf(\JsonException::class, $exception);
+            self::assertSame('Syntax error', $exception->getMessage());
         }
 
-        // Unsupported type since PHP 5.5
         try {
             $fp   = fopen('php://stdin', 'rb');
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
         } catch (Throwable $exception) {
-            self::assertInstanceOf(JsonException::class, $exception);
+            self::assertInstanceOf(\JsonException::class, $exception);
             if (PHP_VERSION_ID >= 50500) {
                 self::assertSame(
-                    JsonException::ERRORS_MESSAGES[JSON_ERROR_UNSUPPORTED_TYPE],
+                    'Type is not supported',
                     $exception->getMessage()
                 );
-            } else {
-                self::assertSame(JsonException::ERRORS_MESSAGES[JSON_ERROR_SYNTAX], $exception->getMessage());
             }
         }
     }
