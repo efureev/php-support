@@ -6,7 +6,6 @@ namespace Php\Support\Helpers;
 
 use ArrayAccess;
 use JsonSerializable;
-use Php\Support\Exceptions\JsonException;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
 use Traversable;
@@ -44,7 +43,6 @@ class Arr
      * @param mixed $items
      *
      * @return array
-     * @throws JsonException
      */
     public static function toArray($items): array
     {
@@ -79,7 +77,6 @@ class Arr
      * @param mixed $items
      *
      * @return array|mixed|null
-     * @throws JsonException
      */
     public static function dataToArray($items)
     {
@@ -155,7 +152,6 @@ class Arr
      * @param array $array
      *
      * @return string
-     * @throws JsonException
      */
     public static function toPostgresArray(array $array): string
     {
