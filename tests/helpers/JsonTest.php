@@ -125,7 +125,7 @@ final class JsonTest extends TestCase
         // exception
         $json = '{"a":1,"b":2';
         $this->expectException(JsonException::class);
-        Json::decode($json);
+        Json::decode($json, true, JSON_THROW_ON_ERROR);
     }
 
     /**
@@ -135,7 +135,15 @@ final class JsonTest extends TestCase
         $this->expectException(JsonException::class);
         $this->expectExceptionMessage('Syntax error');
 
-        Json::decode('sa');
+        $res = Json::decode('sa', true, JSON_THROW_ON_ERROR);
+        self::assertNull($res);
+    }
+
+    public function testDecodeInvalidParamException2(): void
+    {
+        $res = Json::decode('sa');
+        self::assertNull($res);
+        self::assertEquals(JSON_ERROR_SYNTAX, json_last_error());
     }
 
 
@@ -146,7 +154,7 @@ final class JsonTest extends TestCase
     {
         try {
             $json = "{'a': '1'}";
-            Json::decode($json);
+            Json::decode($json, true, JSON_THROW_ON_ERROR);
         } catch (Throwable $exception) {
             self::assertInstanceOf(\JsonException::class, $exception);
             self::assertSame('Syntax error', $exception->getMessage());

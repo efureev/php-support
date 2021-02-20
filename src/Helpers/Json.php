@@ -45,7 +45,7 @@ class Json
      *
      * @return string|null
      */
-    public static function encode($value, $options = 320 | JSON_THROW_ON_ERROR, int $depth = 512): ?string
+    public static function encode($value, $options = 320, int $depth = 512): ?string
     {
         $value = Arr::dataToArray($value);
 
@@ -63,7 +63,7 @@ class Json
      *
      * @return mixed|null
      */
-    public static function decode(?string $json, $asArray = true, int $options = JSON_THROW_ON_ERROR, int $depth = 512)
+    public static function decode(?string $json, $asArray = true, int $options = 0, int $depth = 512)
     {
         if ($json === null || $json === '') {
             return null;

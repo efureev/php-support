@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v3.1.1
+
+### Changed
+
+- Remove default option `JSON_THROW_ON_ERROR` from `JSON::encode` & `JSON::decode`
+
 ## v3.1.0
 
 ### Changed
