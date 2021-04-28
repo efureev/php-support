@@ -17,8 +17,6 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - The package has PHP's minimal version is 8.0 now
 
-### Reformat
-
 [keepachangelog]:https://keepachangelog.com/en/1.0.0/
 
 [semver]:https://semver.org/spec/v2.0.0.html
