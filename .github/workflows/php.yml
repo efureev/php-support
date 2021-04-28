@@ -3,34 +3,35 @@ name: PHP Package
 on: [ push ]
 
 jobs:
-  phpcs:
-    name: PHPCS
+#  phpcs:
+#    name: PHPCS
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: PHPCS check
+#        uses: chekalsky/phpcs-action@v1
+#        with:
+#          enable_warnings: true
+
+  lint-changelog:
+    name: Lint changelog file
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: PHPCS check
-        uses: chekalsky/phpcs-action@v1
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Lint changelog file
+        uses: avto-dev/markdown-lint@v1
         with:
-          enable_warnings: true
-
-  #  lint-changelog:
-  #    name: Lint changelog file
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Check out code
-  #        uses: actions/checkout@v2
-  #      - name: Lint changelog file
-  #        uses: avto-dev/markdown-lint@v1
-  #        with:
-  #          rules: './.github/workflows/lint/rules/changelog.js'
-  #          config: '/lint/config/changelog.yml'
-  #          args: './CHANGELOG.md'
+          rules: './.github/workflows/lint/rules/changelog.js'
+          config: '/lint/config/changelog.yml'
+          args: './CHANGELOG.md'
 
   testing:
     name: Test on PHP ${{ matrix.php }} with ${{ matrix.setup }} dependencies
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    needs: [lint-changelog]
 
     strategy:
       fail-fast: false
