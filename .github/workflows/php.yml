@@ -1,30 +1,30 @@
 name: PHP Package
 
-on: [push]
+on: [ push ]
 
 jobs:
-  phpcs:
-    name: PHPCS
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: PHPCS check
-        uses: chekalsky/phpcs-action@v1
-        with:
-          enable_warnings: true
-
-#  lint-changelog:
-#    name: Lint changelog file
+#  phpcs:
+#    name: PHPCS
 #    runs-on: ubuntu-latest
 #    steps:
-#      - name: Check out code
-#        uses: actions/checkout@v2
-#      - name: Lint changelog file
-#        uses: avto-dev/markdown-lint@v1
+#      - uses: actions/checkout@v2
+#      - name: PHPCS check
+#        uses: chekalsky/phpcs-action@v1
 #        with:
-#          rules: './.github/workflows/lint/rules/changelog.js'
-#          config: '/lint/config/changelog.yml'
-#          args: './CHANGELOG.md'
+#          enable_warnings: true
+
+  #  lint-changelog:
+  #    name: Lint changelog file
+  #    runs-on: ubuntu-latest
+  #    steps:
+  #      - name: Check out code
+  #        uses: actions/checkout@v2
+  #      - name: Lint changelog file
+  #        uses: avto-dev/markdown-lint@v1
+  #        with:
+  #          rules: './.github/workflows/lint/rules/changelog.js'
+  #          config: '/lint/config/changelog.yml'
+  #          args: './CHANGELOG.md'
 
   testing:
     name: Test on PHP ${{ matrix.php }} with ${{ matrix.setup }} dependencies
@@ -35,8 +35,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        setup: ['basic', 'lowest', 'stable']
-        php: ['7.4','8.0']
+        setup: [ 'basic', 'lowest', 'stable' ]
+        php: [ '8.0' ]
 
     steps:
       - uses: actions/checkout@v2
