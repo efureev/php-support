@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.1.0
+
+### Added
+
+- Add new Helper Class: `Nubmer`.
+- Add method, working with integers: `Number::safeInt`.
+
 ## v4.0.0
 
 ### Changed
