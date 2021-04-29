@@ -1,5 +1,6 @@
 # PHP Support
-![](https://img.shields.io/badge/php->=7.2-blue.svg)
+
+![](https://img.shields.io/badge/php-^8.0-blue.svg)
 ![PHP Package](https://github.com/efureev/php-support/workflows/PHP%20Package/badge.svg?branch=master)
 [![Build Status](https://travis-ci.org/efureev/php-support.svg?branch=master)](https://travis-ci.org/efureev/php-support)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a53fb85fd1ab46169758e10dd2d818cb)](https://app.codacy.com/app/efureev/php-support?utm_source=github.com&utm_medium=referral&utm_content=efureev/php-support&utm_campaign=Badge_Grade_Settings)
@@ -11,12 +12,20 @@
 
 ## Install
 
+For php >= 8.0
+
+```bash
+composer require efureev/support "^4.0"
+```
+
 For php >= 7.4 and <=8.0
+
 ```bash
 composer require efureev/support "^3.0"
 ```
 
-For php >= 7.2 && <=7.4
+For php >= 8.0
+
 ```bash
 composer require efureev/support "^2.0"
 ```
@@ -24,94 +33,94 @@ composer require efureev/support "^2.0"
 ## Content
 
 - Helpers
-  + Array
-    - accessible
-    - dataToArray
-    - exists
-    - fromPostgresArray
-    - get
-    - has
-    - merge
-    - remove
-    - removeByValue
-    - set
-    - toArray
-    - toIndexedArray
-    - toPostgresArray
-    - replaceByTemplate
-  + String
-    - removeMultiSpace
-    - replaceByTemplate
-    - replaceStrTo
-    - toCamel
-    - toDelimited
-    - toKebab
-    - toLowerCamel
-    - toScreamingDelimited
-    - toScreamingSnake
-    - toSnake
-  + Json
-    - decode
-    - encode
-    - htmlEncode
-  + Bit
-    - addFlag
-    - checkFlag
-    - decBinPad
-    - exist
-    - grant
-    - removeFlag
-  + B64
-    - decode
-    - decodeSafe
-    - encode
-    - encodeSafe
+    + Array
+        - accessible
+        - dataToArray
+        - exists
+        - fromPostgresArray
+        - get
+        - has
+        - merge
+        - remove
+        - removeByValue
+        - set
+        - toArray
+        - toIndexedArray
+        - toPostgresArray
+        - replaceByTemplate
+    + String
+        - removeMultiSpace
+        - replaceByTemplate
+        - replaceStrTo
+        - toCamel
+        - toDelimited
+        - toKebab
+        - toLowerCamel
+        - toScreamingDelimited
+        - toScreamingSnake
+        - toSnake
+    + Json
+        - decode
+        - encode
+        - htmlEncode
+    + Bit
+        - addFlag
+        - checkFlag
+        - decBinPad
+        - exist
+        - grant
+        - removeFlag
+    + B64
+        - decode
+        - decodeSafe
+        - encode
+        - encodeSafe
 - Global functions
-  + classNamespace
-  + class_basename
-  + class_uses_recursive
-  + instance
-  + isTrue
-  + trait_uses_recursive
-  + value
-  + when
+    + classNamespace
+    + class_basename
+    + class_uses_recursive
+    + instance
+    + isTrue
+    + trait_uses_recursive
+    + value
+    + when
 - Exceptions
-  + ConfigException
-  + Exception
-  + InvalidArgumentException
-  + InvalidCallException
-  + InvalidConfigException
-  + InvalidParamException
-  + InvalidValueException
-  + JsonException
-  + MethodNotAllowedException
-  + MissingClassException
-  + MissingConfigException
-  + MissingPropertyException
-  + NotSupportedException
-  + UnknownMethodException
-  + UnknownPropertyException
+    + ConfigException
+    + Exception
+    + InvalidArgumentException
+    + InvalidCallException
+    + InvalidConfigException
+    + InvalidParamException
+    + InvalidValueException
+    + JsonException
+    + MethodNotAllowedException
+    + MissingClassException
+    + MissingConfigException
+    + MissingPropertyException
+    + NotSupportedException
+    + UnknownMethodException
+    + UnknownPropertyException
 - Interfaces
-  + Arrayable
-  + Command
-  + Jsonable
-  + Prototype
+    + Arrayable
+    + Command
+    + Jsonable
+    + Prototype
 - Traits
-  + ArrayStorage
-  + ArrayStorageConfigurableTrait
-  + ConfigurableTrait
-  + ConsolePrint
-  + Maker
-  + Metable
-  + ReadOnlyProperties
-  + Singleton
-  + Thrower
-  + TraitBooter
-  + TraitInitializer
-  + Whener
+    + ArrayStorage
+    + ArrayStorageConfigurableTrait
+    + ConfigurableTrait
+    + ConsolePrint
+    + Maker
+    + Metable
+    + ReadOnlyProperties
+    + Singleton
+    + Thrower
+    + TraitBooter
+    + TraitInitializer
+    + Whener
 - Types
-  + GeoPoint
-  + Point
+    + GeoPoint
+    + Point
 
 ## Test
 
