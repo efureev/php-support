@@ -28,6 +28,8 @@ final class NumberTest extends TestCase
             [-9007199254740992, '-9007199254740992'],
             [-9007199254740990, -9007199254740990],
             [-9007199254740992, '-9007199254740992'],
+            ['66ede6f7-1b11-4d01-8bbb-c6412b12eac3', '66ede6f7-1b11-4d01-8bbb-c6412b12eac3'],
+            ['test', 'test'],
         ];
     }
 
@@ -41,5 +43,4 @@ final class NumberTest extends TestCase
     {
         self::assertTrue($exp === Number::safeInt($value));
     }
-
 }

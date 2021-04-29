@@ -23,6 +23,6 @@ class Number
             return (string) $value;
         }
 
-        return (int) $value;
+        return is_numeric($value) ? (int) $value : (string) $value;
     }
 }
