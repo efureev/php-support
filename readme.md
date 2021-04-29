@@ -24,7 +24,7 @@ For php >= 7.4 and <=8.0
 composer require efureev/support "^3.0"
 ```
 
-For php >= 8.0
+For php >= 7.2 && <=7.4
 
 ```bash
 composer require efureev/support "^2.0"
