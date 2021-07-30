@@ -26,20 +26,11 @@ class Point implements Jsonable, Arrayable
      * @param float $x
      * @param float $y
      */
-    public function __construct(float $x, float $y)
+    public function __construct(float $x = 0, float $y = 0)
     {
         $this->x = $x;
         $this->y = $y;
     }
-
-
-    /**
-     * @return string
-     */
-    /*public function __toString()
-    {
-        return $this->toDB();
-    }*/
 
     /**
      * @return array
@@ -71,7 +62,6 @@ class Point implements Jsonable, Arrayable
      * @param int $options
      *
      * @return string|null
-     * @throws \Php\Support\Exceptions\JsonException
      */
     public function toJson($options = 320): ?string
     {
@@ -88,7 +78,6 @@ class Point implements Jsonable, Arrayable
      * @param string|null $string
      *
      * @return Jsonable|null
-     * @throws \Php\Support\Exceptions\JsonException
      */
     public static function fromJson(?string $string): ?Jsonable
     {
@@ -124,7 +113,12 @@ class Point implements Jsonable, Arrayable
             return null;
         }
 
-        return new static(...explode(',', $string));
+        [
+            $x,
+            $y,
+        ] = explode(',', $string);
+
+        return new static((float)$x, (float)$y);
     }
 
 
