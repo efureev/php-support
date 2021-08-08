@@ -35,9 +35,22 @@ trait Metable
      *
      * @return mixed
      */
-    public function metaAttribute(string $key, $default = null)
+    public function metaAttribute(string $key, mixed $default = null)
     {
         return Arr::get($this->meta, $key, $default);
+    }
+
+    /**
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setMetaAttribute(string $key, mixed $value): static
+    {
+        Arr::set($this->meta, $key, $value);
+
+        return $this;
     }
 
     /**
@@ -47,7 +60,7 @@ trait Metable
      *
      * @return $this
      */
-    public function withMeta(array $meta): self
+    public function withMeta(array $meta): static
     {
         $this->meta = Arr::merge($this->meta, $meta);
 

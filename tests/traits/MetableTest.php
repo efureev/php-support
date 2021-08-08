@@ -80,6 +80,43 @@ final class MetableTest extends TestCase
             ]
         );
     }
+
+    public function testSetMetaAttribute(): void
+    {
+        $instance = new MetableClassTest();
+
+        $instance->setMetaAttribute('test', 123);
+        static::assertEquals($instance->metaAttribute('test'), 123);
+
+        $instance->setMetaAttribute('params.id', 1);
+        $instance->setMetaAttribute('params.isBool', true);
+        $instance->setMetaAttribute('params.string', 'test');
+        static::assertEquals(1, $instance->metaAttribute('params.id'));
+        static::assertEquals(true, $instance->metaAttribute('params.isBool'));
+        static::assertEquals('test', $instance->metaAttribute('params.string'));
+
+        static::assertEquals(
+            [
+                'id'     => 1,
+                'isBool' => true,
+                'string' => 'test',
+            ],
+            $instance->metaAttribute('params')
+        );
+
+        static::assertEquals(
+            [
+                'test'   => 123,
+                'params' =>
+                    [
+                        'id'     => 1,
+                        'isBool' => true,
+                        'string' => 'test',
+                    ],
+            ],
+            $instance->meta()
+        );
+    }
 }
 
 /**
