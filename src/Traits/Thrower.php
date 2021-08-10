@@ -26,10 +26,23 @@ trait Thrower
      * @param mixed $value
      * @param mixed ...$arguments
      */
-    public static function throwIf($value, ...$arguments): void
+    public static function throwIf(mixed $value, ...$arguments): void
     {
         if ($value) {
             static::throw(...$arguments);
         }
+    }
+
+    /**
+     * @param mixed $value
+     * @param mixed ...$arguments
+     *
+     * @return bool
+     */
+    public static function throwIfReturn(mixed $value, ...$arguments): bool
+    {
+        static::throwIf($value, ...$arguments);
+
+        return true;
     }
 }
