@@ -156,3 +156,28 @@ if (!function_exists('class_uses_recursive')) {
         return array_unique($results);
     }
 }
+
+
+if (!function_exists('remoteStaticCall')) {
+    /**
+     * Returns result of an object's method if it exists in the object.
+     *
+     * @param string|object|null $class
+     * @param string $method
+     * @param mixed ...$params
+     *
+     * @return mixed
+     */
+    function remoteStaticCall(object|string|null $class, string $method, mixed ...$params): mixed
+    {
+        if (!$class) {
+            return null;
+        }
+
+        if (is_object($class) || (is_string($class) && class_exists($class))) {
+            return $class::$method(...$params);
+        }
+
+        return null;
+    }
+}
