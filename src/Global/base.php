@@ -174,7 +174,10 @@ if (!function_exists('remoteStaticCall')) {
             return null;
         }
 
-        if (is_object($class) || (is_string($class) && class_exists($class))) {
+        if (
+            (is_object($class) || (is_string($class) && class_exists($class))) &&
+            method_exists($class, $method)
+        ) {
             return $class::$method(...$params);
         }
 
