@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.4.0
+
+### Added
+
+- Add global function: `does_trait_use`
+
 ## v4.3.1
 
 ### Added
