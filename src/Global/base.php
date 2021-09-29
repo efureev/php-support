@@ -133,6 +133,19 @@ if (!function_exists('trait_uses_recursive')) {
     }
 }
 
+if (!function_exists('does_trait_use')) {
+    /**
+     * @param string $class
+     * @param string $trait
+     *
+     * @return bool
+     */
+    function does_trait_use(string $class, string $trait): bool
+    {
+        return isset(trait_uses_recursive($class)[$trait]);
+    }
+}
+
 if (!function_exists('class_uses_recursive')) {
     /**
      * Returns all traits used by a class, its parent classes and trait of their traits.
