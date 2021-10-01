@@ -79,9 +79,9 @@ if (!function_exists('instance')) {
      * @param string|object $instance
      * @param mixed ...$params
      *
-     * @return object|null
+     * @return mixed
      */
-    function instance($instance, ...$params)
+    function instance($instance, ...$params): mixed
     {
         if (is_object($instance)) {
             return $instance;
