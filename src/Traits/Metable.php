@@ -43,12 +43,15 @@ trait Metable
     /**
      * @param string $key
      * @param mixed $value
+     * @param bool $removeNull
      *
      * @return $this
      */
-    public function setMetaAttribute(string $key, mixed $value): static
+    public function setMetaAttribute(string $key, mixed $value, bool $removeNull = false): static
     {
-        Arr::set($this->meta, $key, $value);
+        if ($value !== null || !$removeNull) {
+            Arr::set($this->meta, $key, $value);
+        }
 
         return $this;
     }

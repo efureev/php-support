@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.4.2
+
+### Changed
+
+- Add param `removeNull` to method: `Metable::setMetaAttribute`
+
 ## v4.4.0
 
 ### Added
