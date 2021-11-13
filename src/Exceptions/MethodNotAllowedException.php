@@ -23,6 +23,7 @@ class MethodNotAllowedException extends Exception
     public function __construct(string $reason, $message = 'Method Not Allowed')
     {
         $this->reason = $reason;
-        parent::__construct($message);
+
+        parent::__construct($message ? "$message: $reason" : $reason);
     }
 }
