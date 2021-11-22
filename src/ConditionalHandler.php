@@ -32,9 +32,7 @@ final class ConditionalHandler
 {
     private array $params = [];
 
-    private bool|Closure $condition = true;
-
-    public function __construct(private Closure $handler)
+    public function __construct(private Closure $handler, private bool|Closure $condition = true)
     {
     }
 
@@ -75,8 +73,8 @@ final class ConditionalHandler
         return $this->resolve(...$params);
     }
 
-    public static function make(Closure $fn): self
+    public static function make(Closure $fn, bool|Closure $condition = true): self
     {
-        return new self($fn);
+        return new self($fn, $condition);
     }
 }
