@@ -198,6 +198,33 @@ if (!function_exists('remoteStaticCall')) {
     }
 }
 
+if (!function_exists('remoteStaticCall')) {
+    /**
+     * Returns result of an object's method if it exists in the object or trow exception.
+     *
+     * @param string|object|null $class
+     * @param string $method
+     * @param mixed ...$params
+     *
+     * @return mixed
+     */
+    function remoteStaticCallOrTrow(object|string|null $class, string $method, mixed ...$params): mixed
+    {
+        if (!$class) {
+            throw new RuntimeException('Target Class is absent');
+        }
+
+        if (
+            (is_object($class) || (is_string($class) && class_exists($class))) &&
+            method_exists($class, $method)
+        ) {
+            return $class::$method(...$params);
+        }
+
+        \Php\Support\Exceptions\MissingMethodException::throw("$class::$method");
+    }
+}
+
 if (!function_exists('remoteCall')) {
     /**
      * Returns result of an object's method if it exists in the object.

@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.7.0
+
+### Added
+
+- Add exception `MissingMethodException`
+- Add global function `remoteStaticCallOrTrow`
+
 ## v4.6.0
 
 ### Added
