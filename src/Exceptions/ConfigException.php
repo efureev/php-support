@@ -12,21 +12,14 @@ namespace Php\Support\Exceptions;
 class ConfigException extends Exception
 {
     /**
-     * @var mixed
-     */
-    protected $config;
-
-    /**
      * ConfigException constructor.
      *
-     * @param mixed|null $config
+     * @param ?array $config
      * @param string $message
      */
-    public function __construct($message = 'Config Exception', $config = null)
+    public function __construct(string $message = 'Config Exception', protected ?array $config = null)
     {
         parent::__construct($message);
-
-        $this->config = $config;
     }
 
     /**

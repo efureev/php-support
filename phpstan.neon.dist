@@ -4,6 +4,6 @@ parameters:
     - src
   checkMissingIterableValueType: false
   checkGenericClassInNonGenericObjectType: false
-  excludes_analyse:
+  excludePaths:
     - 'src/Types/Point.php'
     - 'src/Types/GeoPoint.php'

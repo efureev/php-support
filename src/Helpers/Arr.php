@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Php\Support\Helpers;
 
 use ArrayAccess;
+use ArrayObject;
 use JsonSerializable;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
@@ -68,7 +69,7 @@ class Arr
             }
         }
 
-        return $res;
+        return (array)$res;
     }
 
     /**
@@ -209,14 +210,14 @@ class Arr
      *
      * @param string|null $s
      * @param int $start
-     * @param null $end
+     * @param ?int $end
      *
      * @return array
      */
     public static function fromPostgresArrayWithBraces(
         ?string $s,
         int $start = 0,
-        &$end = null,
+        ?int &$end = null,
         array $braces = [
             '{',
             '}',
@@ -284,11 +285,23 @@ class Arr
         return $return;
     }
 
-    public static function fromPostgresArray(?string $s, int $start = 0, &$end = null): array
+    /**
+     * @param string|null $s
+     * @param int $start
+     * @param ?int $end
+     *
+     * @return array
+     */
+    public static function fromPostgresArray(?string $s, int $start = 0, ?int &$end = null): array
     {
         return static::fromPostgresArrayWithBraces($s, $start, $end, ['{', '}']);
     }
 
+    /**
+     * @param string|null $value
+     *
+     * @return array|null
+     */
     public static function fromPostgresPoint(?string $value): ?array
     {
         if (empty($value)) {
@@ -312,7 +325,7 @@ class Arr
      *
      * @return mixed
      */
-    public static function get($array, ?string $key, $default = null)
+    public static function get(mixed $array, ?string $key, mixed $default = null): mixed
     {
         if (!static::accessible($array)) {
             return value($default);
@@ -322,11 +335,12 @@ class Arr
             return $array;
         }
 
+        /** @var array|ArrayAccess $array */
         if (static::exists($array, $key)) {
             return $array[$key];
         }
 
-        if (strpos($key, '.') === false) {
+        if (!str_contains($key, '.')) {
             return $array[$key] ?? value($default);
         }
 
@@ -348,7 +362,7 @@ class Arr
      *
      * @return bool
      */
-    public static function accessible($value): bool
+    public static function accessible(mixed $value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -361,7 +375,7 @@ class Arr
      *
      * @return bool
      */
-    public static function exists($array, $key): bool
+    public static function exists(ArrayAccess|array $array, string|int $key): bool
     {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
@@ -378,7 +392,7 @@ class Arr
      *
      * @return bool
      */
-    public static function has($array, $keys): bool
+    public static function has(ArrayAccess|array $array, string|array $keys): bool
     {
         $keys = (array)$keys;
 
@@ -410,13 +424,13 @@ class Arr
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param ?array $array
+     * @param array|ArrayObject|null $array
      * @param string $key
      * @param mixed $value
      *
-     * @return array|null
+     * @return array|ArrayObject|null
      */
-    public static function set(&$array, string $key, $value): ?array
+    public static function set(array|ArrayObject|null &$array, string $key, mixed $value): array|ArrayObject|null
     {
         if ($array === null) {
             return $array;
@@ -442,12 +456,12 @@ class Arr
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param array $array
+     * @param array|ArrayObject $array
      * @param array|string $keys
      *
      * @return void
      */
-    public static function remove(&$array, $keys): void
+    public static function remove(array|ArrayObject &$array, array|string $keys): void
     {
         $original = &$array;
         $keys     = (array)$keys;
@@ -497,7 +511,7 @@ class Arr
     {
         $res = [];
         foreach ($array as $key => $item) {
-            $res[$key] = static::itemReplaceByTemplate($item, $replace);
+            $res[$key] = self::itemReplaceByTemplate($item, $replace);
         }
         return $res;
     }

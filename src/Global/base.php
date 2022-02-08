@@ -221,7 +221,7 @@ if (!function_exists('remoteStaticCall')) {
             return $class::$method(...$params);
         }
 
-        \Php\Support\Exceptions\MissingMethodException::throw("$class::$method");
+        throw new \Php\Support\Exceptions\MissingMethodException("$class::$method");
     }
 }
 

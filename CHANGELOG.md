@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.8.0
+
+### Added
+
+- Add methods `toPostgresPoint`, `fromPostgresPoint` to `Arr` helper
+
 ## v4.7.0
 
 ### Added

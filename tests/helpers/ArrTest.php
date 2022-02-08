@@ -435,7 +435,6 @@ final class ArrTest extends TestCase
         static::assertFalse(Arr::exists($array, 'test.key1'));
         static::assertFalse(Arr::exists($array, 'te'));
         static::assertFalse(Arr::exists($array, ''));
-        static::assertFalse(Arr::exists($array, null));
         static::assertFalse(Arr::exists($array, 1));
 
 
@@ -1067,32 +1066,6 @@ final class ArrTest extends TestCase
                 'key.sub12',
             ],
             [
-                false,
-                $array,
-                null,
-            ],
-            [
-                false,
-                null,
-                null,
-            ],
-            [
-                false,
-                null,
-                [],
-            ],
-            [
-                false,
-                null,
-                0,
-            ],
-            [
-                false,
-                '',
-                0,
-            ],
-
-            [
                 true,
                 $array,
                 'key.sub4.sub4sub',
@@ -1275,7 +1248,7 @@ final class ArrTest extends TestCase
             'key2' => 2,
             'key4' => 1,
         ];
-        Arr::remove($array, null);
+        Arr::remove($array, []);
 
         static::assertEquals($array, Arr::get($array, null));
     }

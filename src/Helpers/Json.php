@@ -41,7 +41,7 @@ class Json
      * @param int $options the encoding options. For more details please refer to
      *                       <http://www.php.net/manual/en/function.json-encode.php>. Default is
      *                       `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
-     * @param int $depth
+     * @param int<1, max> $depth
      *
      * @return string|null
      */
@@ -59,7 +59,7 @@ class Json
      * @param null|string $json the JSON string to be decoded
      * @param bool $asArray whether to return objects in terms of associative arrays.
      * @param int $options
-     * @param int $depth
+     * @param int<1, max> $depth
      *
      * @return mixed|null
      */
