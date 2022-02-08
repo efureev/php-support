@@ -574,8 +574,8 @@ final class ArrTest extends TestCase
 
     public function testFromPostgresPoint(): void
     {
-        static::assertEquals(['val1', '2342342'], Arr::fromPostgresPoint('(val1,2342342)'));
-        static::assertEquals(['12.3223', '0.3223',], Arr::fromPostgresPoint('(12.3223,0.3223)'));
+        static::assertEquals([32.323, 2342342.0], Arr::fromPostgresPoint('(32.323,2342342)'));
+        static::assertEquals([12.3223, 0.3223,], Arr::fromPostgresPoint('(12.3223,0.3223)'));
         static::assertNull(Arr::fromPostgresPoint('()'));
         static::assertNull(Arr::fromPostgresPoint(null));
         static::assertNull(Arr::fromPostgresPoint(''));

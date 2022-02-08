@@ -300,7 +300,7 @@ class Arr
     /**
      * @param string|null $value
      *
-     * @return array|null
+     * @return ?array
      */
     public static function fromPostgresPoint(?string $value): ?array
     {
@@ -313,7 +313,14 @@ class Arr
             return null;
         }
 
-        return explode(',', $string);
+        [
+            $x,
+            $y,
+        ] = explode(',', $string);
+        return [
+            (float)$x,
+            (float)$y,
+        ];
     }
 
     /**
