@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Php\Support\Types;
 
 use Php\Support\Exceptions\InvalidParamException;
+use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
@@ -88,21 +89,14 @@ class Point implements Jsonable, Arrayable
      */
     public function castFromDatabase(?string $value): ?self
     {
-        if (empty($value)) {
-            return null;
-        }
-
-        $string = mb_substr($value, 1, -1);
-
-        if (empty($string)) {
+        if (!$result = Arr::fromPostgresPoint($value)) {
             return null;
         }
 
         [
             $x,
             $y,
-        ] = explode(',', $string);
-
+        ] = $result;
         return new static((float)$x, (float)$y);
     }
 

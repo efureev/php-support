@@ -6,6 +6,4 @@ namespace Php\Support;
 
 class ErrorCollection
 {
-
-
 }

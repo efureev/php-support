@@ -38,6 +38,7 @@ composer require efureev/support "^2.0"
         - dataToArray
         - exists
         - fromPostgresArray
+        - fromPostgresPoint
         - get
         - has
         - merge
@@ -47,6 +48,7 @@ composer require efureev/support "^2.0"
         - toArray
         - toIndexedArray
         - toPostgresArray
+        - toPostgresPoint
         - replaceByTemplate
     + String
         - removeMultiSpace

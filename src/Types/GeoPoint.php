@@ -17,7 +17,6 @@ use Php\Support\Interfaces\Jsonable;
  */
 class GeoPoint extends Point
 {
-
     /**
      * @param int $options
      *

@@ -13,7 +13,6 @@ use Throwable;
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {
-
     /**
      * Exception constructor.
      *

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests;
 
+use ArrayObject;
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;
 use PHPUnit\Framework\TestCase;
-use ArrayObject;
 
 /**
  * Class ArrTest
@@ -143,7 +143,8 @@ final class ArrTest extends TestCase
                     1,
                     2,
                     3,
-                ], [
+                ],
+                [
                     1,
                     2,
                     3,
@@ -219,23 +220,25 @@ final class ArrTest extends TestCase
                     'test',
                 ],
             ],
-            [new class () implements \JsonSerializable {
-                private $data = [
+            [
+                new class () implements \JsonSerializable {
+                    private $data = [
 
+                        '132',
+                        12,
+                        'test',
+                    ];
+
+                    public function jsonSerialize()
+                    {
+                        return $this->data;
+                    }
+                },
+                [
                     '132',
                     12,
                     'test',
-                ];
-
-                public function jsonSerialize()
-                {
-                    return $this->data;
-                }
-            }, [
-                '132',
-                12,
-                'test',
-            ],
+                ],
             ],
             [
                 new ArrayObject([12, 'test 1']),
@@ -303,7 +306,8 @@ final class ArrTest extends TestCase
                     1,
                     2,
                     3,
-                ], [
+                ],
+                [
                     1,
                     2,
                     3,
@@ -341,23 +345,25 @@ final class ArrTest extends TestCase
                     'test',
                 ],
             ],
-            [new class () implements \JsonSerializable {
-                private $data = [
+            [
+                new class () implements \JsonSerializable {
+                    private $data = [
 
+                        '132',
+                        12,
+                        'test',
+                    ];
+
+                    public function jsonSerialize()
+                    {
+                        return $this->data;
+                    }
+                },
+                [
                     '132',
                     12,
                     'test',
-                ];
-
-                public function jsonSerialize()
-                {
-                    return $this->data;
-                }
-            }, [
-                '132',
-                12,
-                'test',
-            ],
+                ],
             ],
             [
                 new ArrayObject([12, 'test 1']),
@@ -495,10 +501,6 @@ final class ArrTest extends TestCase
         static::assertEquals($expected, $res);
     }
 
-
-    /**
-     * @throws \Php\Support\Exceptions\JsonException
-     */
     public function testToPostgresArray(): void
     {
         static::assertEquals(
@@ -550,12 +552,34 @@ final class ArrTest extends TestCase
         static::assertEquals('{}', Arr::ToPostgresArray([]));
     }
 
+    public function testToPostgresPoint(): void
+    {
+        static::assertEquals('(123,0.332)', Arr::ToPostgresPoint([123.00, 0.332]));
+        static::assertEquals('(123.012,10.332)', Arr::ToPostgresPoint([123.012, 10.332]));
+
+        static::assertNull(Arr::ToPostgresPoint([]));
+        static::assertNull(Arr::ToPostgresPoint([1]));
+        static::assertNull(Arr::ToPostgresPoint([1, 2, 3]));
+    }
+
 
     public function testFromPostgresArray(): void
     {
         static::assertEquals(['val1', 'test', 'null', '', 'null'], Arr::fromPostgresArray('{val1,test,null,,null}'));
-        static::assertEquals(['val1', '1', '', '3', 'null', '', 'null'], Arr::fromPostgresArray('{val1,1,,3,null,,null}'));
+        static::assertEquals(
+            ['val1', '1', '', '3', 'null', '', 'null'],
+            Arr::fromPostgresArray('{val1,1,,3,null,,null}')
+        );
         static::assertEquals([], Arr::fromPostgresArray('{}'));
+    }
+
+    public function testFromPostgresPoint(): void
+    {
+        static::assertEquals(['val1', '2342342'], Arr::fromPostgresPoint('(val1,2342342)'));
+        static::assertEquals(['12.3223', '0.3223',], Arr::fromPostgresPoint('(12.3223,0.3223)'));
+        static::assertNull(Arr::fromPostgresPoint('()'));
+        static::assertNull(Arr::fromPostgresPoint(null));
+        static::assertNull(Arr::fromPostgresPoint(''));
     }
 
     /**
@@ -568,25 +592,29 @@ final class ArrTest extends TestCase
                 [
                     0 => 1,
                     2 => 3,
-                ], 1,
+                ],
+                1,
                 [
                     1,
                     2,
                     3,
-                ], 2,
+                ],
+                2,
             ],
             [
                 [
                     1 => 'val 21',
                     2 => 'vat',
                     3 => 'test',
-                ], 0,
+                ],
+                0,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     'test',
-                ], 'val 2',
+                ],
+                'val 2',
             ],
             [
                 [
@@ -594,27 +622,31 @@ final class ArrTest extends TestCase
                     2 => 'val 21',
                     3 => 'vat',
                     4 => 'test',
-                ], 0,
+                ],
+                0,
                 [
                     'val 2',
                     'val 2',
                     'val 21',
                     'vat',
                     'test',
-                ], 'val 2',
+                ],
+                'val 2',
             ],
             [
                 [
                     'val 2',
                     'val 21',
                     'vat',
-                ], 3,
+                ],
+                3,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     null,
-                ], null,
+                ],
+                null,
             ],
             [
                 [
@@ -622,24 +654,28 @@ final class ArrTest extends TestCase
                     'val 21',
                     'vat',
                     null,
-                ], null,
+                ],
+                null,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     null,
-                ], 1,
+                ],
+                1,
             ],
             [
                 [
                     'key 1' => 'val 1',
                     'key 2' => 'val 2',
-                ], 'key 4',
+                ],
+                'key 4',
                 [
                     'key 1' => 'val 1',
                     'key 2' => 'val 2',
                     'key 4' => 'val 4',
-                ], 'val 4',
+                ],
+                'val 4',
             ],
             [
                 ['a'],
@@ -717,25 +753,29 @@ final class ArrTest extends TestCase
                 [
                     1,
                     3,
-                ], 1,
+                ],
+                1,
                 [
                     1,
                     2,
                     3,
-                ], 2,
+                ],
+                2,
             ],
             [
                 [
                     'val 21',
                     'vat',
                     'test',
-                ], 0,
+                ],
+                0,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     'test',
-                ], 'val 2',
+                ],
+                'val 2',
             ],
             [
                 [
@@ -743,27 +783,31 @@ final class ArrTest extends TestCase
                     'val 21',
                     'vat',
                     'test',
-                ], 0,
+                ],
+                0,
                 [
                     'val 2',
                     'val 2',
                     'val 21',
                     'vat',
                     'test',
-                ], 'val 2',
+                ],
+                'val 2',
             ],
             [
                 [
                     'val 2',
                     'val 21',
                     'vat',
-                ], 3,
+                ],
+                3,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     null,
-                ], null,
+                ],
+                null,
             ],
             [
                 [
@@ -771,24 +815,28 @@ final class ArrTest extends TestCase
                     'val 21',
                     'vat',
                     null,
-                ], null,
+                ],
+                null,
                 [
                     'val 2',
                     'val 21',
                     'vat',
                     null,
-                ], 1,
+                ],
+                1,
             ],
             [
                 [
                     'val 1',
                     'val 2',
-                ], 'key 4',
+                ],
+                'key 4',
                 [
                     'key 1' => 'val 1',
                     'key 2' => 'val 2',
                     'key 4' => 'val 4',
-                ], 'val 4',
+                ],
+                'val 4',
             ],
 
             [
@@ -869,7 +917,8 @@ final class ArrTest extends TestCase
                 'sub2' => [
                     'val2',
                     'val3',
-                ], 'sub4' => ['sub4sub' => 'val3'],
+                ],
+                'sub4' => ['sub4sub' => 'val3'],
             ],
             'key2' => 2,
             'key4' => 1,
@@ -895,7 +944,8 @@ final class ArrTest extends TestCase
                 [
                     'val2',
                     'val3',
-                ], $array,
+                ],
+                $array,
                 'key.sub2',
             ],
             [
@@ -978,7 +1028,8 @@ final class ArrTest extends TestCase
                 'sub2' => [
                     'val2',
                     'val3',
-                ], 'sub4' => ['sub4sub' => 'val3'],
+                ],
+                'sub4' => ['sub4sub' => 'val3'],
             ],
             'key2' => 2,
             'key4' => 1,
@@ -1093,7 +1144,8 @@ final class ArrTest extends TestCase
                 [
                     'val2',
                     'val3',
-                ], $array,
+                ],
+                $array,
                 'key.sub2',
             ],
             [
@@ -1160,7 +1212,8 @@ final class ArrTest extends TestCase
                 'sub2' => [
                     'val2',
                     'val3',
-                ], 'sub4' => ['sub4sub' => 'val3'],
+                ],
+                'sub4' => ['sub4sub' => 'val3'],
             ],
             'key2' => 2,
             'key4' => 1,
@@ -1242,10 +1295,12 @@ final class ArrTest extends TestCase
                 [
                     'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
-                ], [
+                ],
+                [
                     '{{%KEY%}}'   => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
-                ], [
+                ],
+                [
                     'key'   => 'vKey',
                     'token' => 'vToken',
                 ],
@@ -1254,7 +1309,8 @@ final class ArrTest extends TestCase
                 [
                     'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
-                ], ['{{%KEY%}}' => 'vKey'],
+                ],
+                ['{{%KEY%}}' => 'vKey'],
                 [
                     'key'   => 'vKey',
                     'token' => '{{%TOKEN%}}',
@@ -1264,7 +1320,8 @@ final class ArrTest extends TestCase
                 [
                     'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
-                ], ['{{%KEY%}}' => ''],
+                ],
+                ['{{%KEY%}}' => ''],
                 [
                     'key'   => '',
                     'token' => '{{%TOKEN%}}',
@@ -1274,7 +1331,8 @@ final class ArrTest extends TestCase
                 [
                     'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
-                ], ['{{%KEY%}}' => null],
+                ],
+                ['{{%KEY%}}' => null],
                 [
                     'key'   => '',
                     'token' => '{{%TOKEN%}}',
@@ -1293,7 +1351,8 @@ final class ArrTest extends TestCase
                         ],
                     ],
                     'step3' => ['val' => '{{%VALUE%}}'],
-                ], [
+                ],
+                [
                     '{{%KEY%}}'   => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
                     '{{%VALUE%}}' => 12,
@@ -1317,7 +1376,8 @@ final class ArrTest extends TestCase
                 [
                     '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
-                ], ['sdasdas'],
+                ],
+                ['sdasdas'],
             ],
             [
                 ['sdaas'],
@@ -1338,10 +1398,10 @@ final class ArrTest extends TestCase
     {
         $res = Arr::replaceByTemplate($array, $replace);
 
-//        var_dump($res);
-//        var_dump($exp);
-//        static::assertEquals($exp, $res);
+        //        var_dump($res);
+        //        var_dump($exp);
+        //        static::assertEquals($exp, $res);
         static::assertJsonStringEqualsJsonString(\json_encode($exp), \json_encode($res));
-//        static::assertEquals($exp, $res);
+        //        static::assertEquals($exp, $res);
     }
 }

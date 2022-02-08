@@ -162,6 +162,20 @@ class Arr
         return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
     }
 
+    public static function toPostgresPoint(array $array): ?string
+    {
+        if (count($array) !== 2) {
+            return null;
+        }
+
+        [
+            $x,
+            $y,
+        ] = $array;
+
+        return '(' . $x . ',' . $y . ')';
+    }
+
     /**
      * Remove named keys from arrays
      *
@@ -190,9 +204,29 @@ class Arr
      *
      * @return array
      */
-    public static function fromPostgresArray(?string $s, int $start = 0, &$end = null): array
-    {
-        if (empty($s) || $s[0] !== '{') {
+    /**
+     * Load from PG array to PHP array
+     *
+     * @param string|null $s
+     * @param int $start
+     * @param null $end
+     *
+     * @return array
+     */
+    public static function fromPostgresArrayWithBraces(
+        ?string $s,
+        int $start = 0,
+        &$end = null,
+        array $braces = [
+            '{',
+            '}',
+        ]
+    ): array {
+        [
+            $braceOpen,
+            $braceClose,
+        ] = $braces;
+        if (empty($s) || $s[0] !== $braceOpen) {
             return [];
         }
 
@@ -204,14 +238,14 @@ class Arr
 
         for ($i = $start + 1; $i < $len; $i++) {
             $ch = $s[$i];
-            if (!$string && $ch === '}') {
+            if (!$string && $ch === $braceClose) {
                 if ($v !== '' || !empty($return)) {
                     $return[] = $v;
                 }
                 $end = $i;
                 break;
             } else {
-                if (!$string && $ch === '{') {
+                if (!$string && $ch === $braceOpen) {
                     $v = self::fromPostgresArray($s, (int)$i, $i);
                 } else {
                     if (!$string && $ch === ',') {
@@ -248,6 +282,25 @@ class Arr
         }
 
         return $return;
+    }
+
+    public static function fromPostgresArray(?string $s, int $start = 0, &$end = null): array
+    {
+        return static::fromPostgresArrayWithBraces($s, $start, $end, ['{', '}']);
+    }
+
+    public static function fromPostgresPoint(?string $value): ?array
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        $string = mb_substr($value, 1, -1);
+        if (empty($string)) {
+            return null;
+        }
+
+        return explode(',', $string);
     }
 
     /**
