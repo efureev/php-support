@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.9.0
+
+### Added
+
+- Add method `Str::truncate`: truncate a string to a specified length without cutting a word off.
+- Add method `Str::slugify`: generate a string safe for use in URLs from any given string
+- Add method `Str::seemsUTF8`: checks to see if a string is utf8 encoded
+- Add method `Str::removeAccents`: converts all accent characters to ASCII characters
+- Add method `URLify::downcode`: transliterates characters to their ASCII equivalents
+
 ## v4.8.0
 
 ### Added

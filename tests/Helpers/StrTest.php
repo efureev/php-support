@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests;
+namespace Php\Support\Tests\Helpers;
 
 use Php\Support\Helpers\Str;
+use Php\Support\Helpers\URLify;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,6 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class StrTest extends TestCase
 {
+    use HasReflection;
 
     public function providerDataSnake(): array
     {
@@ -668,6 +670,107 @@ final class StrTest extends TestCase
      */
     public function testIsRegExp(string $regexp, bool $result): void
     {
-        static::assertEquals($result, Str::isRegExp($regexp));
+        self::assertEquals($result, Str::isRegExp($regexp));
     }
+
+
+    /**
+     * @test
+     */
+    public function truncate(): void
+    {
+        self::assertEquals(
+            'The quick brown fox...',
+            Str::truncate('The quick brown fox jumps over the lazy dog', 24)
+        );
+        self::assertEquals(
+            'The quick brown fox>',
+            Str::truncate('The quick brown fox jumps over the lazy dog', 24, '>')
+        );
+        self::assertEquals(
+            'The quick brown fox jumps over the lazy dog',
+            Str::truncate('The quick brown fox jumps over the lazy dog', 55)
+        );
+        self::assertEquals('Th...', Str::truncate('The quick brown fox jumps over the lazy dog', 2));
+        self::assertEquals('The...', Str::truncate('The quick brown fox jumps over the lazy dog', 3));
+        self::assertEquals('The...', Str::truncate('The quick brown fox jumps over the lazy dog', 7));
+    }
+
+    /**
+     * @test
+     */
+    public function seemsUTF8(): void
+    {
+        // Test a valid UTF-8 sequence: "ÜTF-8 Fµñ".
+        $validUTF8 = "\xC3\x9CTF-8 F\xC2\xB5\xC3\xB1";
+        self::assertTrue(Str::seemsUTF8($validUTF8));
+
+        self::assertTrue(
+            Str::seemsUTF8("\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid UTF-8 \xEF\xBF\xBD")
+        );
+
+        // Test invalid UTF-8 sequences
+        $invalidUTF8 = "\xc3 this has \xe6\x9d some invalid UTF-8 \xe6";
+        self::assertFalse(Str::seemsUTF8($invalidUTF8));
+
+        // And test some plain ASCII
+        self::assertTrue(Str::seemsUTF8('The quick brown fox jumps over the lazy dog'));
+
+        // Test an invalid non-UTF-8 string.
+        if (function_exists('mb_convert_encoding')) {
+            mb_internal_encoding('UTF-8');
+            // Converts the 'ç' UTF-8 character to UCS-2LE
+            $utf8Char = pack('n', 50087);
+            $ucsChar  = mb_convert_encoding($utf8Char, 'UCS-2LE', 'UTF-8');
+
+            self::assertEquals(
+                $utf8Char,
+                'ç',
+                'This PHP system\'s internal character set is not properly set as UTF-8.'
+            );
+            self::assertEquals($utf8Char, pack('n', 50087), 'Something is wrong with your ICU unicode library.');
+
+            // Test for not UTF-8.
+            self::assertFalse(Str::seemsUTF8($ucsChar));
+
+            // Test the worker method.
+            $method = self::setMethodAccessible(URLify::class, 'seemsUTF8Regex');
+            self::assertFalse(
+                $method->invoke(null, $invalidUTF8),
+                self::class . '::seemsUTF8Regex did not properly detect invalid UTF-8.'
+            );
+            self::assertTrue(
+                $method->invoke(null, $validUTF8),
+                self::class . '::seemsUTF8Regex did not properly detect valid UTF-8.'
+            );
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function slugify(): void
+    {
+        $this->assertEquals('a-simple-title', Str::slugify('A simple title'));
+        $this->assertEquals('this-post-it-has-a-dash', Str::slugify('This post -- it has a dash'));
+        $this->assertEquals('123-1251251', Str::slugify('123----1251251'));
+        $this->assertEquals('one23-1251251', Str::slugify('123----1251251', '-', true));
+
+        $this->assertEquals('a-simple-title', Str::slugify('A simple title', '-'));
+        $this->assertEquals('this-post-it-has-a-dash', Str::slugify('This post -- it has a dash', '-'));
+        $this->assertEquals('123-1251251', Str::slugify('123----1251251', '-'));
+        $this->assertEquals('one23-1251251', Str::slugify('123----1251251', '-', true));
+
+        $this->assertEquals('a_simple_title', Str::slugify('A simple title', '_'));
+        $this->assertEquals('this_post_it_has_a_dash', Str::slugify('This post -- it has a dash', '_'));
+        $this->assertEquals('123_1251251', Str::slugify('123----1251251', '_'));
+        $this->assertEquals('one23_1251251', Str::slugify('123----1251251', '_', true));
+
+        // Blank separator test
+        $this->assertEquals('asimpletitle', Str::slugify('A simple title', ''));
+        $this->assertEquals('thispostithasadash', Str::slugify('This post -- it has a dash', ''));
+        $this->assertEquals('1231251251', Str::slugify('123----1251251', ''));
+        $this->assertEquals('one231251251', Str::slugify('123----1251251', '', true));
+    }
+
 }

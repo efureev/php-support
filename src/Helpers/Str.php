@@ -321,6 +321,105 @@ class Str
      */
     public static function isRegExp(string $regex): bool
     {
-        return empty($regex) ? false : @preg_match($regex, '') !== false;
+        return !empty($regex) && @preg_match($regex, '') !== false;
+    }
+
+    /**
+     * Truncate a string to a specified length without cutting a word off
+     *
+     * @param string $str
+     * @param int $length
+     * @param string $append
+     *
+     * @return string
+     */
+    public static function truncate(string $str, int $length, string $append = '...'): string
+    {
+        $ret        = mb_substr($str, 0, $length);
+        $last_space = mb_strrpos($ret, ' ');
+
+        if ($last_space !== false && $str !== $ret) {
+            $ret = mb_substr($ret, 0, $last_space);
+        }
+
+        if ($ret !== $str) {
+            $ret .= $append;
+        }
+
+        return $ret;
+    }
+
+
+    /**
+     * Generate a string safe for use in URLs from any given string.
+     *
+     * @param string $str
+     * @param string $separator
+     * @param bool $firstLetterOnly
+     *
+     * @return string
+     */
+    public static function slugify(string $str, string $separator = '-', bool $firstLetterOnly = false): string
+    {
+        $slug = preg_replace('/([^a-z\d]+)/', $separator, mb_strtolower(self::removeAccents($str)));
+        if (empty($slug)) {
+            return '';
+        }
+
+        if ($firstLetterOnly) {
+            $digits = [
+                'zero',
+                'one',
+                'two',
+                'three',
+                'four',
+                'five',
+                'six',
+                'seven',
+                'eight',
+                'nine',
+            ];
+
+            if (is_numeric(mb_substr($slug, 0, 1))) {
+                $slug = $digits[mb_substr($slug, 0, 1)] . mb_substr($slug, 1);
+            }
+        }
+
+        return $slug;
+    }
+
+
+    /**
+     * Checks to see if a string is utf8 encoded.
+     *
+     * NOTE: This function checks for 5-Byte sequences, UTF8
+     *       has Bytes Sequences with a maximum length of 4.
+     *
+     * Written by Tony Ferrara <http://blog.ircmaxwell.com>
+     *
+     * @param string $string The string to be checked
+     *
+     * @return bool
+     */
+    public static function seemsUTF8(string $string): bool
+    {
+        return URLify::seemsUTF8($string);
+    }
+
+    /**
+     * Converts all accent characters to ASCII characters.
+     *
+     * @param string $str
+     * @param string $language
+     *
+     * @return string
+     */
+    public static function removeAccents(string $str, string $language = ''): string
+    {
+        if (!preg_match('/[\x80-\xff]/', $str)) {
+            return $str;
+        }
+
+        return URLify::downcode($str, $language);
     }
 }

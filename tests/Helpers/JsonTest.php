@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests;
+namespace Php\Support\Tests\Helpers;
 
 use JsonException;
 use Php\Support\Helpers\Json;
