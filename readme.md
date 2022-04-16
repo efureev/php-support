@@ -33,96 +33,107 @@ composer require efureev/support "^2.0"
 ## Content
 
 - Helpers
-    + Array
-        - accessible
-        - dataToArray
-        - exists
-        - fromPostgresArray
-        - fromPostgresPoint
-        - get
-        - has
-        - merge
-        - remove
-        - removeByValue
-        - set
-        - toArray
-        - toIndexedArray
-        - toPostgresArray
-        - toPostgresPoint
-        - replaceByTemplate
-    + String
-        - removeMultiSpace
-        - replaceByTemplate
-        - replaceStrTo
-        - toCamel
-        - toDelimited
-        - toKebab
-        - toLowerCamel
-        - toScreamingDelimited
-        - toScreamingSnake
-        - toSnake
-    + Json
-        - decode
-        - encode
-        - htmlEncode
-    + Bit
-        - addFlag
-        - checkFlag
-        - decBinPad
-        - exist
-        - grant
-        - removeFlag
-    + B64
-        - decode
-        - decodeSafe
-        - encode
-        - encodeSafe
+  + Array
+    - accessible
+    - dataToArray
+    - exists
+    - fromPostgresArray
+    - fromPostgresPoint (^4.8.0)
+    - get
+    - has
+    - merge
+    - remove
+    - removeByValue
+    - set
+    - toArray
+    - toIndexedArray
+    - toPostgresArray
+    - toPostgresPoint (^4.8.0)
+    - replaceByTemplate
+  + String
+    - removeAccents (^4.9.0)
+    - removeMultiSpace
+    - replaceByTemplate
+    - replaceStrTo
+    - seemsUTF8 (^4.9.0)
+    - slugify (^4.9.0)
+    - toCamel
+    - toDelimited
+    - toKebab
+    - toLowerCamel
+    - toScreamingDelimited
+    - toScreamingSnake
+    - toSnake
+    - truncate (^4.9.0)
+  + Json
+    - decode
+    - encode
+    - htmlEncode
+  + Bit
+    - addFlag
+    - checkFlag
+    - decBinPad
+    - exist
+    - grant
+    - removeFlag
+  + B64
+    - decode
+    - decodeSafe
+    - encode
+    - encodeSafe
+  + Number
+    - safeInt (^4.1.0)
 - Global functions
-    + classNamespace
-    + class_basename
-    + class_uses_recursive
-    + instance
-    + isTrue
-    + trait_uses_recursive
-    + value
-    + when
+  + does_trait_use (^4.4.0)
+  + classNamespace
+  + class_basename
+  + class_uses_recursive
+  + instance
+  + isTrue
+  + trait_uses_recursive
+  + value
+  + remoteCall (^4.3.1)
+  + remoteStaticCall (^4.3.1)
+  + remoteStaticCallOrTrow (^4.7.0)
+  + when
 - Exceptions
-    + ConfigException
-    + Exception
-    + InvalidArgumentException
-    + InvalidCallException
-    + InvalidConfigException
-    + InvalidParamException
-    + InvalidValueException
-    + JsonException
-    + MethodNotAllowedException
-    + MissingClassException
-    + MissingConfigException
-    + MissingPropertyException
-    + NotSupportedException
-    + UnknownMethodException
-    + UnknownPropertyException
+  + ConfigException
+  + Exception
+  + InvalidArgumentException
+  + InvalidCallException
+  + InvalidConfigException
+  + InvalidParamException
+  + InvalidValueException
+  + JsonException
+  + MethodNotAllowedException
+  + MissingClassException
+  + MissingConfigException
+  + MissingPropertyException
+  + MissingMethodException (^4.7.0)
+  + NotSupportedException
+  + UnknownMethodException
+  + UnknownPropertyException
 - Interfaces
-    + Arrayable
-    + Command
-    + Jsonable
-    + Prototype
+  + Arrayable
+  + Command
+  + Jsonable
+  + Prototype
 - Traits
-    + ArrayStorage
-    + ArrayStorageConfigurableTrait
-    + ConfigurableTrait
-    + ConsolePrint
-    + Maker
-    + Metable
-    + ReadOnlyProperties
-    + Singleton
-    + Thrower
-    + TraitBooter
-    + TraitInitializer
-    + Whener
+  + ArrayStorage
+  + ArrayStorageConfigurableTrait
+  + ConfigurableTrait
+  + ConsolePrint
+  + Maker
+  + Metable
+  + ReadOnlyProperties
+  + Singleton
+  + Thrower
+  + TraitBooter
+  + TraitInitializer
+  + Whener
 - Types
-    + GeoPoint
-    + Point
+  + GeoPoint
+  + Point
 
 ## Test
 

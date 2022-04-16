@@ -68,7 +68,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Add new Helper Class: `Nubmer`
+- Add new Helper Class: `Number`
 - Add method, working with integers: `Number::safeInt`
 
 ## v4.0.0
