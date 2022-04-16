@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Add method `Str::truncate`: truncate a string to a specified length without cutting a word off.
+- Add method `Str::truncate`: truncate a string to a specified length without cutting a word off
 - Add method `Str::slugify`: generate a string safe for use in URLs from any given string
 - Add method `Str::seemsUTF8`: checks to see if a string is utf8 encoded
 - Add method `Str::removeAccents`: converts all accent characters to ASCII characters
