@@ -16,9 +16,11 @@ trait HasPrePostActions
         return $this;
     }
 
-    public function getCallbackActions(string $key): array
+    public function getCallbackActions(string $key = null): array
     {
-        return (array)($this->executeCallbacks[$key] ?? []);
+        return $key ?
+            $this->executeCallbacks[$key] ?? []
+            : $this->executeCallbacks;
     }
 
     protected function runActions(string $actionGroup, ...$arguments): bool
