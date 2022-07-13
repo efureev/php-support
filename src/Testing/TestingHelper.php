@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Testing;
 
-use function instance;
+use ReflectionClass;
 
 trait TestingHelper
 {
@@ -21,12 +21,30 @@ trait TestingHelper
      * @example
      *  $result = $this->runProtectedMethod($sp, "registerService", T::class);
      */
-    public function runProtectedMethod(string|object $class, string $method, ...$params): mixed
+    protected function runProtectedMethod(string|object $class, string $method, ...$params): mixed
     {
-        $class = instance($class);
-
         $methodReflex = new \ReflectionMethod($class, $method);
         $methodReflex->setAccessible(true);
         return $methodReflex->invoke($class, ...$params);
+    }
+
+    /**
+     * Get a instance property (public/private/protected) value.
+     *
+     * @param object|string $object
+     * @param string $property_name
+     *
+     * @return mixed
+     * @throws \ReflectionException
+     *
+     */
+    protected function getProperty(object|string $object, string $propertyName): mixed
+    {
+        $reflection = new ReflectionClass($object);
+
+        $property = $reflection->getProperty($propertyName);
+        $property->setAccessible(true);
+
+        return $property->getValue($object);
     }
 }
