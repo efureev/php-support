@@ -19,9 +19,9 @@ trait TestingHelper
      * @throws \ReflectionException
      *
      * @example
-     *  $result = $this->runProtectedMethod($sp, "registerService", T::class);
+     *  $result = static::runProtectedMethod($sp, "registerService", T::class);
      */
-    protected function runProtectedMethod(string|object $class, string $method, ...$params): mixed
+    protected static function runProtectedMethod(string|object $class, string $method, ...$params): mixed
     {
         $methodReflex = new \ReflectionMethod($class, $method);
         $methodReflex->setAccessible(true);
@@ -32,13 +32,13 @@ trait TestingHelper
      * Get a instance property (public/private/protected) value.
      *
      * @param object|string $object
-     * @param string $property_name
+     * @param string $propertyName
      *
      * @return mixed
      * @throws \ReflectionException
      *
      */
-    protected function getProperty(object|string $object, string $propertyName): mixed
+    protected static function getProperty(object|string $object, string $propertyName): mixed
     {
         $reflection = new ReflectionClass($object);
 
