@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.13.0
+
+### Added
+
+- Add support `PHP 8.1`
+
 ## v4.9.0
 
 ### Added
