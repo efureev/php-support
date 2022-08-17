@@ -9,14 +9,13 @@ use Php\Support\Helpers\Json;
 use PHPUnit\Framework\TestCase;
 use Throwable;
 
-
 /**
  * Class JsonTest
  */
 final class JsonTest extends TestCase
 {
     /**
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public function testEncode(): void
     {
@@ -97,11 +96,6 @@ final class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         self::assertSame('{"json":"serializable"}', Json::htmlEncode($data));
-
-        //        $postsStack = new \SplStack();
-        //        $postsStack->push(new Post(915, 'record1'));
-        //        $postsStack->push(new Post(456, 'record2'));
-        //        self::assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
     /**
@@ -253,7 +247,7 @@ class JsonModel implements \JsonSerializable
     /** @var array */
     public $data = ['json' => 'serializable'];
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->data;
     }

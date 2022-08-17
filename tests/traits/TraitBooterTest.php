@@ -12,43 +12,35 @@ final class TraitBooterTest extends TestCase
 {
     public function testBootTrait(): void
     {
-        self::assertEquals('class', BootClass::$type);
-        $class = new BootClass();
+        $class = new class {
+            use TraitBooter;
+            use BootTrait;
+
+            public static $type = 'class';
+
+            public function __construct()
+            {
+                $this->bootIfNotBooted();
+                //        $this->initializeTraits();
+            }
+        };
         self::assertEquals('trait', $class::$type);
     }
 
     public function testInitTrait(): void
     {
-        $class = new InitClass();
+        $class = new class {
+            use TraitInitializer;
+            use InitTrait;
+
+            public $title = '';
+
+            public function __construct()
+            {
+                $this->bootIfNotBooted();
+            }
+        };
         self::assertEquals('load initialize from InitTrait', $class->title);
-    }
-}
-
-class BootClass
-{
-    use TraitBooter;
-    use BootTrait;
-
-    public static $type = 'class';
-
-    public function __construct()
-    {
-        $this->bootIfNotBooted();
-        //        $this->initializeTraits();
-
-    }
-}
-
-class InitClass
-{
-    use TraitInitializer;
-    use InitTrait;
-
-    public $title = '';
-
-    public function __construct()
-    {
-        $this->bootIfNotBooted();
     }
 }
 

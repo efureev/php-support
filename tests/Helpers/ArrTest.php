@@ -222,14 +222,15 @@ final class ArrTest extends TestCase
             ],
             [
                 new class () implements \JsonSerializable {
-                    private $data = [
+                    private $data =
+                    [
 
                         '132',
                         12,
                         'test',
                     ];
 
-                    public function jsonSerialize()
+                    public function jsonSerialize(): mixed
                     {
                         return $this->data;
                     }
@@ -347,14 +348,15 @@ final class ArrTest extends TestCase
             ],
             [
                 new class () implements \JsonSerializable {
-                    private $data = [
+                    private $data =
+                    [
 
                         '132',
                         12,
                         'test',
                     ];
 
-                    public function jsonSerialize()
+                    public function jsonSerialize(): mixed
                     {
                         return $this->data;
                     }
@@ -566,7 +568,15 @@ final class ArrTest extends TestCase
     {
         static::assertEquals(['val1', 'test', 'null', '', 'null'], Arr::fromPostgresArray('{val1,test,null,,null}'));
         static::assertEquals(
-            ['val1', '1', '', '3', 'null', '', 'null'],
+            [
+                'val1',
+                '1',
+                '',
+                '3',
+                'null',
+                '',
+                'null',
+            ],
             Arr::fromPostgresArray('{val1,1,,3,null,,null}')
         );
         static::assertEquals([], Arr::fromPostgresArray('{}'));
@@ -575,7 +585,7 @@ final class ArrTest extends TestCase
     public function testFromPostgresPoint(): void
     {
         static::assertEquals([32.323, 2342342.0], Arr::fromPostgresPoint('(32.323,2342342)'));
-        static::assertEquals([12.3223, 0.3223,], Arr::fromPostgresPoint('(12.3223,0.3223)'));
+        static::assertEquals([12.3223, 0.3223], Arr::fromPostgresPoint('(12.3223,0.3223)'));
         static::assertNull(Arr::fromPostgresPoint('()'));
         static::assertNull(Arr::fromPostgresPoint(null));
         static::assertNull(Arr::fromPostgresPoint(''));

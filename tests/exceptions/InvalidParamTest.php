@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class InvalidParamTest extends TestCase
 {
-
     public function testThrow()
     {
         try {

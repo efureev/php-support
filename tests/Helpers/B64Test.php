@@ -24,8 +24,9 @@ final class B64Test extends TestCase
         '12Кириллик'                      => 'MTLQmtC40YDQuNC70LvQuNC6',
         "12Кир\nиллик\nen"                => 'MTLQmtC40YAK0LjQu9C70LjQugplbg==',
         "12Кир\tиллик\ten"                => 'MTLQmtC40YAJ0LjQu9C70LjQugllbg==',
-        "'πάντα χωρεῖ καὶ οὐδὲν μένει …'" => 'J8+AzqzOvc+EzrEgz4fPic+BzrXhv5YgzrrOseG9tiDOv+G9kM604b2yzr0gzrzOrc69zrXOuSDigKYn',
-        '🤪 🤪 😈'                        => '8J+kqiDwn6SqIPCfmIg=',
+        "'πάντα χωρεῖ καὶ οὐδὲν μένει …'" =>
+            'J8+AzqzOvc+EzrEgz4fPic+BzrXhv5YgzrrOseG9tiDOv+G9kM604b2yzr0gzrzOrc69zrXOuSDigKYn',
+        '🤪 🤪 😈'                           => '8J+kqiDwn6SqIPCfmIg=',
     ];
 
     private static $emptyList = [

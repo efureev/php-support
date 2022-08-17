@@ -650,15 +650,39 @@ final class StrTest extends TestCase
     public function dataRegExps(): array
     {
         return [
-            ['/^(\d+)$/', true],
-            ['/([A-Z])\w+/', true],
-            ['/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?))?}/', true],
+            [
+                '/^(\d+)$/',
+                true,
+            ],
+            [
+                '/([A-Z])\w+/',
+                true,
+            ],
+            [
+                '/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?))?}/',
+                true,
+            ],
 
-            ['^(\d+)$', false],
-            ['\d+)$', false],
-            ['', false],
-            ['test', false],
-            ['/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?)?}/', false],
+            [
+                '^(\d+)$',
+                false,
+            ],
+            [
+                '\d+)$',
+                false,
+            ],
+            [
+                '',
+                false,
+            ],
+            [
+                'test',
+                false,
+            ],
+            [
+                '/\{(?<name>[\w]+?)(:(?<type>[\\\$^()+\w]+?)?}/',
+                false,
+            ],
         ];
     }
 
@@ -772,5 +796,4 @@ final class StrTest extends TestCase
         $this->assertEquals('1231251251', Str::slugify('123----1251251', ''));
         $this->assertEquals('one231251251', Str::slugify('123----1251251', '', true));
     }
-
 }

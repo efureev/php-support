@@ -144,7 +144,7 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
      *
      * @return mixed
      */
-    public function offsetGet($key)
+    public function offsetGet($key): mixed
     {
         return $this->get($key);
     }
