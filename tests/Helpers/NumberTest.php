@@ -73,11 +73,123 @@ final class NumberTest extends TestCase
     /**
      * @dataProvider providerSafeInt
      *
-     * @param  int|string  $value
-     * @param  int|string  $exp
+     * @param int|string $value
+     * @param int|string $exp
      */
     public function testSafeInt(int|string $value, int|string $exp): void
     {
         self::assertTrue($exp === Number::safeInt($value));
+    }
+
+
+    public function providerIsInteger(): array
+    {
+        return [
+            [
+                '1',
+                true,
+            ],
+            [
+                1,
+                true,
+            ],
+            [
+                0,
+                true,
+            ],
+            [
+                -1,
+                true,
+            ],
+            [
+                9007199254740991,
+                true,
+            ],
+            [
+                9007199254740992,
+                true,
+            ],
+            [
+                9007199254740990,
+                true,
+            ],
+            [
+                -9007199254740991,
+                true,
+            ],
+            [
+                -9007199254740992,
+                true,
+            ],
+            [
+                -9007199254740990,
+                true,
+            ],
+            [
+                -9007199254740992,
+                true,
+            ],
+            [
+                '66ede6f7-1b11-4d01-8bbb-c6412b12eac3',
+                false,
+            ],
+            [
+                'test',
+                false,
+            ],
+
+            [
+                23,
+                true,
+            ],
+            [
+                '-23',
+                true,
+            ],
+            [
+                '23',
+                true,
+            ],
+            [
+                23.3,
+                false,
+            ],
+            [
+                '23.3',
+                false,
+            ],
+            [
+                '23.3',
+                false,
+            ],
+            [
+                '23,2',
+                false,
+            ],
+            [
+                'null',
+                false,
+            ],
+            [
+                null,
+                false,
+            ],
+            [
+                '',
+                false,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsInteger
+     *
+     * @param int|string $value
+     * @param bool $exp
+     * @test
+     */
+    public function isInteger(mixed $value, bool $exp): void
+    {
+        self::assertEquals($exp, Number::isInteger($value));
     }
 }
