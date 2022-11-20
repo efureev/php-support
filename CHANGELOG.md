@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Add global method `mapValue` Returns an array containing the results of applying func to the items of the $collection
+- Add global method `eachValue` Apply a $fn to all the items of the $collection
 
 ## v4.14.0
 

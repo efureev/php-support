@@ -30,6 +30,15 @@ if (!function_exists('mapValue')) {
     }
 }
 
+if (!function_exists('eachValue')) {
+    function eachValue(callable $fn, iterable $collection, mixed ...$args): void
+    {
+        foreach ($collection as $key => $value) {
+            $fn($value, $key, ...$args);
+        }
+    }
+}
+
 if (!function_exists('when')) {
     /**
      * Returns a value when a condition is truthy.
