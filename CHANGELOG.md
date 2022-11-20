@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.15.0
+
+### Added
+
+- Add global method `mapValue` Returns an array containing the results of applying func to the items of the $collection
+
 ## v4.14.0
 
 ### Added

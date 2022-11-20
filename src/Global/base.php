@@ -17,6 +17,19 @@ if (!function_exists('value')) {
     }
 }
 
+if (!function_exists('mapValue')) {
+    function mapValue(callable $fn, iterable $collection, mixed ...$args): array
+    {
+        $result = [];
+
+        foreach ($collection as $key => $value) {
+            $result[$key] = $fn($value, $key, ...$args);
+        }
+
+        return $result;
+    }
+}
+
 if (!function_exists('when')) {
     /**
      * Returns a value when a condition is truthy.
@@ -222,7 +235,8 @@ if (!function_exists('remoteStaticCall')) {
             return $class::$method(...$params);
         }
 
-        throw new \Php\Support\Exceptions\MissingMethodException("$class::$method");
+        $strClass = is_object($class) ? $class::class : $class;
+        throw new \Php\Support\Exceptions\MissingMethodException("$strClass::$method");
     }
 }
 

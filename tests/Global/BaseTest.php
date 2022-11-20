@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests;
+namespace Php\Support\Tests\Global;
 
 use Php\Support\Types\Point;
 use PHPUnit\Framework\TestCase;
