@@ -7,3 +7,4 @@ parameters:
   excludePaths:
     - 'src/Types/Point.php'
     - 'src/Types/GeoPoint.php'
+    - 'src/Structures/Collections/ArrayCollection.php'

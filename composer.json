@@ -47,12 +47,10 @@
     "phpstan": "@php ./vendor/bin/phpstan analyze -c ./phpstan.neon.dist --no-progress --ansi",
     "test": [
       "@phpstan",
-      "@phpcs",
       "@phpunit"
     ],
     "test-cover": [
       "@phpstan",
-      "@phpcs",
       "@phpunit-cover"
     ]
   }
