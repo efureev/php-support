@@ -8,6 +8,7 @@ use ArrayObject;
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;
+use Php\Support\Structures\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -119,7 +120,7 @@ final class ArrTest extends TestCase
                 return $this->data;
             }
         };
-        $jsonableClass  = new class () implements \Php\Support\Interfaces\Jsonable {
+        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = [
                 '32',
                 12,
@@ -160,24 +161,24 @@ final class ArrTest extends TestCase
             ],
             [
                 [
-                    'test'   => 1,
-                    0        => 14,
+                    'test' => 1,
+                    0 => 14,
                     'nested' => [
-                        'cl'  => $arrayableClass,
+                        'cl' => $arrayableClass,
                         'cl2' => $arrayableClass,
-                        '1'   => [
+                        '1' => [
                             1,
                             2,
                             $jsonableClass,
                         ],
                     ],
-                    'csl'    => $arrayableClass,
+                    'csl' => $arrayableClass,
                 ],
                 [
-                    'test'   => 1,
-                    0        => 14,
+                    'test' => 1,
+                    0 => 14,
                     'nested' => [
-                        'cl'  => [
+                        'cl' => [
                             '1',
                             2,
                             'test',
@@ -187,7 +188,7 @@ final class ArrTest extends TestCase
                             2,
                             'test',
                         ],
-                        '1'   => [
+                        '1' => [
                             1,
                             2,
                             [
@@ -197,7 +198,7 @@ final class ArrTest extends TestCase
                             ],
                         ],
                     ],
-                    'csl'    => [
+                    'csl' => [
                         '1',
                         2,
                         'test',
@@ -223,12 +224,12 @@ final class ArrTest extends TestCase
             [
                 new class () implements \JsonSerializable {
                     private $data =
-                    [
+                        [
 
-                        '132',
-                        12,
-                        'test',
-                    ];
+                            '132',
+                            12,
+                            'test',
+                        ];
 
                     public function jsonSerialize(): mixed
                     {
@@ -283,7 +284,7 @@ final class ArrTest extends TestCase
                 return $this->data;
             }
         };
-        $jsonableClass  = new class () implements \Php\Support\Interfaces\Jsonable {
+        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = [
                 '32',
                 12,
@@ -349,12 +350,12 @@ final class ArrTest extends TestCase
             [
                 new class () implements \JsonSerializable {
                     private $data =
-                    [
+                        [
 
-                        '132',
-                        12,
-                        'test',
-                    ];
+                            '132',
+                            12,
+                            'test',
+                        ];
 
                     public function jsonSerialize(): mixed
                     {
@@ -425,8 +426,8 @@ final class ArrTest extends TestCase
     {
         $array = [
             'key1' => 'val1',
-            2      => 'val2',
-            0      => 'val0',
+            2 => 'val2',
+            0 => 'val0',
             'test' => 'test',
         ];
 
@@ -456,9 +457,9 @@ final class ArrTest extends TestCase
     public function testToIndexedArray(): void
     {
         $array = [
-            'key1'     => 'val1',
-            'test'     => 'test',
-            'nested'   => [
+            'key1' => 'val1',
+            'test' => 'test',
+            'nested' => [
                 'n1' => 'test1',
                 'n2' => 'test2',
             ],
@@ -508,9 +509,9 @@ final class ArrTest extends TestCase
             '{val1,test,null,,null}',
             Arr::ToPostgresArray(
                 [
-                    'key1'     => 'val1',
-                    'test'     => 'test',
-                    'nested'   => null,
+                    'key1' => 'val1',
+                    'test' => 'test',
+                    'nested' => null,
                     'indexed1' => '',
                     'indexed2' => null,
                 ]
@@ -921,7 +922,7 @@ final class ArrTest extends TestCase
     public function providerGet(): array
     {
         $array = [
-            'key'  => [
+            'key' => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -1032,7 +1033,7 @@ final class ArrTest extends TestCase
     public function providerHas(): array
     {
         $array = [
-            'key'  => [
+            'key' => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -1190,7 +1191,7 @@ final class ArrTest extends TestCase
     public function providerRemove(): array
     {
         $array = [
-            'key'  => [
+            'key' => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -1276,79 +1277,79 @@ final class ArrTest extends TestCase
             ],
             [
                 [
-                    'key'   => '{{%KEY%}}',
+                    'key' => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 [
-                    '{{%KEY%}}'   => 'vKey',
+                    '{{%KEY%}}' => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
                 ],
                 [
-                    'key'   => 'vKey',
+                    'key' => 'vKey',
                     'token' => 'vToken',
                 ],
             ],
             [
                 [
-                    'key'   => '{{%KEY%}}',
+                    'key' => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => 'vKey'],
                 [
-                    'key'   => 'vKey',
+                    'key' => 'vKey',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
-                    'key'   => '{{%KEY%}}',
+                    'key' => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => ''],
                 [
-                    'key'   => '',
+                    'key' => '',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
-                    'key'   => '{{%KEY%}}',
+                    'key' => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => null],
                 [
-                    'key'   => '',
+                    'key' => '',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
                     'step1' => [
-                        'key'   => '{{%KEY%}}',
+                        'key' => '{{%KEY%}}',
                         'token' => '{{%TOKEN%}}',
                     ],
                     'step2' => [
                         'subStep2' => [
                             'token' => '{{%TOKEN%}}',
-                            'key'   => '{{%KEY%}}',
+                            'key' => '{{%KEY%}}',
                         ],
                     ],
                     'step3' => ['val' => '{{%VALUE%}}'],
                 ],
                 [
-                    '{{%KEY%}}'   => 'vKey',
+                    '{{%KEY%}}' => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
                     '{{%VALUE%}}' => 12,
                 ],
                 [
                     'step1' => [
-                        'key'   => 'vKey',
+                        'key' => 'vKey',
                         'token' => 'vToken',
                     ],
                     'step2' => [
                         'subStep2' => [
                             'token' => 'vToken',
-                            'key'   => 'vKey',
+                            'key' => 'vKey',
                         ],
                     ],
                     'step3' => ['val' => '12'],
@@ -1357,7 +1358,7 @@ final class ArrTest extends TestCase
             [
                 ['sdasdas'],
                 [
-                    '{{%KEY%}}'   => 'key',
+                    '{{%KEY%}}' => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 ['sdasdas'],
@@ -1386,5 +1387,27 @@ final class ArrTest extends TestCase
         //        static::assertEquals($exp, $res);
         static::assertJsonStringEqualsJsonString(\json_encode($exp), \json_encode($res));
         //        static::assertEquals($exp, $res);
+    }
+
+    /**
+     * @test
+     */
+    public function collapse(): void
+    {
+        $list = [new ArrayCollection([1, 2, 3]), 4, 5, 6, [7, 8, 9]];
+
+        self::assertEquals([1, 2, 3, 7, 8, 9], Arr::collapse($list));
+    }
+
+    /**
+     * @test
+     */
+    public function prepend(): void
+    {
+        $list = [1, 2, 3];
+        self::assertEquals([5, 1, 2, 3], Arr::prepend($list, 5));
+
+        $list = ['One' => 1, 'Two' => 2];
+        self::assertEquals(['Five' => 5, 'One' => 1, 'Two' => 2], Arr::prepend($list, 5, 'Five'));
     }
 }

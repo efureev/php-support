@@ -9,15 +9,39 @@ use ArrayObject;
 use JsonSerializable;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
+use Php\Support\Structures\Collections\ReadableCollection;
 use Traversable;
 
 /**
- * Class Arr
- *
- * @package Php\Support\Helpers
+ * @psalm-template TKey of array-key
+ * @psalm-template T
  */
 class Arr
 {
+    /**
+     * Collapse an array of arrays into a single array.
+     *
+     * @param iterable $array
+     * @return array<int,mixed>
+     * @psalm-return T[]
+     */
+    public static function collapse(iterable $array): array
+    {
+        $results = [];
+
+        foreach ($array as $values) {
+            if ($values instanceof ReadableCollection) {
+                $values = $values->all();
+            } elseif (!is_array($values)) {
+                continue;
+            }
+
+            $results[] = $values;
+        }
+
+        return array_merge([], ...$results);
+    }
+
     /**
      * Remove one element from array by value
      *
@@ -27,7 +51,7 @@ class Arr
      *
      * @return string|int|null Index of removed element or null if don't exist
      */
-    public static function removeByValue(array &$array, $val, $reindex = false)
+    public static function removeByValue(array &$array, mixed $val, bool $reindex = false): string|int|null
     {
         if (($key = array_search($val, $array, false)) !== false) {
             unset($array[$key]);
@@ -43,33 +67,31 @@ class Arr
      *
      * @param mixed $items
      *
-     * @return array
+     * @return array<TKey, T>
      */
-    public static function toArray($items): array
+    public static function toArray(mixed $items): array
     {
         if (is_array($items)) {
-            $res = $items;
-        } else {
-            if ($items instanceof Arrayable) {
-                $res = $items->toArray();
-            } else {
-                if ($items instanceof Jsonable) {
-                    $res = Json::decode($items->toJson());
-                } else {
-                    if ($items instanceof JsonSerializable) {
-                        $res = $items->jsonSerialize();
-                    } else {
-                        if ($items instanceof Traversable) {
-                            $res = iterator_to_array($items);
-                        } else {
-                            $res = (array)$items;
-                        }
-                    }
-                }
-            }
+            return $items;
         }
 
-        return (array)$res;
+        if ($items instanceof Arrayable) {
+            return $items->toArray();
+        }
+
+        if ($items instanceof Traversable) {
+            return iterator_to_array($items);
+        }
+        if ($items instanceof Jsonable) {
+            $res = Json::decode($items->toJson());
+            return is_array($res) ? $res : [];
+        }
+
+        if ($items instanceof JsonSerializable) {
+            return (array)$items->jsonSerialize();
+        }
+
+        return (array)$items;
     }
 
     /**
@@ -79,7 +101,7 @@ class Arr
      *
      * @return array|mixed|null
      */
-    public static function dataToArray($items)
+    public static function dataToArray(mixed $items): mixed
     {
         if (is_object($items)) {
             if ($items instanceof JsonSerializable) {
@@ -126,7 +148,7 @@ class Arr
      *
      * @return array the merged array (the original arrays are not changed.)
      */
-    public static function merge($res, $b, $replaceArray = true): array
+    public static function merge(array $res, array $b, bool $replaceArray = true): array
     {
         foreach ($b as $key => $val) {
             if (is_int($key)) {
@@ -201,28 +223,21 @@ class Arr
      *
      * @param string|null $s
      * @param int $start
-     * @param null $end
-     *
-     * @return array
-     */
-    /**
-     * Load from PG array to PHP array
-     *
-     * @param string|null $s
-     * @param int $start
      * @param ?int $end
+     * @param array $braces
      *
      * @return array
      */
     public static function fromPostgresArrayWithBraces(
         ?string $s,
-        int $start = 0,
-        ?int &$end = null,
-        array $braces = [
+        int     $start = 0,
+        ?int    &$end = null,
+        array   $braces = [
             '{',
             '}',
         ]
-    ): array {
+    ): array
+    {
         [
             $braceOpen,
             $braceClose,
@@ -233,9 +248,9 @@ class Arr
 
         $return = [];
         $string = false;
-        $quote  = '';
-        $len    = strlen($s);
-        $v      = '';
+        $quote = '';
+        $len = strlen($s);
+        $v = '';
 
         for ($i = $start + 1; $i < $len; $i++) {
             $ch = $s[$i];
@@ -251,11 +266,11 @@ class Arr
                 } else {
                     if (!$string && $ch === ',') {
                         $return[] = $v;
-                        $v        = '';
+                        $v = '';
                     } else {
                         if (!$string && ($ch === '"' || $ch === "'")) {
                             $string = true;
-                            $quote  = $ch;
+                            $quote = $ch;
                         } else {
                             if ($string && $ch === $quote) {
                                 if ($s[$i - 1] === "\\") {
@@ -327,12 +342,12 @@ class Arr
      * Get an item from an array using "dot" notation.
      *
      * @param mixed $array
-     * @param null|string $key
+     * @param string|int|null $key
      * @param mixed $default
      *
      * @return mixed
      */
-    public static function get(mixed $array, ?string $key, mixed $default = null): mixed
+    public static function get(mixed $array, string|int|null $key, mixed $default = null): mixed
     {
         if (!static::accessible($array)) {
             return value($default);
@@ -347,7 +362,7 @@ class Arr
             return $array[$key];
         }
 
-        if (!str_contains($key, '.')) {
+        if (is_int($key) || !str_contains($key, '.')) {
             return $array[$key] ?? value($default);
         }
 
@@ -471,7 +486,7 @@ class Arr
     public static function remove(array|ArrayObject &$array, array|string $keys): void
     {
         $original = &$array;
-        $keys     = (array)$keys;
+        $keys = (array)$keys;
 
         if (count($keys) === 0) {
             return;
@@ -531,7 +546,7 @@ class Arr
      *
      * @return array|mixed
      */
-    private static function itemReplaceByTemplate($item, array $replace)
+    private static function itemReplaceByTemplate(mixed $item, array $replace)
     {
         if (is_array($item)) {
             $item = self::replaceByTemplate($item, $replace);
@@ -573,5 +588,24 @@ class Arr
         }
 
         return $result;
+    }
+
+    /**
+     * Push an item onto the beginning of an array.
+     *
+     * @param array $array
+     * @param mixed $value
+     * @param mixed $key
+     * @return array
+     */
+    public static function prepend(array $array, mixed $value, mixed $key = null): array
+    {
+        if (func_num_args() == 2) {
+            array_unshift($array, $value);
+        } else {
+            $array = [$key => $value] + $array;
+        }
+
+        return $array;
     }
 }

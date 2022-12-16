@@ -63,7 +63,7 @@ class Json
      *
      * @return mixed|null
      */
-    public static function decode(?string $json, $asArray = true, int $options = 0, int $depth = 512)
+    public static function decode(?string $json, bool $asArray = true, int $options = 0, int $depth = 512)
     {
         if ($json === null || $json === '') {
             return null;

@@ -15,27 +15,27 @@ namespace Php\Support\Helpers;
 class Bit
 {
     /**
-     * Remove bit from $value
+     * Remove a bit from $value
      *
      * @param int|string $value
      * @param int $bit
      *
      * @return int
      */
-    public static function removeFlag($value, int $bit): int
+    public static function removeFlag(int|string $value, int $bit): int
     {
         return static::toInt($value) & ~$bit;
     }
 
     /**
-     * Set bit to $value
+     * Set a bit to $value
      *
      * @param int|string $value
      * @param int $bit
      *
      * @return int
      */
-    public static function addFlag($value, int $bit): int
+    public static function addFlag(int|string $value, int $bit): int
     {
         return static::toInt($value) | $bit;
     }
@@ -45,13 +45,13 @@ class Bit
      *
      * @return int
      */
-    protected static function toInt($value): int
+    protected static function toInt(int|string $value): int
     {
         if (is_string($value)) {
             return (int)bindec($value);
         }
 
-        return (int)$value;
+        return $value;
     }
 
     /**
@@ -62,7 +62,7 @@ class Bit
      *
      * @return bool
      */
-    public static function checkFlag($value, int $bit): bool
+    public static function checkFlag(int|string $value, int $bit): bool
     {
         return (static::toInt($value) & $bit) > 0;
     }

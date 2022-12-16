@@ -1,5 +1,8 @@
 <?php
 
+use Php\Support\Helpers\Arr;
+use Php\Support\Structures\Collections\ReadableCollection;
+
 if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
@@ -16,6 +19,60 @@ if (!function_exists('value')) {
             : $value;
     }
 }
+
+if (!function_exists('dataGet')) {
+    /**
+     * Get an item from an array or object using "dot" notation.
+     *
+     * @param mixed $target
+     * @param string|int|(string|int|null)[]|null $key
+     * @param mixed $default
+     * @return mixed
+     */
+    function dataGet(mixed $target, string|array|int|null $key, mixed $default = null): mixed
+    {
+        if ($key === null) {
+            return $target;
+        }
+
+        $key = is_array($key) ? $key : explode('.', (string)$key);
+
+        foreach ($key as $i => $segment) {
+            unset($key[$i]);
+
+            if ($segment === null) {
+                return $target;
+            }
+
+            if ($segment === '*') {
+                if ($target instanceof ReadableCollection) {
+                    $target = $target->all();
+                } elseif (!is_iterable($target)) {
+                    return value($default);
+                }
+
+                $result = [];
+
+                foreach ($target as $item) {
+                    $result[] = dataGet($item, $key);
+                }
+
+                return in_array('*', $key) ? Arr::collapse($result) : $result;
+            }
+
+            if (Arr::accessible($target) && Arr::exists($target, $segment)) {
+                $target = $target[$segment];
+            } elseif (is_object($target) && isset($target->{$segment})) {
+                $target = $target->{$segment};
+            } else {
+                return value($default);
+            }
+        }
+
+        return $target;
+    }
+}
+
 
 if (!function_exists('mapValue')) {
     function mapValue(callable $fn, iterable $collection, mixed ...$args): array
