@@ -1,6 +1,6 @@
 # PHP Support
 
-![](https://img.shields.io/badge/php-8.0|8.1|8.2-blue.svg)
+![](https://img.shields.io/badge/php-8.1|8.2-blue.svg)
 ![PHP Package](https://github.com/efureev/php-support/workflows/PHP%20Package/badge.svg?branch=master)
 [![Build Status](https://travis-ci.org/efureev/php-support.svg?branch=master)](https://travis-ci.org/efureev/php-support)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a53fb85fd1ab46169758e10dd2d818cb)](https://app.codacy.com/app/efureev/php-support?utm_source=github.com&utm_medium=referral&utm_content=efureev/php-support&utm_campaign=Badge_Grade_Settings)
@@ -12,7 +12,7 @@
 
 ## Install
 
-For php >= 8.0 (8.1, 8.2)
+For php >= 8.1 (8.1, 8.2)
 
 ```bash
 composer require efureev/support "^4.16"

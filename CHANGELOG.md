@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.17.0
+
+### Added
+
+- Add support `PHP 8.2`
+
+### Removed
+
+- Remove support `PHP 8.0`
+
 ## v4.16.0
 
 ### Added
@@ -25,16 +35,6 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Add method `Number::isInteger` Allows you to determine whether the $value is an integer or not
-
-## v4.15.0
-
-### Added
-
-- Add support `PHP 8.2`
-
-### Removed
-
-- Remove support `PHP 8.0`
 
 ## v4.13.0
 
