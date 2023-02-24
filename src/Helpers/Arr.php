@@ -230,14 +230,13 @@ class Arr
      */
     public static function fromPostgresArrayWithBraces(
         ?string $s,
-        int     $start = 0,
-        ?int    &$end = null,
-        array   $braces = [
+        int $start = 0,
+        ?int &$end = null,
+        array $braces = [
             '{',
             '}',
         ]
-    ): array
-    {
+    ): array {
         [
             $braceOpen,
             $braceClose,
@@ -248,9 +247,9 @@ class Arr
 
         $return = [];
         $string = false;
-        $quote = '';
-        $len = strlen($s);
-        $v = '';
+        $quote  = '';
+        $len    = strlen($s);
+        $v      = '';
 
         for ($i = $start + 1; $i < $len; $i++) {
             $ch = $s[$i];
@@ -266,11 +265,11 @@ class Arr
                 } else {
                     if (!$string && $ch === ',') {
                         $return[] = $v;
-                        $v = '';
+                        $v        = '';
                     } else {
                         if (!$string && ($ch === '"' || $ch === "'")) {
                             $string = true;
-                            $quote = $ch;
+                            $quote  = $ch;
                         } else {
                             if ($string && $ch === $quote) {
                                 if ($s[$i - 1] === "\\") {
@@ -486,7 +485,7 @@ class Arr
     public static function remove(array|ArrayObject &$array, array|string $keys): void
     {
         $original = &$array;
-        $keys = (array)$keys;
+        $keys     = (array)$keys;
 
         if (count($keys) === 0) {
             return;

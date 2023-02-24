@@ -26,6 +26,16 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - Add method `Number::isInteger` Allows you to determine whether the $value is an integer or not
 
+## v4.15.0
+
+### Added
+
+- Add support `PHP 8.2`
+
+### Removed
+
+- Remove support `PHP 8.0`
+
 ## v4.13.0
 
 ### Added
