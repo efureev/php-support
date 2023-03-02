@@ -171,6 +171,17 @@ interface ReadableCollection extends Countable, IteratorAggregate
     public function filter(Closure $func = null): ReadableCollection;
 
     /**
+     * Create a collection of all elements that do not pass a given truth test.
+     *
+     * @param Closure $func The predicate used for filtering.
+     * @psalm-param Closure(T, TKey):bool $func
+     *
+     * @return ReadableCollection<mixed> A collection with the results of the filter operation.
+     * @psalm-return ReadableCollection<TKey, T>
+     */
+    public function reject(Closure $callback): ReadableCollection;
+
+    /**
      * Applies the given function to each element in the collection and returns
      * a new collection with the elements returned by the function.
      *

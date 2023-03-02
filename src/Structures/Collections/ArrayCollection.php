@@ -289,6 +289,17 @@ class ArrayCollection implements Collection, Stringable
 
     /**
      * {@inheritDoc}
+     *
+     * @return static
+     * @psalm-return static<TKey,T>
+     */
+    public function reject(Closure $callback): static
+    {
+        return $this->filter(static fn($value, $key) => !$callback($value, $key));
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function each(Closure $func): bool
     {
