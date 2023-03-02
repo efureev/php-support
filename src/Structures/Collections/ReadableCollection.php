@@ -162,13 +162,13 @@ interface ReadableCollection extends Countable, IteratorAggregate
      * Returns all the elements of this collection that satisfy the predicate $func.
      * The order of the elements is preserved.
      *
-     * @param Closure $func The predicate used for filtering.
-     * @psalm-param Closure(T, TKey):bool $func
+     * @param null|Closure $func The predicate used for filtering.
+     * @psalm-param null|Closure(T, TKey):bool $func
      *
      * @return ReadableCollection<mixed> A collection with the results of the filter operation.
      * @psalm-return ReadableCollection<TKey, T>
      */
-    public function filter(Closure $func): ReadableCollection;
+    public function filter(Closure $func = null): ReadableCollection;
 
     /**
      * Applies the given function to each element in the collection and returns

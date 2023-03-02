@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.17.1
+
+### Changed
+
+- `Collection::filter(Closure $func = null)` - The argument `$func` may be `null`
+
 ## v4.17.0
 
 ### Added
