@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Php\Support\Enums;
 
 /**
- * @mixin \BackedEnum
+ * @mixin \UnitEnum
  */
 trait WithEnhances
 {
@@ -28,5 +28,10 @@ trait WithEnhances
     public static function names(): array
     {
         return array_map(static fn(self $enumItem) => $enumItem->name, self::cases());
+    }
+
+    public static function hasName(string $value): bool
+    {
+        return in_array($value, static::names(), true);
     }
 }

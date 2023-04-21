@@ -6,6 +6,7 @@ namespace Php\Support\Enums;
 
 /**
  * @method static string[] values();
+ * @mixin \BackedEnum
  */
 trait WithEnhancesForStrings
 {
@@ -30,10 +31,5 @@ trait WithEnhancesForStrings
     public static function hasValue(string $value): bool
     {
         return in_array($value, static::values(), true);
-    }
-
-    public static function hasName(string $value): bool
-    {
-        return in_array($value, static::names(), true);
     }
 }
