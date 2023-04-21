@@ -106,7 +106,7 @@ final class ArrTest extends TestCase
     }
 
 
-    public function providerDataToArray(): array
+    public static function providerDataToArray(): array
     {
         $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable {
             private $data = [
@@ -257,8 +257,6 @@ final class ArrTest extends TestCase
      *
      * @param mixed $items
      * @param $exp
-     *
-     * @throws \Php\Support\Exceptions\JsonException
      */
     public function testDataToArray($items, $exp): void
     {
@@ -270,7 +268,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerToArray(): array
+    public static function providerToArray(): array
     {
         $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable {
             private $data = [
@@ -383,8 +381,6 @@ final class ArrTest extends TestCase
      *
      * @param $items
      * @param $exp
-     *
-     * @throws \Php\Support\Exceptions\JsonException
      */
     public function testToArray($items, $exp): void
     {
@@ -595,7 +591,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerRemoveByValue(): array
+    public static function providerRemoveByValue(): array
     {
         return [
             [
@@ -756,7 +752,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerRemoveByValueAndReindex(): array
+    public static function providerRemoveByValueAndReindex(): array
     {
         return [
             [
@@ -919,7 +915,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerGet(): array
+    public static function providerGet(): array
     {
         $array = [
             'key' => [
@@ -1030,7 +1026,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerHas(): array
+    public static function providerHas(): array
     {
         $array = [
             'key' => [
@@ -1104,7 +1100,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerSet(): array
+    public static function providerSet(): array
     {
         $array = [];
 
@@ -1188,7 +1184,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function providerRemove(): array
+    public static function providerRemove(): array
     {
         $array = [
             'key' => [
@@ -1267,7 +1263,7 @@ final class ArrTest extends TestCase
     /**
      * @return array
      */
-    public function dataReplaceByTemplate(): array
+    public static function dataReplaceByTemplate(): array
     {
         return [
             [

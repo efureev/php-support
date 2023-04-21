@@ -173,8 +173,8 @@ interface ReadableCollection extends Countable, IteratorAggregate
     /**
      * Create a collection of all elements that do not pass a given truth test.
      *
-     * @param Closure $func The predicate used for filtering.
-     * @psalm-param Closure(T, TKey):bool $func
+     * @param Closure $callback The predicate used for filtering.
+     * @psalm-param Closure(T, TKey):bool $callback
      *
      * @return ReadableCollection<mixed> A collection with the results of the filter operation.
      * @psalm-return ReadableCollection<TKey, T>
@@ -255,6 +255,7 @@ interface ReadableCollection extends Countable, IteratorAggregate
      * @param \iterable|Arrayable $items
      * @return static
      */
+    // @phpstan-ignore-next-line
     public function merge(mixed $items): static;
 
     /**

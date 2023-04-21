@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class NumberTest extends TestCase
 {
-    public function providerSafeInt(): array
+    public static function providerSafeInt(): array
     {
         return [
             [
@@ -82,7 +82,7 @@ final class NumberTest extends TestCase
     }
 
 
-    public function providerIsInteger(): array
+    public static function providerIsInteger(): array
     {
         return [
             [

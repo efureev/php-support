@@ -15,7 +15,7 @@ final class StrTest extends TestCase
 {
     use HasReflection;
 
-    public function providerDataSnake(): array
+    public static function providerDataSnake(): array
     {
         return [
             [
@@ -118,7 +118,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    public function providerToScreamingSnake(): array
+    public static function providerToScreamingSnake(): array
     {
         return [
             [
@@ -221,7 +221,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    public function providerDataKebab(): array
+    public static  function providerDataKebab(): array
     {
         return [
             [
@@ -325,7 +325,7 @@ final class StrTest extends TestCase
     }
 
 
-    public function providerCamel(): array
+    public static function providerCamel(): array
     {
         return [
             [
@@ -396,7 +396,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    public function providerLowerCamel(): array
+    public static function providerLowerCamel(): array
     {
         return [
             [
@@ -487,7 +487,7 @@ final class StrTest extends TestCase
     /**
      * @return array
      */
-    public function dataReplaceStrTo(): array
+    public static function dataReplaceStrTo(): array
     {
         return [
             [
@@ -602,7 +602,7 @@ final class StrTest extends TestCase
     /**
      * @return array
      */
-    public function dataReplaceByTemplate(): array
+    public static function dataReplaceByTemplate(): array
     {
         return [
             [
@@ -647,7 +647,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    public function dataRegExps(): array
+    public static function dataRegExps(): array
     {
         return [
             [
