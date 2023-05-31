@@ -361,7 +361,16 @@ class Str
      */
     public static function slugify(string $str, string $separator = '-', bool $firstLetterOnly = false): string
     {
-        $slug = preg_replace('/([^a-z\d]+)/', $separator, mb_strtolower(self::removeAccents($str)));
+        return self::slugifyWithFormat($str, $separator, '([^a-z\d]+)', $firstLetterOnly);
+    }
+
+    public static function slugifyWithFormat(
+        string $str,
+        string $separator = '-',
+        string $format = '([^a-z\d]+)',
+        bool $firstLetterOnly = false
+    ): string {
+        $slug = preg_replace("/$format/", $separator, mb_strtolower(self::removeAccents($str)));
         if (empty($slug)) {
             return '';
         }
