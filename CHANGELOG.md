@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.21.0
+
+### Added
+
+- Add method `whereInstanceOf` into `ArrayCollection`
+
 ## v4.20.0
 
 ### Added
 
-- Add method `slugifyWithFormat` into Str
+- Add method `slugifyWithFormat` into `Str`
 
 ## v4.19.0
 

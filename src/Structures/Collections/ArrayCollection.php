@@ -287,6 +287,21 @@ class ArrayCollection implements Collection, Stringable
         return $this->createFrom(array_filter($this->elements, $func, ARRAY_FILTER_USE_BOTH));
     }
 
+    public function whereInstanceOf(string|array $type): static
+    {
+        return $this->filter(
+            static function ($value) use ($type) {
+                foreach ((array)$type as $classType) {
+                    if ($value instanceof $classType) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        );
+    }
+
     /**
      * {@inheritDoc}
      *
