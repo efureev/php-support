@@ -316,9 +316,15 @@ class ArrayCollection implements Collection, Stringable
     /**
      * {@inheritDoc}
      */
-    public function each(Closure $func): bool
+    public function each(callable $func): static
     {
-        return $this->testForAll($func);
+        foreach ($this as $key => $item) {
+            if ($func($item, $key) === false) {
+                break;
+            }
+        }
+
+        return $this;
     }
 
     /**

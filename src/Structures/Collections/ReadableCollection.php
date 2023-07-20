@@ -235,10 +235,10 @@ interface ReadableCollection extends Countable, IteratorAggregate
     /**
      * Applies the given function to each element of the Collection. Returns the same Collection.
      *
-     * @param Closure $func The predicate.
-     * @psalm-param Closure(TKey, T):bool $func
+     * @param callable $func The predicate.
+     * @psalm-param callable(TKey, T):bool $func
      */
-    public function each(Closure $func): bool;
+    public function each(callable $func): static;
 
     /**
      * Transform each item in the collection using a callback.
