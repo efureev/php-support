@@ -245,11 +245,12 @@ class ArrayCollection implements Collection, Stringable
      * Map the values into a new class.
      *
      * @param string $class
+     * @param mixed ...$params
      * @return static
      */
-    public function mapInto(string $class): static
+    public function mapInto(string $class, mixed ...$params): static
     {
-        return $this->map(static fn($value) => new $class($value));
+        return $this->map(static fn($value) => new $class($value, ...$params));
     }
 
     /**
