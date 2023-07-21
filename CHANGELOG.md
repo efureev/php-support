@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## master
+
+### Added
+
+- Add method `mapInto` into `ArrayCollection`
+
 ## v4.21.0
 
 ### Added

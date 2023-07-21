@@ -241,6 +241,16 @@ class ArrayCollection implements Collection, Stringable
         return $this->createFrom(array_map($func, $this->elements));
     }
 
+    /**
+     * Map the values into a new class.
+     *
+     * @param string $class
+     * @return static
+     */
+    public function mapInto(string $class): static
+    {
+        return $this->map(static fn($value) => new $class($value));
+    }
 
     /**
      * {@inheritDoc}
