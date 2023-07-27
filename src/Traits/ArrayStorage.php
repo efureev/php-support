@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Php\Support\Traits;
 
 use ArrayAccess;
-use Php\Support\Exceptions\JsonException;
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 
@@ -137,6 +136,13 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
         return $this->propertyExists($name) || Arr::has($this->data, $name);
     }
 
+    public function disableErrorOnNull(): static
+    {
+        $this->showErrorOnGetIfNull = false;
+
+        return $this;
+    }
+
     /**
      * Get an item at a given offset.
      *
@@ -192,7 +198,6 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
 
     /**
      * @return string
-     * @throws JsonException
      */
     public function __toString(): string
     {
