@@ -221,7 +221,7 @@ final class StrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    public static  function providerDataKebab(): array
+    public static function providerDataKebab(): array
     {
         return [
             [
@@ -613,7 +613,7 @@ final class StrTest extends TestCase
             [
                 '"{{%KEY%}}-{{%TOKEN%}}" - test',
                 [
-                    '{{%KEY%}}'   => 'key',
+                    '{{%KEY%}}' => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 '"key-token" - test',
@@ -621,7 +621,7 @@ final class StrTest extends TestCase
             [
                 'sdasdas',
                 [
-                    '{{%KEY%}}'   => 'key',
+                    '{{%KEY%}}' => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 'sdasdas',
@@ -745,7 +745,7 @@ final class StrTest extends TestCase
             mb_internal_encoding('UTF-8');
             // Converts the 'ç' UTF-8 character to UCS-2LE
             $utf8Char = pack('n', 50087);
-            $ucsChar  = mb_convert_encoding($utf8Char, 'UCS-2LE', 'UTF-8');
+            $ucsChar = mb_convert_encoding($utf8Char, 'UCS-2LE', 'UTF-8');
 
             self::assertEquals(
                 $utf8Char,
@@ -795,5 +795,29 @@ final class StrTest extends TestCase
         $this->assertEquals('thispostithasadash', Str::slugify('This post -- it has a dash', ''));
         $this->assertEquals('1231251251', Str::slugify('123----1251251', ''));
         $this->assertEquals('one231251251', Str::slugify('123----1251251', '', true));
+    }
+
+    /**
+     * @test
+     */
+    public function trimPrefix(): void
+    {
+        $this->assertEquals('title', Str::trimPrefix('a-simple:title', 'a-simple:'));
+        $this->assertEquals('a-simple:title', Str::trimPrefix('a-simple:title', ''));
+        $this->assertEquals('a-simple:title', Str::trimPrefix('a-simple:title', 'asdas'));
+        $this->assertEquals('a-simple:title', Str::trimPrefix('a-simple:title', 'a-sdas'));
+        $this->assertEquals('', Str::trimPrefix('', 'a-simple:'));
+    }
+
+    /**
+     * @test
+     */
+    public function trimSuffix(): void
+    {
+        $this->assertEquals('a-simple:', Str::trimSuffix('a-simple:title', 'title'));
+        $this->assertEquals('a-simple:title', Str::trimSuffix('a-simple:title', ''));
+        $this->assertEquals('a-simple:title', Str::trimSuffix('a-simple:title', 'asdas'));
+        $this->assertEquals('a-simple:title', Str::trimSuffix('a-simple:title', 'a-sdas'));
+        $this->assertEquals('', Str::trimSuffix('', 'a-simple:'));
     }
 }

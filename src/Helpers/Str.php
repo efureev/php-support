@@ -431,4 +431,22 @@ class Str
 
         return URLify::downcode($str, $language);
     }
+
+    public static function trimPrefix(string $str, string $prefix): string
+    {
+        if (str_starts_with($str, $prefix)) {
+            return mb_substr($str, mb_strlen($prefix));
+        }
+
+        return $str;
+    }
+
+    public static function trimSuffix(string $str, string $suffix): string
+    {
+        if (str_ends_with($str, $suffix)) {
+            return mb_substr($str, 0, mb_strlen($str) - mb_strlen($suffix));
+        }
+
+        return $str;
+    }
 }
