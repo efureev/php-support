@@ -343,10 +343,9 @@ class Arr
      * @param mixed $array
      * @param string|int|null $key
      * @param mixed $default
-     *
-     * @return mixed
+     * @param non-empty-string $separator
      */
-    public static function get(mixed $array, string|int|null $key, mixed $default = null): mixed
+    public static function get(mixed $array, string|int|null $key, mixed $default = null, string $separator = '.'): mixed
     {
         if (!static::accessible($array)) {
             return value($default);
@@ -361,11 +360,11 @@ class Arr
             return $array[$key];
         }
 
-        if (is_int($key) || !str_contains($key, '.')) {
+        if (is_int($key) || !str_contains($key, $separator)) {
             return $array[$key] ?? value($default);
         }
 
-        foreach (explode('.', $key) as $segment) {
+        foreach (explode($separator, $key) as $segment) {
             if (static::accessible($array) && static::exists($array, $segment)) {
                 $array = $array[$segment];
             } else {
@@ -410,10 +409,9 @@ class Arr
      *
      * @param ArrayAccess|array $array
      * @param string|array $keys
-     *
-     * @return bool
+     * @param non-empty-string $separator
      */
-    public static function has(ArrayAccess|array $array, string|array $keys): bool
+    public static function has(ArrayAccess|array $array, string|array $keys, string $separator = '.'): bool
     {
         $keys = (array)$keys;
 
@@ -428,7 +426,7 @@ class Arr
                 continue;
             }
 
-            foreach (explode('.', $key) as $segment) {
+            foreach (explode($separator, $key) as $segment) {
                 if (static::accessible($subKeyArray) && static::exists($subKeyArray, $segment)) {
                     $subKeyArray = $subKeyArray[$segment];
                 } else {
@@ -448,16 +446,15 @@ class Arr
      * @param array|ArrayObject|null $array
      * @param string $key
      * @param mixed $value
-     *
-     * @return array|ArrayObject|null
+     * @param non-empty-string $separator
      */
-    public static function set(array|ArrayObject|null &$array, string $key, mixed $value): array|ArrayObject|null
+    public static function set(array|ArrayObject|null &$array, string $key, mixed $value, string $separator = '.'): array|ArrayObject|null
     {
         if ($array === null) {
             return $array;
         }
 
-        $keys = explode('.', $key);
+        $keys = explode($separator, $key);
 
         while (count($keys) > 1) {
             $key = array_shift($keys);

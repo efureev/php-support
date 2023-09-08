@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.24.0
+
+### Added
+
+- Add an argument `separator` to methods `Arr::set`, `Arr::get`, `Arr::has`
+
 ## v4.23.0
 
 ### Added

@@ -1181,6 +1181,15 @@ final class ArrTest extends TestCase
         static::assertEquals(['' => 1], Arr::set($array, '', 1));
     }
 
+    public function testSetWithDivider(): void
+    {
+        $array = ['key' => ['sub2' => 1]];
+        $expVal = 121;
+        Arr::set($array, 'key/sub3/sub4sub', $expVal, '/');
+
+        static::assertEquals(['key' => ['sub2' => 1, 'sub3' => ['sub4sub' => 121]]], $array);
+    }
+
     /**
      * @return array
      */
