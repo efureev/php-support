@@ -55,12 +55,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - Add traits for
   Enums: [WithEnhances.php](./src/Enums/WithEnhances.php), [WithEnhancesForStrings](./src/Enums/WithEnhancesForStrings.php)
   with following methods:
-    - `casesToString`- Returns string of Enum's names or values
-    - `casesToEscapeString`- Returns string of Enum's escaped names or values
-    - `values`- Returns list of Enum's values
-    - `names` - Returns list of Enum's names
-    - `hasValue` - Check if the Enum has provided Value
-    - `hasName` - Check if the Enum has provided Name
+  - `casesToString`- Returns string of Enum's names or values
+  - `casesToEscapeString`- Returns string of Enum's escaped names or values
+  - `values`- Returns list of Enum's values
+  - `names` - Returns list of Enum's names
+  - `hasValue` - Check if the Enum has provided Value
+  - `hasName` - Check if the Enum has provided Name
 
 ## v4.18.0
 
