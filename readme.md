@@ -33,7 +33,7 @@ composer require efureev/support "^2.0"
 ## Content
 
 - Helpers
-    - Array
+    + Array
       - collapse (^4.16.0)
       - prepend (^4.16.0)
       - accessible
@@ -44,6 +44,7 @@ composer require efureev/support "^2.0"
       - get
       - has
       - merge
+      - random (^4.25.0)
       - remove
       - removeByValue
       - replaceByTemplate
@@ -52,40 +53,40 @@ composer require efureev/support "^2.0"
       - toIndexedArray
       - toPostgresArray
       - toPostgresPoint (^4.8.0)
-        + String
-            - removeAccents (^4.9.0)
-            - removeMultiSpace
-            - replaceByTemplate
-            - replaceStrTo
-            - seemsUTF8 (^4.9.0)
-            - slugify (^4.9.0)
-            - toCamel
-            - toDelimited
-            - toKebab
-            - toLowerCamel
-            - toScreamingDelimited
-            - toScreamingSnake
-            - toSnake
-            - truncate (^4.9.0)
-        + Json
-            - decode
-            - encode
-            - htmlEncode
-        + Bit
-            - addFlag
-            - checkFlag
-            - decBinPad
-            - exist
-            - grant
-            - removeFlag
-        + B64
-            - decode
-            - decodeSafe
-            - encode
-            - encodeSafe
-        + Number
-            - isInteger (^4.14.0)
-            - safeInt (^4.1.0)
+    + String
+        - removeAccents (^4.9.0)
+        - removeMultiSpace
+        - replaceByTemplate
+        - replaceStrTo
+        - seemsUTF8 (^4.9.0)
+        - slugify (^4.9.0)
+        - toCamel
+        - toDelimited
+        - toKebab
+        - toLowerCamel
+        - toScreamingDelimited
+        - toScreamingSnake
+        - toSnake
+        - truncate (^4.9.0)
+    + Json
+        - decode
+        - encode
+        - htmlEncode
+    + Bit
+        - addFlag
+        - checkFlag
+        - decBinPad
+        - exist
+        - grant
+        - removeFlag
+    + B64
+        - decode
+        - decodeSafe
+        - encode
+        - encodeSafe
+    + Number
+        - isInteger (^4.14.0)
+        - safeInt (^4.1.0)
 
 - Global functions
     + classNamespace
@@ -138,6 +139,7 @@ composer require efureev/support "^2.0"
 
 - Structures
     - Collections (^4.16.0)
+      - ArrayCollections
 
 - Traits
     + ArrayStorage
