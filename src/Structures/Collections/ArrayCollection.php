@@ -26,6 +26,7 @@ use function current;
 use function end;
 use function in_array;
 use function is_array;
+use function is_callable;
 use function is_object;
 use function key;
 use function next;
@@ -50,12 +51,16 @@ class ArrayCollection implements Collection, Stringable
     protected array $elements = [];
 
     /**
-     * @param array $elements
+     * @param array|Collection $elements
      * @psalm-param array<TKey,T> $elements
      */
-    public function __construct(array $elements = [])
+    public function __construct(array|Collection $elements = [])
     {
-        $this->elements = $elements;
+        if ($elements instanceof Collection) {
+            $this->elements = $elements->all();
+        } else {
+            $this->elements = $elements;
+        }
     }
 
     /**
@@ -238,7 +243,10 @@ class ArrayCollection implements Collection, Stringable
      */
     public function map(Closure $func): static
     {
-        return $this->createFrom(array_map($func, $this->elements));
+        $keys = array_keys($this->elements);
+        $map  = array_map($func, $this->elements, $keys);
+
+        return $this->createFrom(array_combine($keys, $map));
     }
 
     /**
@@ -362,8 +370,8 @@ class ArrayCollection implements Collection, Stringable
      * This method is provided for derived classes to specify how a new
      * instance should be created when constructor semantics have changed.
      *
-     * @param array $elements Elements.
-     * @psalm-param array<K,V> $elements
+     * @param array|Collection $elements Elements.
+     * @psalm-param array<K,V>|Collection $elements
      *
      * @return static
      * @psalm-return static<K,V>
@@ -371,7 +379,7 @@ class ArrayCollection implements Collection, Stringable
      * @psalm-template K of array-key
      * @psalm-template V
      */
-    protected function createFrom(array $elements): static
+    protected function createFrom(array|Collection $elements): static
     {
         return new static($elements);
     }
@@ -608,6 +616,27 @@ class ArrayCollection implements Collection, Stringable
         return $this->createFrom($chunks);
     }
 
+    public function clone(): static
+    {
+        return $this->createFrom($this);
+    }
+
+    /**
+     * Push all the given items onto the collection.
+     *
+     * @param iterable<array-key, T> $source
+     */
+    public function concat(iterable $source): static
+    {
+        $result = $this->clone();
+
+        foreach ($source as $item) {
+            $result->push($item);
+        }
+
+        return $result;
+    }
+
     /**
      * Sort through each item with a callback.
      *
@@ -728,6 +757,29 @@ class ArrayCollection implements Collection, Stringable
     }
 
     /**
+     * Get one or a specified number of items randomly from the collection.
+     *
+     * @param (callable(self<TKey, T>): int)|int|null $number
+     * @param bool $preserveKeys
+     *
+     * @return static<int, T>|T
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function random(callable|int|null $number = null, bool $preserveKeys = false): mixed
+    {
+        if ($number === null) {
+            return Arr::random($this->elements);
+        }
+
+        if (is_callable($number)) {
+            return new static(Arr::random($this->elements, $number($this), $preserveKeys));
+        }
+
+        return new static(Arr::random($this->elements, $number, $preserveKeys));
+    }
+
+    /**
      * Sort the collection keys.
      *
      * @param int $options
@@ -741,6 +793,72 @@ class ArrayCollection implements Collection, Stringable
         $descending ? krsort($items, $options) : ksort($items, $options);
 
         return $this->createFrom($items);
+    }
+
+    protected function useAsCallable(mixed $value): bool
+    {
+        return !is_string($value) && is_callable($value);
+    }
+
+    protected function valueRetriever(mixed $value): callable
+    {
+        if ($this->useAsCallable($value)) {
+            return $value;
+        }
+
+        return fn($item) => Arr::get($item, $value);
+    }
+
+    /**
+     * Group an associative array by a field or using a callback.
+     *
+     * @param (callable(T, TKey): array-key)|array|string $groupBy
+     * @param bool $preserveKeys
+     * @psalm-return static<array-key, static<array-key, T>>
+     * @return static<int|string, static<int|string, T>>
+     */
+    public function groupBy(callable|array|string $groupBy, bool $preserveKeys = false): static
+    {
+        if (is_array($groupBy) && !$this->useAsCallable($groupBy)) {
+            $nextGroups = $groupBy;
+
+            $groupBy = array_shift($nextGroups);
+        }
+
+        $groupBy = $this->valueRetriever($groupBy);
+
+        $results = [];
+
+        foreach ($this->elements as $key => $value) {
+            $groupKeys = $groupBy($value, $key);
+
+            if (!is_array($groupKeys)) {
+                $groupKeys = [$groupKeys];
+            }
+
+            foreach ($groupKeys as $groupKey) {
+                $groupKey = match (true) {
+                    is_bool($groupKey) => (int)$groupKey,
+                    $groupKey instanceof \BackedEnum => $groupKey->value,
+                    $groupKey instanceof \Stringable => (string)$groupKey,
+                    default => $groupKey,
+                };
+
+                if (!array_key_exists($groupKey, $results)) {
+                    $results[$groupKey] = $this->createFrom([]);
+                }
+
+                $results[$groupKey]->offsetSet($preserveKeys ? $key : null, $value);
+            }
+        }
+
+        $result = $this->createFrom($results);
+
+        if (!empty($nextGroups)) {
+            return $result->map(fn(Collection $item) => $item->groupBy($nextGroups, $preserveKeys));
+        }
+
+        return $result;
     }
 
     public function __toString(): string

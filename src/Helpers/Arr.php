@@ -12,6 +12,25 @@ use Php\Support\Interfaces\Jsonable;
 use Php\Support\Structures\Collections\ReadableCollection;
 use Traversable;
 
+use function array_diff_assoc;
+use function array_merge;
+use function array_rand;
+use function array_search;
+use function array_shift;
+use function array_unique;
+use function array_unshift;
+use function array_values;
+use function explode;
+use function func_num_args;
+use function is_array;
+use function is_int;
+use function is_numeric;
+use function is_object;
+use function iterator_to_array;
+use function mb_substr;
+use function str_contains;
+use function str_replace;
+
 /**
  * @psalm-template TKey of array-key
  * @psalm-template T
@@ -448,8 +467,12 @@ class Arr
      * @param mixed $value
      * @param non-empty-string $separator
      */
-    public static function set(array|ArrayObject|null &$array, string $key, mixed $value, string $separator = '.'): array|ArrayObject|null
-    {
+    public static function set(
+        array|ArrayObject|null &$array,
+        string $key,
+        mixed $value,
+        string $separator = '.'
+    ): array|ArrayObject|null {
         if ($array === null) {
             return $array;
         }
@@ -545,11 +568,11 @@ class Arr
     private static function itemReplaceByTemplate(mixed $item, array $replace)
     {
         if (is_array($item)) {
-            $item = self::replaceByTemplate($item, $replace);
-        } else {
-            if (is_string($item)) {
-                $item = Str::replaceByTemplate($item, $replace);
-            }
+            return self::replaceByTemplate($item, $replace);
+        }
+
+        if (is_string($item)) {
+            return Str::replaceByTemplate($item, $replace);
         }
 
         return $item;
@@ -596,12 +619,59 @@ class Arr
      */
     public static function prepend(array $array, mixed $value, mixed $key = null): array
     {
-        if (func_num_args() == 2) {
+        if (func_num_args() === 2) {
             array_unshift($array, $value);
         } else {
             $array = [$key => $value] + $array;
         }
 
         return $array;
+    }
+
+    /**
+     * Get one or a specified number of random values from an array.
+     *
+     * @param array $array
+     * @param int|null $number
+     * @param bool $preserveKeys
+     * @return mixed
+     *
+     * @throws \InvalidArgumentException
+     */
+    public static function random(array $array, ?int $number = null, bool $preserveKeys = false): mixed
+    {
+        $requested = $number ?? 1;
+
+        $count = count($array);
+
+        if ($requested > $count) {
+            throw new \InvalidArgumentException(
+                "You requested {$requested} items, but there are only {$count} items available."
+            );
+        }
+
+        if ($number === null) {
+            return $array[array_rand($array)];
+        }
+
+        if ($number === 0) {
+            return [];
+        }
+
+        $keys = array_rand($array, $number);
+
+        $results = [];
+
+        if ($preserveKeys) {
+            foreach ((array)$keys as $key) {
+                $results[$key] = $array[$key];
+            }
+        } else {
+            foreach ((array)$keys as $key) {
+                $results[] = $array[$key];
+            }
+        }
+
+        return $results;
     }
 }

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.25.0
+
+### Added
+
+- `Arr::random` - Get one or a specified number of random values from an array
+- `ArrayCollection::random` - Get one or a specified number of items randomly from the collection
+- `ArrayCollection::clone` - Clone elements and returns Collection
+- `ArrayCollection::groupBy` - Group an associative array by a field or using a callback
+
+### Changed
+
+- `ArrayCollection::map` - works with keys now
+- `ArrayCollection::createFrom` - receives Collections
+
 ## v4.24.0
 
 ### Added
@@ -41,12 +55,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - Add traits for
   Enums: [WithEnhances.php](./src/Enums/WithEnhances.php), [WithEnhancesForStrings](./src/Enums/WithEnhancesForStrings.php)
   with following methods:
-  - `casesToString`- Returns string of Enum's names or values
-  - `casesToEscapeString`- Returns string of Enum's escaped names or values
-  - `values`- Returns list of Enum's values
-  - `names` - Returns list of Enum's names
-  - `hasValue` - Check if the Enum has provided Value
-  - `hasName` - Check if the Enum has provided Name
+    - `casesToString`- Returns string of Enum's names or values
+    - `casesToEscapeString`- Returns string of Enum's escaped names or values
+    - `values`- Returns list of Enum's values
+    - `names` - Returns list of Enum's names
+    - `hasValue` - Check if the Enum has provided Value
+    - `hasName` - Check if the Enum has provided Name
 
 ## v4.18.0
 

@@ -81,4 +81,34 @@ interface Collection extends ReadableCollection, ArrayAccess
      * @return void
      */
     public function set(string|int $key, mixed $value): void;
+
+    /**
+     * Push all the given items onto the collection.
+     *
+     * @param iterable<array-key, T> $source
+     */
+    public function concat(iterable $source): static;
+
+    public function clone(): static;
+
+    /**
+     * Get one or a specified number of items randomly from the collection.
+     *
+     * @param (callable(self<TKey, T>): int)|int|null $number
+     * @param bool $preserveKeys
+     *
+     * @return static<int, T>|T
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function random(callable|int|null $number = null, bool $preserveKeys = false): mixed;
+
+    /**
+     * Group an associative array by a field or using a callback.
+     *
+     * @param (callable(T, TKey): array-key)|array|string $groupBy
+     * @param bool $preserveKeys
+     * @psalm-param (callable(T, TKey): array-key)|array|string $groupBy
+     */
+    public function groupBy(callable|array|string $groupBy, bool $preserveKeys = false): static;
 }
