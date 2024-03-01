@@ -34,4 +34,24 @@ trait WithEnhances
     {
         return in_array($value, static::names(), true);
     }
+
+    public static function toKeyValueArray(): array
+    {
+        $list = [];
+        foreach (self::cases() as $case) {
+            $list[$case->value] = $case->name;
+        }
+
+        return $list;
+    }
+
+    public static function toValueKeyArray(): array
+    {
+        $list = [];
+        foreach (self::cases() as $case) {
+            $list[$case->value] = $case->name;
+        }
+
+        return $list;
+    }
 }
