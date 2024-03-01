@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Add func for Enum's traits: `WithEnhances::toKeyValueArray`, `WithEnhances::toValueKeyArray`
+- Add `Arr::map`
 
 ## v4.26.0
 

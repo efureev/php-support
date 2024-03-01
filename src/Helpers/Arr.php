@@ -674,4 +674,12 @@ class Arr
 
         return $results;
     }
+
+    public static function map(array $elements, \Closure $func): array
+    {
+        $keys = array_keys($elements);
+        $map  = array_map($func, $elements, $keys);
+
+        return array_combine($keys, $map);
+    }
 }
