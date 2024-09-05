@@ -23,7 +23,7 @@ trait WithEnhancesForStrings
         return self::casesToStringBase($decorator, $delimiter);
     }
 
-    public static function casesToEscapeString(string $delimiter = ', ', callable $decorator = null): string
+    public static function casesToEscapeString(string $delimiter = ', '): string
     {
         return static::casesToString($delimiter, static fn(self $enumItem) => "'$enumItem->value'");
     }
