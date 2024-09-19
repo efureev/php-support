@@ -8,8 +8,7 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Add global functions: `attributeToGetterMethod`, `attributeToSetterMethod`,
-  `findGetterMethod`, `public_property_exists`, `get_property_value`
+- Add global functions: `attributeToGetterMethod`, `attributeToSetterMethod`, `findGetterMethod`, `public_property_exists`, `get_property_value`
 
 ## v4.27.0
 
