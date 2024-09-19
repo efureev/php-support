@@ -361,11 +361,11 @@ if (!function_exists('public_property_exists')) {
 }
 
 
-if (!function_exists('get_property_value')) {
+if (!function_exists('getPropertyValue')) {
     /**
      * Returns a value from public property or null
      */
-    function get_property_value(object $instance, string $attribute): mixed
+    function getPropertyValue(object $instance, string $attribute): mixed
     {
         $property = public_property_exists($instance, $attribute);
         if ($property) {
