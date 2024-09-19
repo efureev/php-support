@@ -1,6 +1,7 @@
 <?php
 
 use Php\Support\Helpers\Arr;
+use Php\Support\Helpers\Str;
 use Php\Support\Structures\Collections\ReadableCollection;
 
 if (!function_exists('value')) {
@@ -306,24 +307,64 @@ if (!function_exists('remoteStaticCall')) {
     }
 }
 
-if (!function_exists('remoteCall')) {
+if (!function_exists('attributeToGetterMethod')) {
     /**
-     * Returns result of an object's method if it exists in the object.
-     *
-     * @param object|null $class
-     * @param string $method
-     * @param mixed ...$params
-     *
-     * @return mixed
+     * Returns getter-method's name or null by an attribute
      */
-    function remoteCall(?object $class, string $method, mixed ...$params): mixed
+    function attributeToGetterMethod(string $attribute): string
     {
-        if (!$class) {
-            return null;
+        return 'get' . ucfirst($attribute);
+    }
+}
+
+if (!function_exists('attributeToSetterMethod')) {
+    /**
+     * Returns getter-method's name or null by an attribute
+     */
+    function attributeToSetterMethod(string $attribute): string
+    {
+        return 'set' . ucfirst($attribute);
+    }
+}
+
+if (!function_exists('findGetterMethod')) {
+    /**
+     * Returns getter-method's name or null by an attribute
+     */
+    function findGetterMethod(object $instance, string $attribute): ?string
+    {
+        if (method_exists($instance, $method = attributeToGetterMethod($attribute))) {
+            return $method;
         }
 
-        if (method_exists($class, $method)) {
-            return $class->$method(...$params);
+        return null;
+    }
+}
+
+
+if (!function_exists('public_property_exists')) {
+    /**
+     * Returns existing public method (name) or null if missing
+     */
+    function public_property_exists(object $instance, string $attribute): ?string
+    {
+        $property = Str::toLowerCamel($attribute);
+        $vars     = get_object_vars($instance);
+
+        return array_key_exists($property, $vars) ? $property : null;
+    }
+}
+
+
+if (!function_exists('get_property_value')) {
+    /**
+     * Returns a value from public property or null
+     */
+    function get_property_value(object $instance, string $attribute): mixed
+    {
+        $property = public_property_exists($instance, $attribute);
+        if ($property) {
+            return $instance->$property;
         }
 
         return null;

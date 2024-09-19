@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.28.0
+
+### Added
+
+- Add global functions: `attributeToGetterMethod`, `attributeToSetterMethod`,
+  `findGetterMethod`, `public_property_exists`, `get_property_value`
+
 ## v4.27.0
 
 ### Added
