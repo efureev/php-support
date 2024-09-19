@@ -255,12 +255,6 @@ if (!function_exists('class_uses_recursive')) {
 if (!function_exists('remoteStaticCall')) {
     /**
      * Returns result of an object's method if it exists in the object.
-     *
-     * @param string|object|null $class
-     * @param string $method
-     * @param mixed ...$params
-     *
-     * @return mixed
      */
     function remoteStaticCall(object|string|null $class, string $method, mixed ...$params): mixed
     {
@@ -282,12 +276,6 @@ if (!function_exists('remoteStaticCall')) {
 if (!function_exists('remoteStaticCall')) {
     /**
      * Returns result of an object's method if it exists in the object or trow exception.
-     *
-     * @param string|object|null $class
-     * @param string $method
-     * @param mixed ...$params
-     *
-     * @return mixed
      */
     function remoteStaticCallOrTrow(object|string|null $class, string $method, mixed ...$params): mixed
     {
@@ -310,12 +298,6 @@ if (!function_exists('remoteStaticCall')) {
 if (!function_exists('remoteCall')) {
     /**
      * Returns result of an object's method if it exists in the object.
-     *
-     * @param object|null $class
-     * @param string $method
-     * @param mixed ...$params
-     *
-     * @return mixed
      */
     function remoteCall(?object $class, string $method, mixed ...$params): mixed
     {
