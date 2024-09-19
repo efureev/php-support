@@ -307,6 +307,29 @@ if (!function_exists('remoteStaticCall')) {
     }
 }
 
+if (!function_exists('remoteCall')) {
+    /**
+     * Returns result of an object's method if it exists in the object.
+     *
+     * @param object|null $class
+     * @param string $method
+     * @param mixed ...$params
+     *
+     * @return mixed
+     */
+    function remoteCall(?object $class, string $method, mixed ...$params): mixed
+    {
+        if (!$class) {
+            return null;
+        }
+        if (method_exists($class, $method)) {
+            return $class->$method(...$params);
+        }
+
+        return null;
+    }
+}
+
 if (!function_exists('attributeToGetterMethod')) {
     /**
      * Returns getter-method's name or null by an attribute
