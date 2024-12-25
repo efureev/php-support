@@ -6,7 +6,6 @@ namespace Php\Support\Traits;
 
 /**
  * Trait TraitInitializer
- * @package Php\Support\Traits
  */
 trait TraitInitializer
 {
@@ -18,7 +17,7 @@ trait TraitInitializer
     /**
      * The array of trait initializers that will be called on each new instance.
      *
-     * @var array
+     * @var array<class-string, string[]>
      */
     protected static array $traitInitializers = [];
 

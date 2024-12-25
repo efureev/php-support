@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests\traits;
+namespace Php\Support\Tests\Traits;
 
 use Php\Support\Traits\ConsolePrint;
 use PHPUnit\Framework\TestCase;

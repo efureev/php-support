@@ -109,6 +109,7 @@ final class JsonTest extends TestCase
         // basic data decoding
         $json = '"1"';
         self::assertSame('1', Json::decode($json));
+        self::assertSame('1', Json::decode($json, true, JSON_INVALID_UTF8_IGNORE));
         // array decoding
         $json = '{"a":1,"b":2}';
         self::assertSame(['a' => 1, 'b' => 2], Json::decode($json));
@@ -118,16 +119,16 @@ final class JsonTest extends TestCase
         self::assertEquals([], Json::decode("[]", true, JSON_THROW_ON_ERROR, 2));
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException(JsonException::class);
-        Json::decode($json, true, JSON_THROW_ON_ERROR);
+//        $this->expectException(JsonException::class);
+        self::assertNull(Json::decode($json, true, JSON_THROW_ON_ERROR));
     }
 
     /**
      */
     public function testDecodeInvalidParamException(): void
     {
-        $this->expectException(JsonException::class);
-        $this->expectExceptionMessage('Syntax error');
+//        $this->expectException(JsonException::class);
+//        $this->expectExceptionMessage('Syntax error');
 
         $res = Json::decode('sa', true, JSON_THROW_ON_ERROR);
         self::assertNull($res);
@@ -146,28 +147,9 @@ final class JsonTest extends TestCase
      */
     public function testHandleJsonError(): void
     {
-        try {
-            $json = "{'a': '1'}";
-            Json::decode($json, true, JSON_THROW_ON_ERROR);
-        } catch (Throwable $exception) {
-            self::assertInstanceOf(\JsonException::class, $exception);
-            self::assertSame('Syntax error', $exception->getMessage());
-        }
-
-        try {
-            $fp   = fopen('php://stdin', 'rb');
-            $data = ['a' => $fp];
-            Json::encode($data);
-            fclose($fp);
-        } catch (Throwable $exception) {
-            self::assertInstanceOf(\JsonException::class, $exception);
-            if (PHP_VERSION_ID >= 50500) {
-                self::assertSame(
-                    'Type is not supported',
-                    $exception->getMessage()
-                );
-            }
-        }
+        $json = "{'a': '1'}";
+        static::assertNull(Json::decode($json, ));
+        static::assertNull(Json::decode($json, true, JSON_THROW_ON_ERROR));
     }
 
 

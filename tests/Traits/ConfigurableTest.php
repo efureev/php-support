@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests;
+namespace Php\Support\Tests\Traits;
 
 use Php\Support\Exceptions\InvalidParamException;
 use PHPUnit\Framework\TestCase;
@@ -53,7 +53,7 @@ final class ConfigurableTest extends TestCase
             $cls->configurable(['prop' => 'success', 'test' => 'fake']);
         } catch (\Throwable $exception) {
             $this->assertInstanceOf(InvalidParamException::class, $exception);
-            $this->assertNull($exception->getParam());
+            $this->assertNull($exception->name);
         }
     }
 

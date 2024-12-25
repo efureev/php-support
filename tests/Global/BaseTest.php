@@ -18,30 +18,30 @@ final class BaseTest extends TestCase
     private static function values(): array
     {
         return [
-            'key'        => 'value 2',
-            'int1'       => 2,
-            'int2'       => -12,
-            'array'      => [
+            'key' => 'value 2',
+            'int1' => 2,
+            'int2' => -12,
+            'array' => [
                 1,
                 2,
                 3,
                 4,
                 5,
             ],
-            'string'     => 'string value',
-            'null'       => null,
-            'false'      => false,
-            'true'       => true,
-            'float'      => 12.31,
-            'empty'      => '',
+            'string' => 'string value',
+            'null' => null,
+            'false' => false,
+            'true' => true,
+            'float' => 12.31,
+            'empty' => '',
             'emptyArray' => [],
-            'cls'        => new class {
+            'cls' => new class {
                 public function __invoke()
                 {
                     return 'cls.test';
                 }
             },
-            'fn'         => static function () {
+            'fn' => static function () {
                 return 'fn.test';
             },
         ];
@@ -65,193 +65,193 @@ final class BaseTest extends TestCase
         foreach (
             [
                 [
-                    'val'     => new \stdClass(),
-                    'res'     => true,
+                    'val' => new \stdClass(),
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => [
+                    'val' => [
                         1,
                         2,
                     ],
-                    'res'     => true,
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => [1],
-                    'res'     => true,
+                    'val' => [1],
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => [0],
-                    'res'     => true,
+                    'val' => [0],
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 1,
-                    'res'     => true,
+                    'val' => 1,
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 42,
-                    'res'     => true,
+                    'val' => 42,
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => -42,
-                    'res'     => true,
+                    'val' => -42,
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'true',
-                    'res'     => true,
+                    'val' => 'true',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => '1',
-                    'res'     => true,
+                    'val' => '1',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'on',
-                    'res'     => true,
+                    'val' => 'on',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'On',
-                    'res'     => true,
+                    'val' => 'On',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'ON',
-                    'res'     => true,
+                    'val' => 'ON',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'yes',
-                    'res'     => true,
+                    'val' => 'yes',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'YES',
-                    'res'     => true,
+                    'val' => 'YES',
+                    'res' => true,
                     'resNull' => true,
                 ],
                 [
-                    'val'     => 'TRUE',
-                    'res'     => true,
+                    'val' => 'TRUE',
+                    'res' => true,
                     'resNull' => true,
                 ],
 
 
                 [
-                    'val'     => 'off',
-                    'res'     => false,
+                    'val' => 'off',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'Off',
-                    'res'     => false,
+                    'val' => 'Off',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'OFF',
-                    'res'     => false,
+                    'val' => 'OFF',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'no',
-                    'res'     => false,
+                    'val' => 'no',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'ja',
-                    'res'     => false,
+                    'val' => 'ja',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'nein',
-                    'res'     => false,
+                    'val' => 'nein',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'нет',
-                    'res'     => false,
+                    'val' => 'нет',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'да',
-                    'res'     => false,
+                    'val' => 'да',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => null,
-                    'res'     => false,
+                    'val' => null,
+                    'res' => false,
                     'resNull' => null,
                 ],
                 [
-                    'val'     => 0,
-                    'res'     => false,
+                    'val' => 0,
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'false',
-                    'res'     => false,
+                    'val' => 'false',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'FALSE',
-                    'res'     => false,
+                    'val' => 'FALSE',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'string',
-                    'res'     => false,
+                    'val' => 'string',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'bool',
-                    'res'     => false,
+                    'val' => 'bool',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '0.0',
-                    'res'     => false,
+                    'val' => '0.0',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '4.2',
-                    'res'     => false,
+                    'val' => '4.2',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '0',
-                    'res'     => false,
+                    'val' => '0',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '',
-                    'res'     => false,
+                    'val' => '',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '[]',
-                    'res'     => false,
+                    'val' => '[]',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => '{}',
-                    'res'     => false,
+                    'val' => '{}',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'false',
-                    'res'     => false,
+                    'val' => 'false',
+                    'res' => false,
                     'resNull' => false,
                 ],
                 [
-                    'val'     => 'bar',
-                    'res'     => false,
+                    'val' => 'bar',
+                    'res' => false,
                     'resNull' => false,
                 ],
 
@@ -302,14 +302,10 @@ final class BaseTest extends TestCase
 
         static::assertEquals(
             [
-                \Php\Support\Traits\Singleton::class                     =>
-                    \Php\Support\Traits\Singleton::class,
-                \Php\Support\Traits\ArrayStorageConfigurableTrait::class =>
-                    \Php\Support\Traits\ArrayStorageConfigurableTrait::class,
-                \Php\Support\Traits\ArrayStorage::class                  =>
-                    \Php\Support\Traits\ArrayStorage::class,
-                \Php\Support\Traits\ConfigurableTrait::class             =>
-                    \Php\Support\Traits\ConfigurableTrait::class,
+                \Php\Support\Traits\Singleton::class => \Php\Support\Traits\Singleton::class,
+                \Php\Support\Traits\UseConfigurabeStorage::class => \Php\Support\Traits\UseConfigurabeStorage::class,
+                \Php\Support\Traits\UseStorage::class => \Php\Support\Traits\UseStorage::class,
+                \Php\Support\Traits\ConfigurableTrait::class => \Php\Support\Traits\ConfigurableTrait::class,
             ],
             $traits
         );
@@ -321,16 +317,11 @@ final class BaseTest extends TestCase
 
         static::assertEquals(
             [
-                \Php\Support\Traits\Singleton::class                     =>
-                    \Php\Support\Traits\Singleton::class,
-                \Php\Support\Traits\ArrayStorageConfigurableTrait::class =>
-                    \Php\Support\Traits\ArrayStorageConfigurableTrait::class,
-                \Php\Support\Traits\ArrayStorage::class                  =>
-                    \Php\Support\Traits\ArrayStorage::class,
-                \Php\Support\Traits\ConfigurableTrait::class             =>
-                    \Php\Support\Traits\ConfigurableTrait::class,
-                \Php\Support\Traits\Maker::class                         =>
-                    \Php\Support\Traits\Maker::class,
+                \Php\Support\Traits\Singleton::class => \Php\Support\Traits\Singleton::class,
+                \Php\Support\Traits\UseConfigurabeStorage::class => \Php\Support\Traits\UseConfigurabeStorage::class,
+                \Php\Support\Traits\UseStorage::class => \Php\Support\Traits\UseStorage::class,
+                \Php\Support\Traits\ConfigurableTrait::class => \Php\Support\Traits\ConfigurableTrait::class,
+                \Php\Support\Traits\Maker::class => \Php\Support\Traits\Maker::class,
             ],
             $traits
         );
@@ -349,7 +340,7 @@ final class BaseTest extends TestCase
 class TraitUsesRecursiveClass
 {
     use \Php\Support\Traits\Singleton;
-    use \Php\Support\Traits\ArrayStorageConfigurableTrait;
+    use \Php\Support\Traits\UseConfigurabeStorage;
 
     protected $username;
 }

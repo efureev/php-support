@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests;
+namespace Php\Support\Tests\Traits;
 
 use Php\Support\Exceptions\Exception;
 use PHPUnit\Framework\TestCase;

@@ -10,8 +10,6 @@ use Throwable;
 
 /**
  * Class Exception
- *
- * @package Php\Support\Exceptions
  */
 class Exception extends \Exception
 {

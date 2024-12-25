@@ -6,40 +6,23 @@ namespace Php\Support\Traits;
 
 /**
  * Trait Thrower
- * @package Php\Support\Traits
  */
 trait Thrower
 {
-    /**
-     * Throw Exception
-     *
-     * @param mixed ...$arguments
-     */
-    public static function throw(...$arguments): void
+    public static function throw(mixed ...$arguments): void
     {
         // @phpstan-ignore-next-line
         throw new static(...$arguments);
     }
 
-
-    /**
-     * @param mixed $value
-     * @param mixed ...$arguments
-     */
-    public static function throwIf(mixed $value, ...$arguments): void
+    public static function throwIf(mixed $value, mixed ...$arguments): void
     {
         if ($value) {
             static::throw(...$arguments);
         }
     }
 
-    /**
-     * @param mixed $value
-     * @param mixed ...$arguments
-     *
-     * @return bool
-     */
-    public static function throwIfReturn(mixed $value, ...$arguments): bool
+    public static function throwIfReturn(mixed $value, mixed ...$arguments): bool
     {
         static::throwIf($value, ...$arguments);
 

@@ -28,14 +28,14 @@ final class InvalidParamTest extends TestCase
             $this->assertInstanceOf(InvalidParamException::class, $e);
             $this->assertSame('Invalid Parameter', $e->getMessage());
             $this->assertSame('Invalid Parameter', $e->getName());
-            $this->assertNull($e->getParam());
+            $this->assertNull($e->name);
         }
 
         try {
             throw new InvalidParamException('Invalid Param', 'prop');
         } catch (InvalidParamException $e) {
             $this->assertInstanceOf(InvalidParamException::class, $e);
-            $this->assertSame('prop', $e->getParam());
+            $this->assertSame('prop', $e->name);
             $this->assertSame('Invalid Param', $e->getMessage());
             $this->assertSame('Invalid Parameter', $e->getName());
         }
@@ -44,7 +44,7 @@ final class InvalidParamTest extends TestCase
             throw new InvalidParamException(null, 'prop');
         } catch (InvalidParamException $e) {
             $this->assertInstanceOf(InvalidParamException::class, $e);
-            $this->assertSame('prop', $e->getParam());
+            $this->assertSame('prop', $e->name);
             $this->assertSame('Invalid Parameter', $e->getName());
             $this->assertSame('Invalid Parameter: prop', $e->getMessage());
         }

@@ -22,10 +22,6 @@ class Str
 
     /**
      * Converts a string to snake_case
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function toSnake(string $str): string
     {
@@ -34,11 +30,6 @@ class Str
 
     /**
      * Converts a string to delimited.snake.case (in this case `del = '.'`)
-     *
-     * @param string $str
-     * @param string $delimiter
-     *
-     * @return string
      */
     public static function toDelimited(string $str, string $delimiter): string
     {
@@ -48,12 +39,6 @@ class Str
     /**
      * Converts a string to SCREAMING.DELIMITED.SNAKE.CASE (in this case `del = '.'; screaming = true`) or
      * delimited.snake.case (in this case `del = '.'; screaming = false`)
-     *
-     * @param string $str
-     * @param string $delimiter
-     * @param bool $screaming
-     *
-     * @return string
      */
     public static function toScreamingDelimited(string $str, string $delimiter, bool $screaming): string
     {
@@ -139,11 +124,6 @@ class Str
         return is_string($res) ? $res : $str;
     }
 
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
     private static function addWordBoundariesToNumbers(string $str): string
     {
         $res = preg_replace('/([a-zA-Z])(\d+)([a-zA-Z]?)/u', '$1 $2 $3', $str);
@@ -152,10 +132,6 @@ class Str
 
     /**
      * Converts a string to SCREAMING_SNAKE_CASE
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function toScreamingSnake(string $str): string
     {
@@ -164,10 +140,6 @@ class Str
 
     /**
      * Converts a string to kebab-case
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function toKebab(string $str): string
     {
@@ -176,10 +148,6 @@ class Str
 
     /**
      * Converts a string to CamelCase
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function toCamel(string $str): string
     {
@@ -188,11 +156,6 @@ class Str
 
     /**
      * Converts a string to CamelCase
-     *
-     * @param string $str
-     * @param bool $initCase
-     *
-     * @return string
      */
     public static function toCamelInitCase(string $str, bool $initCase): string
     {
@@ -246,10 +209,6 @@ class Str
 
     /**
      * Converts a string to lowerCamelCase
-     *
-     * @param string $str
-     *
-     * @return string
      */
     public static function toLowerCamel(string $str): string
     {
@@ -262,13 +221,6 @@ class Str
 
     /**
      * Replace substr by start and finish indents
-     *
-     * @param string $str
-     * @param int $from_start
-     * @param int $from_end
-     * @param string $toStr
-     *
-     * @return string
      */
     public static function replaceStrTo(string $str, int $from_start, int $from_end, string $toStr = '*'): string
     {
@@ -303,11 +255,6 @@ class Str
         return str_replace(array_keys($replace), array_values($replace), $str);
     }
 
-    /**
-     * @param string $regex
-     *
-     * @return bool
-     */
     public static function isRegExp(string $regex): bool
     {
         return !empty($regex) && @preg_match($regex, '') !== false;
@@ -315,12 +262,6 @@ class Str
 
     /**
      * Truncate a string to a specified length without cutting a word off
-     *
-     * @param string $str
-     * @param int $length
-     * @param string $append
-     *
-     * @return string
      */
     public static function truncate(string $str, int $length, string $append = '...'): string
     {
@@ -406,11 +347,6 @@ class Str
 
     /**
      * Converts all accent characters to ASCII characters.
-     *
-     * @param string $str
-     * @param string $language
-     *
-     * @return string
      */
     public static function removeAccents(string $str, string $language = ''): string
     {

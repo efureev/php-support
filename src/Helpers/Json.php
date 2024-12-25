@@ -7,10 +7,6 @@ namespace Php\Support\Helpers;
 use function json_decode;
 use function json_encode;
 
-/**
- * Class Json
- * @package Php\Support\Helpers
- */
 class Json
 {
     /**
@@ -45,11 +41,12 @@ class Json
      *
      * @return string|null
      */
-    public static function encode($value, $options = 320, int $depth = 512): ?string
+    public static function encode($value, int $options = 320, int $depth = 512): ?string
     {
         $value = Arr::dataToArray($value);
 
         $json = json_encode($value, $options, $depth);
+
         return $json ?: null;
     }
 
@@ -66,6 +63,12 @@ class Json
     public static function decode(?string $json, bool $asArray = true, int $options = 0, int $depth = 512)
     {
         if ($json === null || $json === '') {
+            return null;
+        }
+
+        // @see https://www.php.net/manual/en/json.constants.php#constant.json-invalid-utf8-ignore
+        $validateOpts = Bit::checkFlag($options, JSON_INVALID_UTF8_IGNORE) ? JSON_INVALID_UTF8_IGNORE : 0;
+        if (!json_validate($json, $depth, $validateOpts)) {
             return null;
         }
 

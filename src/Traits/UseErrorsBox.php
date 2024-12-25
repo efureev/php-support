@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace Php\Support\Traits;
 
 /**
- * Trait UseErrorsBox
- * @package Php\Support\Traits
- *
  * Use errors into your class
  */
 trait UseErrorsBox
 {
     private array $errors = [];
 
-    public function setError($message): self
+    public function setError(string|\Throwable $message): static
     {
         if ($message instanceof \Exception) {
             $message = $message->getMessage();
@@ -35,7 +32,7 @@ trait UseErrorsBox
         return $this->errors;
     }
 
-    public function clearErrors(): self
+    public function clearErrors(): static
     {
         $this->errors = [];
 

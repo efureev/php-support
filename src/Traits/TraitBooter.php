@@ -6,21 +6,20 @@ namespace Php\Support\Traits;
 
 /**
  * Trait TraitBooter
- * @package Php\Support\Traits
  */
 trait TraitBooter
 {
     /**
      * The array of booted classes.
      *
-     * @var array
+     * @var class-string[]
      */
     protected static array $booted = [];
 
     /**
      * The array of trait initializers that will be called on each new instance.
      *
-     * @return array
+     * @return class-string[]
      */
     protected static function bootTraits(): array
     {
@@ -54,8 +53,6 @@ trait TraitBooter
 
     /**
      * Perform any actions required before the instance boots.
-     *
-     * @return void
      */
     protected static function booting(): void
     {
@@ -64,8 +61,6 @@ trait TraitBooter
 
     /**
      * Bootstrap the instance and its traits.
-     *
-     * @return void
      */
     protected static function boot(): void
     {
@@ -74,8 +69,6 @@ trait TraitBooter
 
     /**
      * Perform any actions required after the instance boots.
-     *
-     * @return void
      */
     protected static function booted(): void
     {
@@ -84,8 +77,6 @@ trait TraitBooter
 
     /**
      * Clear the list of booted models so they will be re-booted.
-     *
-     * @return void
      */
     public static function clearBooted(): void
     {

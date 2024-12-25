@@ -7,46 +7,32 @@ namespace Php\Support\Traits;
 use Php\Support\Helpers\Arr;
 
 /**
- * Trait Metable
- * @package Php\Support\Traits
+ * @template TValue
  */
 trait Metable
 {
     /**
      * The metadata for the element.
      *
-     * @var array
+     * @var array<string, TValue>
      */
     protected array $meta = [];
 
     /**
      * Get additional meta information to merge with the element payload.
      *
-     * @return array
+     * @return array<string, TValue>
      */
     public function meta(): array
     {
         return $this->meta;
     }
 
-    /**
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
     public function metaAttribute(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->meta, $key, $default);
     }
 
-    /**
-     * @param string $key
-     * @param mixed $value
-     * @param bool $removeNull
-     *
-     * @return $this
-     */
     public function setMetaAttribute(string $key, mixed $value, bool $removeNull = false): static
     {
         if ($value !== null || !$removeNull) {
@@ -59,9 +45,7 @@ trait Metable
     /**
      * Set additional meta information for the element.
      *
-     * @param array $meta
-     *
-     * @return $this
+     * @param array<string, TValue> $meta
      */
     public function withMeta(array $meta): static
     {

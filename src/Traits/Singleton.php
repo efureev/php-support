@@ -8,13 +8,11 @@ use Php\Support\Exceptions\Exception;
 
 /**
  * Trait Singleton
- *
- * @package Php\Support\Traits
  */
 trait Singleton
 {
     /**
-     * @var array
+     * @var array<class-string, Singleton>
      */
     protected static array $instances = [];
 
@@ -25,9 +23,6 @@ trait Singleton
     {
     }
 
-    /**
-     * @return Singleton
-     */
     public static function getInstance(): self
     {
         $cls = static::class;

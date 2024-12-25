@@ -6,22 +6,18 @@ use ArrayAccess;
 use Php\Support\Exceptions\InvalidParamException;
 
 /**
- * Trait ConfigurableTrait
- * @package Php\Support\Traits
+ * @template TKey of array-key
+ * @template TValue
+ * @implements ArrayAccess<TKey, TValue>
+ * @mixin ArrayAccess<TKey, TValue>
  */
 trait ConfigurableTrait
 {
-    /**
-     * @param array|ArrayAccess $attributes
-     * @param bool $exceptOnMiss
-     *
-     * @return self
-     */
-    public function configurable($attributes, ?bool $exceptOnMiss = true)
+    public function configurable(array|ArrayAccess $attributes, bool $throwOnMissingProp = true): static
     {
         foreach ($attributes as $key => $value) {
-            if (!$this->applyValue($key, $value) && $exceptOnMiss) {
-                throw new InvalidParamException("Property $key is absent at class: " . get_class($this));
+            if (!$this->applyValue($key, $value) && $throwOnMissingProp) {
+                throw new InvalidParamException("Property $key is absent at class: " . $this::class);
             }
         }
 
@@ -30,35 +26,28 @@ trait ConfigurableTrait
 
     protected function applyValue(string $key, mixed $value): bool
     {
-        if (!$res = $this->callMethod($key, $value)) {
-            $res = $this->setPropConfigurable($key, $value);
-        }
-        return $res;
+        return $this->callSetterProp($key, $value) || $this->setPropValue($key, $value);
     }
 
-    protected function setPropConfigurable(string $key, mixed $value): bool
+    protected function setPropValue(string $key, mixed $value): bool
     {
         if ($this->propertyExists($key)) {
             $this->{$key} = $value;
+
             return true;
         }
 
         return false;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
-    protected function propertyExists(string $key): bool
+    protected function propertyExists(string $name): bool
     {
-        return property_exists($this, $key);
+        return property_exists($this, $name);
     }
 
-    protected function callMethod(string $key, mixed $value): bool
+    protected function callSetterProp(string $key, mixed $value): bool
     {
-        if (method_exists($this, $method = 'set' . ucfirst($key))) {
+        if ($method = findSetterMethodByProp($this, $key)) {
             $this->$method($value);
 
             return true;

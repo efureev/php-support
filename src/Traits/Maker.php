@@ -6,7 +6,6 @@ namespace Php\Support\Traits;
 
 /**
  * Trait Maker
- * @package Php\Support\Traits
  */
 trait Maker
 {

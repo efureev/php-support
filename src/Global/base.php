@@ -315,6 +315,19 @@ if (!function_exists('findGetterMethod')) {
     }
 }
 
+if (!function_exists('findSetterMethodByProp')) {
+    /**
+     * Returns getter-method's name or null by an attribute
+     */
+    function findSetterMethodByProp(object $instance, string $attribute): ?string
+    {
+        if (method_exists($instance, $method = attributeToSetterMethod($attribute))) {
+            return $method;
+        }
+
+        return null;
+    }
+}
 
 if (!function_exists('public_property_exists')) {
     /**

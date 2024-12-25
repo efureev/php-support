@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 ### Added
 
 - Add `PHP 8.4` support
+- Add `UseStorage` trait. Trait `ArrayStorage` is deprecated now
+- Add `UseConfigurabeStorage` trait. Trait `ArrayStorageConfigurableTrait` is deprecated now
+
+### Removed
+
+- Remove Trait `ArrayStorage`. Use `UseStorage` instead
+- Remove Trait `ArrayStorageConfigurableTrait`. Use `UseConfigurabeStorage` instead
 
 ## v4.28.0
 
