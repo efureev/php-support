@@ -11,7 +11,7 @@ class MissingPropertyException extends ConfigException
 {
     public function __construct(protected(set) ?string $property, ?string $message = null, array $config = [])
     {
-        parent::__construct($message ?? ($this->getName() . ": '$this->property'"), $config);
+        parent::__construct($message ?? ($this->getName() . ": $this->property"), $config);
     }
 
     /**

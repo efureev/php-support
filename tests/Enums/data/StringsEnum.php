@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests\enums\data;
+namespace Php\Support\Tests\Enums\data;
 
 use Php\Support\Enums\WithEnhancesForStrings;
 

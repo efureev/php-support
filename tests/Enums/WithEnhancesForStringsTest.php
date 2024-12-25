@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Php\Support\Tests\enums;
+namespace Php\Support\Tests\Enums;
 
-use Php\Support\Tests\enums\data\StringsEnum;
+use Php\Support\Tests\Enums\data\StringsEnum;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
