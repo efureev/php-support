@@ -32,7 +32,6 @@ final class ConditionalHandler
 {
     /**
      * @var array
-     * @phpstan-ignore missingType.iterableValue
      */
     private array $params = [];
 

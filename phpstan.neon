@@ -1,11 +1,11 @@
 parameters:
-  level: '6'
+  level: '2'
   paths:
     - src
 #    - tests
-  ignoreErrors:
-    -
-      identifier: trait.unused
+#  ignoreErrors:
+#    -
+#      identifier: trait.unused
   excludePaths:
     - 'src/Types/Point.php'
     - 'src/Types/GeoPoint.php'

@@ -770,7 +770,6 @@ class URLify
         }
 
         // Is a specific map associated with $language?
-        // @phpstan-ignore booleanAnd.rightAlwaysTrue
         if (isset(self::$maps[$language]) && is_array(self::$maps[$language])) {
             // Move this map to end. This means it will have priority over others
             $map = self::$maps[$language];
