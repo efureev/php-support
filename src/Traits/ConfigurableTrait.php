@@ -28,13 +28,7 @@ trait ConfigurableTrait
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function applyValue(string $key, $value): bool
+    protected function applyValue(string $key, mixed $value): bool
     {
         if (!$res = $this->callMethod($key, $value)) {
             $res = $this->setPropConfigurable($key, $value);
@@ -42,13 +36,7 @@ trait ConfigurableTrait
         return $res;
     }
 
-    /**
-     * @param string $key
-     * @param        $value
-     *
-     * @return bool
-     */
-    protected function setPropConfigurable(string $key, $value): bool
+    protected function setPropConfigurable(string $key, mixed $value): bool
     {
         if ($this->propertyExists($key)) {
             $this->{$key} = $value;
@@ -68,13 +56,7 @@ trait ConfigurableTrait
         return property_exists($this, $key);
     }
 
-    /**
-     * @param string $key
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function callMethod(string $key, $value): bool
+    protected function callMethod(string $key, mixed $value): bool
     {
         if (method_exists($this, $method = 'set' . ucfirst($key))) {
             $this->$method($value);

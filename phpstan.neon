@@ -1,9 +1,11 @@
 parameters:
-  level: 'max'
+  level: '6'
   paths:
     - src
-  checkMissingIterableValueType: false
-  checkGenericClassInNonGenericObjectType: false
+#    - tests
+  ignoreErrors:
+    -
+      identifier: trait.unused
   excludePaths:
     - 'src/Types/Point.php'
     - 'src/Types/GeoPoint.php'

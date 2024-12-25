@@ -13,7 +13,7 @@ use Php\Support\Helpers\Arr;
 trait Metable
 {
     /**
-     * The meta data for the element.
+     * The metadata for the element.
      *
      * @var array
      */
@@ -35,7 +35,7 @@ trait Metable
      *
      * @return mixed
      */
-    public function metaAttribute(string $key, mixed $default = null)
+    public function metaAttribute(string $key, mixed $default = null): mixed
     {
         return Arr::get($this->meta, $key, $default);
     }

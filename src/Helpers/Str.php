@@ -11,25 +11,14 @@ use function mb_substr;
 use function preg_replace;
 use function trim;
 
-/**
- * Class Str
- *
- * @package Php\Support\Helpers
- */
 class Str
 {
     /**
      * The cache of delimited converted-cased words.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     protected static array $delimitedCache = [];
-    /**
-     * The cache of camel-cased words.
-     *
-     * @var array
-     */
-    protected static array $camelCache = [];
 
     /**
      * Converts a string to snake_case
@@ -305,11 +294,11 @@ class Str
      * Value = replace value
      *
      * @param string $str
-     * @param array $replace
+     * @param array<string,string> $replace
      *
-     * @return mixed
+     * @return string|string[]
      */
-    public static function replaceByTemplate(string $str, array $replace)
+    public static function replaceByTemplate(string $str, array $replace): array|string
     {
         return str_replace(array_keys($replace), array_values($replace), $str);
     }

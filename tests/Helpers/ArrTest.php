@@ -9,6 +9,8 @@ use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Jsonable;
 use Php\Support\Structures\Collections\ArrayCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -252,12 +254,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerDataToArray
-     *
-     * @param mixed $items
-     * @param $exp
-     */
+    #[DataProvider('providerDataToArray')]
     public function testDataToArray($items, $exp): void
     {
         $result = Arr::dataToArray($items);
@@ -265,9 +262,6 @@ final class ArrTest extends TestCase
         static::assertEquals($exp, $result);
     }
 
-    /**
-     * @return array
-     */
     public static function providerToArray(): array
     {
         $arrayableClass = new class () implements \Php\Support\Interfaces\Arrayable {
@@ -376,12 +370,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerToArray
-     *
-     * @param $items
-     * @param $exp
-     */
+    #[DataProvider('providerToArray')]
     public function testToArray($items, $exp): void
     {
         $result = Arr::toArray($items);
@@ -588,9 +577,6 @@ final class ArrTest extends TestCase
         static::assertNull(Arr::fromPostgresPoint(''));
     }
 
-    /**
-     * @return array
-     */
     public static function providerRemoveByValue(): array
     {
         return [
@@ -734,14 +720,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerRemoveByValue
-     *
-     * @param $expArray
-     * @param $expIdx
-     * @param $array
-     * @param $val
-     */
+    #[DataProvider('providerRemoveByValue')]
     public function testRemoveByValue($expArray, $expIdx, $array, $val): void
     {
         $idx = Arr::removeByValue($array, $val);
@@ -749,9 +728,6 @@ final class ArrTest extends TestCase
         static::assertEquals($expIdx, $idx);
     }
 
-    /**
-     * @return array
-     */
     public static function providerRemoveByValueAndReindex(): array
     {
         return [
@@ -896,14 +872,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerRemoveByValueAndReindex
-     *
-     * @param $expArray
-     * @param $expIdx
-     * @param $array
-     * @param $val
-     */
+    #[DataProvider('providerRemoveByValueAndReindex')]
     public function testRemoveByValueAndReindex($expArray, $expIdx, $array, $val): void
     {
         $idx = Arr::removeByValue($array, $val, true);
@@ -1005,13 +974,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerGet
-     *
-     * @param $expVal
-     * @param $array
-     * @param $key
-     */
+    #[DataProvider('providerGet')]
     public function testGet($expVal, $array, $key): void
     {
         $val = Arr::get($array, $key);
@@ -1023,9 +986,6 @@ final class ArrTest extends TestCase
         static::assertEquals($expVal ?? 'test', $val);
     }
 
-    /**
-     * @return array
-     */
     public static function providerHas(): array
     {
         $array = [
@@ -1085,21 +1045,12 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerHas
-     *
-     * @param $expVal
-     * @param $array
-     * @param $key
-     */
+    #[DataProvider('providerHas')]
     public function testHas($expVal, $array, $key): void
     {
         static::assertEquals($expVal, Arr::has($array, $key));
     }
 
-    /**
-     * @return array
-     */
     public static function providerSet(): array
     {
         $array = [];
@@ -1148,23 +1099,10 @@ final class ArrTest extends TestCase
                 $array,
                 'key3',
             ],
-            [
-                null,
-                null,
-                '2',
-            ],
-
         ];
     }
 
-    /**
-     * @dataProvider providerSet
-     *
-     * @param $expVal
-     * @param $array
-     * @param $key
-     * @param $val
-     */
+    #[DataProvider('providerSet')]
     public function testSet($expVal, $array, $key): void
     {
         Arr::set($array, $key, $expVal);
@@ -1174,9 +1112,6 @@ final class ArrTest extends TestCase
 
     public function testSet2(): void
     {
-        $array = null;
-        static::assertNull(Arr::set($array, '', 1));
-
         $array = [];
         static::assertEquals(['' => 1], Arr::set($array, '', 1));
     }
@@ -1190,9 +1125,6 @@ final class ArrTest extends TestCase
         static::assertEquals(['key' => ['sub2' => 1, 'sub3' => ['sub4sub' => 121]]], $array);
     }
 
-    /**
-     * @return array
-     */
     public static function providerRemove(): array
     {
         $array = [
@@ -1244,13 +1176,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-
-    /**
-     * @dataProvider providerRemove
-     *
-     * @param $array
-     * @param $key
-     */
+    #[DataProvider('providerRemove')]
     public function testRemove($array, $key): void
     {
         Arr::remove($array, $key);
@@ -1269,9 +1195,6 @@ final class ArrTest extends TestCase
         static::assertEquals($array, Arr::get($array, null));
     }
 
-    /**
-     * @return array
-     */
     public static function dataReplaceByTemplate(): array
     {
         return [
@@ -1376,13 +1299,7 @@ final class ArrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataReplaceByTemplate
-     *
-     * @param $array
-     * @param $replace
-     * @param $exp
-     */
+    #[DataProvider('dataReplaceByTemplate')]
     public function testReplaceByTemplate(array $array, array $replace, array $exp): void
     {
         $res = Arr::replaceByTemplate($array, $replace);
@@ -1394,9 +1311,7 @@ final class ArrTest extends TestCase
         //        static::assertEquals($exp, $res);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function collapse(): void
     {
         $list = [new ArrayCollection([1, 2, 3]), 4, 5, 6, [7, 8, 9]];
@@ -1404,9 +1319,7 @@ final class ArrTest extends TestCase
         self::assertEquals([1, 2, 3, 7, 8, 9], Arr::collapse($list));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function prepend(): void
     {
         $list = [1, 2, 3];

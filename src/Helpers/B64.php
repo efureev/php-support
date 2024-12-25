@@ -16,14 +16,14 @@ class B64
      *
      * @var string
      */
-    private const LAST_THREE_STANDARD = '+/=';
+    private const string LAST_THREE_STANDARD = '+/=';
 
     /**
      * The last three characters from the alphabet of the URL-safe implementation
      *
      * @var string
      */
-    private const LAST_THREE_URL_SAFE = '-_~';
+    private const string LAST_THREE_URL_SAFE = '-_~';
 
     /**
      * Encodes the supplied data to Base64

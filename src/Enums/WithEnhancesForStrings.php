@@ -14,7 +14,7 @@ trait WithEnhancesForStrings
         casesToString as casesToStringBase;
     }
 
-    public static function casesToString(string $delimiter = ', ', callable $decorator = null): string
+    public static function casesToString(string $delimiter = ', ', ?callable $decorator = null): string
     {
         if ($decorator === null) {
             $decorator = static fn(self $enumItem) => "{$enumItem->value}";

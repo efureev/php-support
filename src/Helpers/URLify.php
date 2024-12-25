@@ -17,6 +17,7 @@ class URLify
      * The character map for the designated language
      *
      * @see https://github.com/jbroadway/urlify/blob/master/URLify.php
+     * @var array<string, string>
      */
     private static array $map = [];
 
@@ -42,6 +43,8 @@ class URLify
      * Part of the URLify.php Project <https://github.com/jbroadway/urlify/>
      *
      * @see https://github.com/jbroadway/urlify/blob/master/URLify.php
+     *
+     * @var array<string, array<string,string>>
      */
     public static array $maps = [
         'de'            => [/* German */
@@ -767,6 +770,7 @@ class URLify
         }
 
         // Is a specific map associated with $language?
+        // @phpstan-ignore booleanAnd.rightAlwaysTrue
         if (isset(self::$maps[$language]) && is_array(self::$maps[$language])) {
             // Move this map to end. This means it will have priority over others
             $map = self::$maps[$language];

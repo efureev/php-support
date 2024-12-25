@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Php\Support\Tests\Helpers;
 
 use Php\Support\Helpers\Number;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -70,12 +72,7 @@ final class NumberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerSafeInt
-     *
-     * @param int|string $value
-     * @param int|string $exp
-     */
+    #[DataProvider('providerSafeInt')]
     public function testSafeInt(int|string $value, int|string $exp): void
     {
         self::assertTrue($exp === Number::safeInt($value));
@@ -181,13 +178,8 @@ final class NumberTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerIsInteger
-     *
-     * @param int|string $value
-     * @param bool $exp
-     * @test
-     */
+    #[DataProvider('providerIsInteger')]
+    #[Test]
     public function isInteger(mixed $value, bool $exp): void
     {
         self::assertEquals($exp, Number::isInteger($value));

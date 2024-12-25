@@ -16,13 +16,7 @@ trait ArrayStorageConfigurableTrait
         ArrayStorage::propertyExists insteadof ConfigurableTrait;
     }
 
-    /**
-     * @param string $key
-     * @param $value
-     *
-     * @return bool
-     */
-    protected function setPropConfigurable(string $key, $value): bool
+    protected function setPropConfigurable(string $key, mixed $value): bool
     {
         $this->set($key, $value);
 

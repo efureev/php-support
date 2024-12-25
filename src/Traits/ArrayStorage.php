@@ -12,7 +12,10 @@ use Php\Support\Helpers\Json;
  * Class ArrayStorage
  *
  * @package Php\Support\Traits
- * @mixin ArrayAccess
+ * @template TKey of array-key
+ * @template TValue
+ * @implements ArrayAccess<TKey, TValue>
+ * @mixin ArrayAccess<TKey, TValue>
  */
 trait ArrayStorage // implements ArrayAccess, Arrayable
 {
@@ -32,11 +35,7 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
         return $this->get($name);
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     */
-    public function __set(string $name, $value): void
+    public function __set(string $name, mixed $value): void
     {
         $this->set($name, $value);
     }
@@ -46,7 +45,7 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
      *
      * @return mixed|null
      */
-    public function get(string $name)
+    public function get(string $name): mixed
     {
         if ($this->propertyExists($name)) {
             return $this->$name;
@@ -77,11 +76,7 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
         return $name !== 'data' && property_exists($this, $name);
     }
 
-    /**
-     * @param string $name
-     * @param $value
-     */
-    public function set(string $name, $value): void
+    public function set(string $name, mixed $value): void
     {
         if ($this->propertyExists($name)) {
             $this->$name = $value;
@@ -116,21 +111,12 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
 
     /**
      * Determine if an item exists at an offset.
-     *
-     * @param string $key
-     *
-     * @return bool
      */
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->valueExists($key);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function valueExists(string $name): bool
     {
         return $this->propertyExists($name) || Arr::has($this->data, $name);
@@ -145,37 +131,24 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
 
     /**
      * Get an item at a given offset.
-     *
-     * @param mixed $key
-     *
-     * @return mixed
      */
-    public function offsetGet($key): mixed
+    public function offsetGet(mixed $key): mixed
     {
         return $this->get($key);
     }
 
     /**
      * Set the item at a given offset.
-     *
-     * @param mixed $key
-     * @param mixed $value
-     *
-     * @return void
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
         $this->set($key, $value);
     }
 
     /**
      * Unset the item at a given offset.
-     *
-     * @param string $key
-     *
-     * @return void
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         unset($this->$key);
     }
@@ -185,30 +158,21 @@ trait ArrayStorage // implements ArrayAccess, Arrayable
      */
     public function count(): int
     {
-        return count($this->getData());
+        return count($this->data);
     }
 
-    /**
-     * @return array
-     */
     public function getData(): array
     {
         return $this->data;
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return (string)Json::encode($this->toArray());
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
-        return $this->getData();
+        return $this->data;
     }
 }

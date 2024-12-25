@@ -30,12 +30,24 @@ use Closure;
  */
 final class ConditionalHandler
 {
+    /**
+     * @var array
+     * @phpstan-ignore missingType.iterableValue
+     */
     private array $params = [];
 
+    /**
+     * @param Closure(mixed ...): mixed $handler
+     * @param bool|(Closure(mixed ...): bool) $condition
+     */
     public function __construct(private Closure $handler, private bool|Closure $condition = true)
     {
     }
 
+    /**
+     * @param (Closure(mixed ...): bool)|bool $fn
+     * @return ConditionalHandler
+     */
     public function handleIf(Closure|bool $fn): self
     {
         $this->condition = $fn;
@@ -52,6 +64,9 @@ final class ConditionalHandler
         return $this->condition;
     }
 
+    /**
+     * @param mixed ...$params
+     */
     public function resolve(mixed ...$params): mixed
     {
         $this->params = $params;
@@ -65,14 +80,17 @@ final class ConditionalHandler
 
     /**
      * @param mixed ...$params
-     *
-     * @return mixed
      */
-    public function __invoke(mixed ...$params)
+    public function __invoke(mixed ...$params): mixed
     {
         return $this->resolve(...$params);
     }
 
+    /**
+     * @param Closure(mixed ...): mixed $fn
+     * @param bool|(Closure(mixed ...): bool) $condition
+     * @return ConditionalHandler
+     */
     public static function make(Closure $fn, bool|Closure $condition = true): self
     {
         return new self($fn, $condition);

@@ -10,21 +10,15 @@ namespace Php\Support\Traits;
  */
 trait ConsolePrint
 {
-    /**
-     * @param mixed $msg
-     * @param bool $newLine
-     */
-    public function print($msg, bool $newLine = true): void
+    public function print(mixed $msg, bool $newLine = true): void
     {
         fwrite(STDOUT, print_r($msg, true) . ($newLine ? PHP_EOL : ''));
     }
 
     /**
-     * @param mixed $msg
-     * @param bool $newLine
      * @codeCoverageIgnore
      */
-    public function printError($msg, bool $newLine = true): void
+    public function printError(mixed $msg, bool $newLine = true): void
     {
         fwrite(STDERR, print_r($msg, true) . ($newLine ? PHP_EOL : ''));
     }

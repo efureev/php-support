@@ -10,14 +10,7 @@ namespace Php\Support\Traits;
  */
 trait Whener
 {
-    /**
-     * @param mixed $value
-     * @param callable $callback
-     * @param null|callable $default
-     *
-     * @return $this
-     */
-    public function when($value, callable $callback, ?callable $default = null): self
+    public function when(mixed $value, callable $callback, ?callable $default = null): mixed
     {
         if ($value) {
             return $callback($this, $value) ?: $this;

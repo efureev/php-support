@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Php\Support\Tests\enums;
 
 use Php\Support\Tests\enums\data\StringsEnum;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -12,41 +13,31 @@ use PHPUnit\Framework\TestCase;
  */
 final class WithEnhancesForStringsTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function casesToEscapeString(): void
     {
         self::assertEquals("'short', 'long', 'empty'", StringsEnum::casesToEscapeString());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function casesToString(): void
     {
         self::assertEquals('short, long, empty', StringsEnum::casesToString());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function values(): void
     {
         self::assertEquals(['short', 'long', 'empty'], StringsEnum::values());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function names(): void
     {
         self::assertEquals(['SHORT', 'LONG', 'EMPTY'], StringsEnum::names());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasValue(): void
     {
         self::assertFalse(StringsEnum::hasValue('---'));
@@ -60,9 +51,7 @@ final class WithEnhancesForStringsTest extends TestCase
         self::assertTrue(StringsEnum::hasValue('empty'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function hasName(): void
     {
         self::assertFalse(StringsEnum::hasName('---'));

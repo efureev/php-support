@@ -21,11 +21,11 @@ class Exception extends \Exception
     /**
      * Exception constructor.
      *
-     * @param null|string $message
+     * @param ?string $message
      * @param int $code
-     * @param Throwable|null $previous
+     * @param ?Throwable $previous
      */
-    public function __construct(?string $message = null, $code = 0, Throwable $previous = null)
+    public function __construct(?string $message = null, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message ?? $this->getName(), $code, $previous);
     }

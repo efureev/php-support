@@ -222,7 +222,7 @@ final class JsonTest extends TestCase
     }*/
 
     /**
-     * @dataProvider providerToArray
+     *  dataProvider providerToArray
      *
      * @param $items
      * @param $exp

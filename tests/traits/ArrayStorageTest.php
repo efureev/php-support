@@ -48,7 +48,6 @@ final class ArrayStorageTest extends TestCase
 
         $config->{'test.sub.key'} = 1;
         $config->{'test.sub.val'} = 'value';
-
         $config->{'test.next'} = 'next value';
 
         $expected = [

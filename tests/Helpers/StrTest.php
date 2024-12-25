@@ -6,6 +6,8 @@ namespace Php\Support\Tests\Helpers;
 
 use Php\Support\Helpers\Str;
 use Php\Support\Helpers\URLify;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -105,12 +107,7 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerDataSnake
-     *
-     * @param $exp
-     * @param $str
-     */
+    #[DataProvider('providerDataSnake')]
     public function testSnake($str, $exp): void
     {
         $result = Str::toSnake($str);
@@ -208,12 +205,7 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerToScreamingSnake
-     *
-     * @param $exp
-     * @param $str
-     */
+    #[DataProvider('providerToScreamingSnake')]
     public function testToScreamingSnake($str, $exp): void
     {
         $result = Str::toScreamingSnake($str);
@@ -311,12 +303,7 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerDataKebab
-     *
-     * @param $exp
-     * @param $str
-     */
+    #[DataProvider('providerDataKebab')]
     public function testToKebab($str, $exp): void
     {
         $result = Str::toKebab($str);
@@ -383,12 +370,8 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerCamel
-     *
-     * @param $exp
-     * @param $str
-     */
+
+    #[DataProvider('providerCamel')]
     public function testToCamel($str, $exp): void
     {
         $result = Str::toCamel($str);
@@ -454,12 +437,7 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider providerLowerCamel
-     *
-     * @param $exp
-     * @param $str
-     */
+    #[DataProvider('providerLowerCamel')]
     public function testToLowerCamel($str, $exp): void
     {
         $result = Str::toLowerCamel($str);
@@ -584,15 +562,7 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider  dataReplaceStrTo
-     *
-     * @param string $val
-     * @param int $fromStart
-     * @param int $fromEnd
-     * @param string $to
-     * @param string $exp
-     */
+    #[DataProvider('dataReplaceStrTo')]
     public function testReplaceStrTo(string $val, int $fromStart, int $fromEnd, string $to, string $exp): void
     {
         $result = Str::replaceStrTo($val, $fromStart, $fromEnd, $to);
@@ -634,13 +604,8 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider  dataReplaceByTemplate
-     *
-     * @param string $str
-     * @param array $replaced
-     * @param string $exp
-     */
+
+    #[DataProvider('dataReplaceByTemplate')]
     public function testReplaceByTemplate(string $str, array $replaced, string $exp): void
     {
         $result = Str::replaceByTemplate($str, $replaced);
@@ -686,21 +651,14 @@ final class StrTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider dataRegExps
-     *
-     * @param string $regexp
-     * @param bool $result
-     */
+    #[DataProvider('dataRegExps')]
     public function testIsRegExp(string $regexp, bool $result): void
     {
         self::assertEquals($result, Str::isRegExp($regexp));
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function truncate(): void
     {
         self::assertEquals(
@@ -720,9 +678,7 @@ final class StrTest extends TestCase
         self::assertEquals('The...', Str::truncate('The quick brown fox jumps over the lazy dog', 7));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function seemsUTF8(): void
     {
         // Test a valid UTF-8 sequence: "ÜTF-8 Fµñ".
@@ -770,9 +726,7 @@ final class StrTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function slugify(): void
     {
         $this->assertEquals('a-simple-title', Str::slugify('A simple title'));
@@ -797,9 +751,7 @@ final class StrTest extends TestCase
         $this->assertEquals('one231251251', Str::slugify('123----1251251', '', true));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trimPrefix(): void
     {
         $this->assertEquals('title', Str::trimPrefix('a-simple:title', 'a-simple:'));
@@ -809,9 +761,7 @@ final class StrTest extends TestCase
         $this->assertEquals('', Str::trimPrefix('', 'a-simple:'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function trimSuffix(): void
     {
         $this->assertEquals('a-simple:', Str::trimSuffix('a-simple:title', 'title'));

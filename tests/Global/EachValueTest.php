@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests\Global;
 
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class EachValueTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[Test]
     public function eachValue(): void
     {
         $result = [];

@@ -25,10 +25,10 @@ use ArrayAccess;
  *
  * @author Doctrine
  *
- * @psalm-template TKey of array-key
- * @psalm-template T
- * @template-extends ReadableCollection<TKey, T>
- * @template-extends ArrayAccess<TKey, T>
+ * @phpstan-template TKey of array-key
+ * @phpstan-template TValue
+ * @template-extends ReadableCollection<TKey, TValue>
+ * @template-extends ArrayAccess<TKey, TValue>
  */
 interface Collection extends ReadableCollection, ArrayAccess
 {
@@ -36,16 +36,12 @@ interface Collection extends ReadableCollection, ArrayAccess
      * Adds an element at the end of the collection.
      *
      * @param mixed $element The element to add.
-     * @psalm-param T $element
-     *
-     * @return bool
+     * @phpstan-param TValue $element
      */
     public function add(mixed $element): bool;
 
     /**
      * Clears the collection, removing all elements.
-     *
-     * @return void
      */
     public function clear(): void;
 
@@ -53,10 +49,10 @@ interface Collection extends ReadableCollection, ArrayAccess
      * Removes the element at the specified index from the collection.
      *
      * @param string|int $key The key/index of the element to remove.
-     * @psalm-param TKey $key
+     * @phpstan-param TKey $key
      *
      * @return mixed The removed element or NULL, if the collection did not contain the element.
-     * @psalm-return T|null
+     * @phpstan-return ?TValue
      */
     public function remove(string|int $key): mixed;
 
@@ -64,7 +60,7 @@ interface Collection extends ReadableCollection, ArrayAccess
      * Removes the specified element from the collection, if it is found.
      *
      * @param mixed $element The element to remove.
-     * @psalm-param T $element
+     * @phpstan-param TValue $element
      *
      * @return bool TRUE if this collection contained the specified element, FALSE otherwise.
      */
@@ -75,17 +71,15 @@ interface Collection extends ReadableCollection, ArrayAccess
      *
      * @param string|int $key The key/index of the element to set.
      * @param mixed $value The element to set.
-     * @psalm-param TKey $key
-     * @psalm-param T $value
-     *
-     * @return void
+     * @phpstan-param TKey $key
+     * @phpstan-param TValue $value
      */
     public function set(string|int $key, mixed $value): void;
 
     /**
      * Push all the given items onto the collection.
      *
-     * @param iterable<array-key, T> $source
+     * @param iterable<TKey, TValue> $source
      */
     public function concat(iterable $source): static;
 
@@ -94,10 +88,9 @@ interface Collection extends ReadableCollection, ArrayAccess
     /**
      * Get one or a specified number of items randomly from the collection.
      *
-     * @param (callable(self<TKey, T>): int)|int|null $number
-     * @param bool $preserveKeys
+     * @param (callable(self<TKey, TValue>): int)|int|null $number
      *
-     * @return static<int, T>|T
+     * @return static<TKey, TValue>|TValue
      *
      * @throws \InvalidArgumentException
      */
@@ -106,9 +99,9 @@ interface Collection extends ReadableCollection, ArrayAccess
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param (callable(T, TKey): array-key)|array|string $groupBy
+     * @param (callable(TValue, TKey): array-key)|string[]|string $groupBy
      * @param bool $preserveKeys
-     * @psalm-param (callable(T, TKey): array-key)|array|string $groupBy
+     * @phpstan-param (callable(TValue, TKey): array-key)|string[]|string $groupBy
      */
     public function groupBy(callable|array|string $groupBy, bool $preserveKeys = false): static;
 }

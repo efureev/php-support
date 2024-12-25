@@ -28,7 +28,6 @@ class Number
 
     public static function isInteger(mixed $value): bool
     {
-        /** @phpstan-ignore-next-line */
         return is_int($value) || (string)$value === (string)(int)($value);
     }
 }

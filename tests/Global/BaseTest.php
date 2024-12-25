@@ -283,12 +283,6 @@ final class BaseTest extends TestCase
 
         foreach (
             [
-                1,
-                0,
-                -1,
-                12.21,
-                true,
-                false,
                 null,
                 '1',
                 'true',

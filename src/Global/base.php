@@ -7,11 +7,6 @@ use Php\Support\Structures\Collections\ReadableCollection;
 if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
-     *
-     * @param mixed $value
-     * @param mixed ...$args
-     *
-     * @return mixed
      */
     function value(mixed $value, mixed ...$args): mixed
     {
@@ -76,6 +71,14 @@ if (!function_exists('dataGet')) {
 
 
 if (!function_exists('mapValue')) {
+    /**
+     * @template TKey of array-key
+     * @template TValue
+     * @param callable $fn
+     * @param iterable<TKey, TValue> $collection
+     * @param mixed ...$args
+     * @return array<TKey, TValue>
+     */
     function mapValue(callable $fn, iterable $collection, mixed ...$args): array
     {
         $result = [];
@@ -89,6 +92,14 @@ if (!function_exists('mapValue')) {
 }
 
 if (!function_exists('eachValue')) {
+    /**
+     * @template TKey of array-key
+     * @template TValue
+     * @param callable $fn
+     * @param iterable<TKey, TValue> $collection
+     * @param mixed ...$args
+     * @return void
+     */
     function eachValue(callable $fn, iterable $collection, mixed ...$args): void
     {
         foreach ($collection as $key => $value) {
@@ -100,14 +111,8 @@ if (!function_exists('eachValue')) {
 if (!function_exists('when')) {
     /**
      * Returns a value when a condition is truthy.
-     *
-     * @param mixed|bool|\Closure $condition
-     * @param mixed|\Closure $value
-     * @param mixed|\Closure|null $default
-     *
-     * @return mixed
      */
-    function when($condition, $value, $default = null)
+    function when(mixed $condition, mixed $value, mixed $default = null): mixed
     {
         if ($result = value($condition)) {
             return $value instanceof Closure ? $value($result) : $value;
@@ -118,12 +123,7 @@ if (!function_exists('when')) {
 }
 
 if (!function_exists('classNamespace')) {
-    /**
-     * @param object|string $class
-     *
-     * @return string
-     */
-    function classNamespace($class): string
+    function classNamespace(object|string $class): string
     {
         if (is_object($class)) {
             $class = get_class($class);
@@ -136,13 +136,8 @@ if (!function_exists('classNamespace')) {
 if (!function_exists('isTrue')) {
     /**
      * Returns bool value of a value
-     *
-     * @param mixed $val
-     * @param bool $return_null
-     *
-     * @return bool|null
      */
-    function isTrue($val, bool $return_null = false): ?bool
+    function isTrue(mixed $val, bool $return_null = false): ?bool
     {
         if ($val === null && $return_null) {
             return null;
@@ -156,13 +151,7 @@ if (!function_exists('isTrue')) {
 }
 
 if (!function_exists('instance')) {
-    /**
-     * @param string|object $instance
-     * @param mixed ...$params
-     *
-     * @return mixed
-     */
-    function instance($instance, ...$params): mixed
+    function instance(string|object|null $instance, mixed ...$params): ?object
     {
         if (is_object($instance)) {
             return $instance;
@@ -179,12 +168,8 @@ if (!function_exists('instance')) {
 if (!function_exists('class_basename')) {
     /**
      * Get the class "basename" of the given object / class.
-     *
-     * @param string|object $class
-     *
-     * @return string
      */
-    function class_basename($class)
+    function class_basename(string|object $class): string
     {
         $class = is_object($class) ? get_class($class) : $class;
 
@@ -196,9 +181,7 @@ if (!function_exists('trait_uses_recursive')) {
     /**
      * Returns all traits used by a trait and its traits.
      *
-     * @param string $trait
-     *
-     * @return array
+     * @return string[]
      */
     function trait_uses_recursive(string $trait): array
     {
@@ -206,7 +189,7 @@ if (!function_exists('trait_uses_recursive')) {
             return [];
         }
 
-        foreach ((array)$traits as $trt) {
+        foreach ($traits as $trt) {
             $traits += trait_uses_recursive($trt);
         }
 
@@ -215,12 +198,6 @@ if (!function_exists('trait_uses_recursive')) {
 }
 
 if (!function_exists('does_trait_use')) {
-    /**
-     * @param string $class
-     * @param string $trait
-     *
-     * @return bool
-     */
     function does_trait_use(string $class, string $trait): bool
     {
         return isset(trait_uses_recursive($class)[$trait]);
@@ -231,14 +208,12 @@ if (!function_exists('class_uses_recursive')) {
     /**
      * Returns all traits used by a class, its parent classes and trait of their traits.
      *
-     * @param object|string $class
-     *
-     * @return array
+     * @return string[]
      */
-    function class_uses_recursive($class): array
+    function class_uses_recursive(object|string $class): array
     {
         if (is_object($class)) {
-            $class = get_class($class);
+            $class = $class::class;
         }
 
         $results = [];
@@ -262,10 +237,7 @@ if (!function_exists('remoteStaticCall')) {
             return null;
         }
 
-        if (
-            (is_object($class) || (is_string($class) && class_exists($class))) &&
-            method_exists($class, $method)
-        ) {
+        if ((is_object($class) || class_exists($class)) && method_exists($class, $method)) {
             return $class::$method(...$params);
         }
 
@@ -283,10 +255,7 @@ if (!function_exists('remoteStaticCall')) {
             throw new RuntimeException('Target Class is absent');
         }
 
-        if (
-            (is_object($class) || (is_string($class) && class_exists($class))) &&
-            method_exists($class, $method)
-        ) {
+        if ((is_object($class) || class_exists($class)) && method_exists($class, $method)) {
             return $class::$method(...$params);
         }
 

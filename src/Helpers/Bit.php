@@ -71,7 +71,7 @@ class Bit
     /**
      * Check a bit is existing in flag`s list
      *
-     * @param array $list
+     * @param int[] $list
      * @param int $bit
      *
      * @return bool
@@ -84,13 +84,13 @@ class Bit
     /**
      * Return value of sum of all bits in list
      *
-     * @param array $list
+     * @param int[] $list
      *
      * @return int
      */
     public static function grant(array $list): int
     {
-        return array_reduce($list, fn($prev, $next) => $prev | $next, 0);
+        return array_reduce($list, fn(int $prev, int $next) => $prev | $next, 0);
     }
 
     /**

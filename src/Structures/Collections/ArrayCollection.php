@@ -359,7 +359,7 @@ class ArrayCollection implements Collection, Stringable
     /**
      * {@inheritDoc}
      */
-    public function merge(mixed $items): static
+    public function merge(iterable $items): static
     {
         return $this->createFrom(array_merge($this->elements, Arr::toArray($items)));
     }
@@ -812,7 +812,7 @@ class ArrayCollection implements Collection, Stringable
     /**
      * Group an associative array by a field or using a callback.
      *
-     * @param (callable(T, TKey): array-key)|array|string $groupBy
+     * @param (callable(T, TKey): array-key)|string[]|string $groupBy
      * @param bool $preserveKeys
      * @psalm-return static<array-key, static<array-key, T>>
      * @return static<int|string, static<int|string, T>>

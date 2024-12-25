@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Helpers;
 
+use Closure;
 use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
@@ -32,17 +33,16 @@ use function str_contains;
 use function str_replace;
 
 /**
- * @psalm-template TKey of array-key
- * @psalm-template T
+ * @template TKey of array-key
+ * @template T
  */
 class Arr
 {
     /**
      * Collapse an array of arrays into a single array.
      *
-     * @param iterable $array
-     * @return array<int,mixed>
-     * @psalm-return T[]
+     * @param iterable<TKey,T> $array
+     * @return array<T>
      */
     public static function collapse(iterable $array): array
     {
@@ -64,11 +64,11 @@ class Arr
     /**
      * Remove one element from array by value
      *
-     * @param array $array
+     * @param array<T> $array
      * @param mixed $val If $val is a string, the comparison is done in a case-sensitive manner.
      * @param bool $reindex
      *
-     * @return string|int|null Index of removed element or null if don't exist
+     * @return string|int|null Index of removed element or null if it don't exist
      */
     public static function removeByValue(array &$array, mixed $val, bool $reindex = false): string|int|null
     {
@@ -86,7 +86,7 @@ class Arr
      *
      * @param mixed $items
      *
-     * @return array<TKey, T>
+     * @return T[]|array<TKey, T>
      */
     public static function toArray(mixed $items): array
     {
@@ -160,12 +160,12 @@ class Arr
     }
 
     /**
-     * @param array $res array to be merged to
-     * @param array $b array to be merged from. You can specify additional
+     * @param array<TKey, T> $res array to be merged to
+     * @param array<TKey, T> $b array to be merged from. You can specify additional
      *                            arrays via third argument, fourth argument etc.
      * @param bool $replaceArray Replace or Add values into Array, if key existed.
      *
-     * @return array the merged array (the original arrays are not changed.)
+     * @return array<TKey, T> the merged array (the original arrays are not changed.)
      */
     public static function merge(array $res, array $b, bool $replaceArray = true): array
     {
@@ -191,7 +191,7 @@ class Arr
     /**
      * Changes PHP array to default Postgres array format
      *
-     * @param array $array
+     * @param array<TKey, T> $array
      *
      * @return string
      */
@@ -204,6 +204,10 @@ class Arr
         return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
     }
 
+    /**
+     * @param int[] $array
+     * @return ?string
+     */
     public static function toPostgresPoint(array $array): ?string
     {
         if (count($array) !== 2) {
@@ -221,9 +225,9 @@ class Arr
     /**
      * Remove named keys from arrays
      *
-     * @param array $array
+     * @param array<TKey, T> $array
      *
-     * @return array
+     * @return array<T>
      */
     public static function toIndexedArray(array $array): array
     {
@@ -243,9 +247,9 @@ class Arr
      * @param string|null $s
      * @param int $start
      * @param ?int $end
-     * @param array $braces
+     * @param array{string,string} $braces
      *
-     * @return array
+     * @return float[]
      */
     public static function fromPostgresArrayWithBraces(
         ?string $s,
@@ -323,7 +327,7 @@ class Arr
      * @param int $start
      * @param ?int $end
      *
-     * @return array
+     * @return float[]
      */
     public static function fromPostgresArray(?string $s, int $start = 0, ?int &$end = null): array
     {
@@ -331,9 +335,9 @@ class Arr
     }
 
     /**
-     * @param string|null $value
+     * @param ?string $value
      *
-     * @return ?array
+     * @return ?array{float,float}
      */
     public static function fromPostgresPoint(?string $value): ?array
     {
@@ -374,7 +378,6 @@ class Arr
             return $array;
         }
 
-        /** @var array|ArrayAccess $array */
         if (static::exists($array, $key)) {
             return $array[$key];
         }
@@ -409,7 +412,7 @@ class Arr
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param ArrayAccess|array $array
+     * @param ArrayAccess<TKey, T>|array<TKey, T> $array
      * @param string|int $key
      *
      * @return bool
@@ -426,9 +429,10 @@ class Arr
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|array $keys
+     * @param ArrayAccess<TKey,T>|array<TKey,T> $array
+     * @param string|string[] $keys
      * @param non-empty-string $separator
+     * @return bool
      */
     public static function has(ArrayAccess|array $array, string|array $keys, string $separator = '.'): bool
     {
@@ -462,21 +466,19 @@ class Arr
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param array|ArrayObject|null $array
+     * @param array<TKey,T>|ArrayObject<TKey,T>|array<mixed> $array
+     * @param-out array<TKey,T>|ArrayObject<TKey,T>|array<mixed> $array
      * @param string $key
      * @param mixed $value
      * @param non-empty-string $separator
+     * @return T[]|array<TKey,T>|ArrayObject<TKey,T>
      */
     public static function set(
-        array|ArrayObject|null &$array,
+        array|ArrayObject &$array,
         string $key,
         mixed $value,
         string $separator = '.'
-    ): array|ArrayObject|null {
-        if ($array === null) {
-            return $array;
-        }
-
+    ): array|ArrayObject {
         $keys = explode($separator, $key);
 
         while (count($keys) > 1) {
@@ -497,8 +499,8 @@ class Arr
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param array|ArrayObject $array
-     * @param array|string $keys
+     * @param array<TKey,T>|ArrayObject<TKey,T> $array
+     * @param string[]|string $keys
      *
      * @return void
      */
@@ -543,29 +545,25 @@ class Arr
      * Key = search value
      * Value = replace value
      *
-     * @param array $array
-     * @param array $replace
+     * @param array<TKey, T> $array
+     * @param array<string, string> $replace
      *
-     * @return array
+     * @return array<TKey, T>
      */
     public static function replaceByTemplate(array $array, array $replace): array
     {
-        $res = [];
-        foreach ($array as $key => $item) {
-            $res[$key] = self::itemReplaceByTemplate($item, $replace);
-        }
-        return $res;
+        return array_map(static fn($item) => self::itemReplaceByTemplate($item, $replace), $array);
     }
 
     /**
      * Replace templates into item
      *
      * @param mixed $item
-     * @param array $replace
+     * @param array<string, string> $replace
      *
-     * @return array|mixed
+     * @return string|string[]|mixed
      */
-    private static function itemReplaceByTemplate(mixed $item, array $replace)
+    private static function itemReplaceByTemplate(mixed $item, array $replace): mixed
     {
         if (is_array($item)) {
             return self::replaceByTemplate($item, $replace);
@@ -581,9 +579,9 @@ class Arr
     /**
      * Find duplicates into an array
      *
-     * @param array $array
+     * @param array<TKey, T> $array
      *
-     * @return array
+     * @return array<TKey, T>
      */
     public static function duplicates(array $array): array
     {
@@ -593,10 +591,10 @@ class Arr
     /**
      * Fill a keyed array by values from another array
      *
-     * @param array $keys
-     * @param array $values
+     * @param array<TKey> $keys
+     * @param array<T> $values
      *
-     * @return array
+     * @return array<TKey, T>
      */
     public static function fillKeysByValues(array $keys, array $values): array
     {
@@ -612,12 +610,12 @@ class Arr
     /**
      * Push an item onto the beginning of an array.
      *
-     * @param array $array
+     * @param array<TKey, T> $array
      * @param mixed $value
-     * @param mixed $key
-     * @return array
+     * @param string|int|null $key
+     * @return array<TKey, T>
      */
-    public static function prepend(array $array, mixed $value, mixed $key = null): array
+    public static function prepend(array $array, mixed $value, string|int|null $key = null): array
     {
         if (func_num_args() === 2) {
             array_unshift($array, $value);
@@ -631,10 +629,10 @@ class Arr
     /**
      * Get one or a specified number of random values from an array.
      *
-     * @param array $array
+     * @param array<TKey, T> $array
      * @param int|null $number
      * @param bool $preserveKeys
-     * @return mixed
+     * @return T[]|array<TKey, T>
      *
      * @throws \InvalidArgumentException
      */
@@ -675,7 +673,14 @@ class Arr
         return $results;
     }
 
-    public static function map(array $elements, \Closure $func): array
+    /**
+     * @template U
+     * @param array<TKey, T> $elements
+     * @param Closure $func
+     * @phpstan-param Closure(array<TKey, T>): U[] $func
+     * @return array<TKey, U>
+     */
+    public static function map(array $elements, Closure $func): array
     {
         $keys = array_keys($elements);
         $map  = array_map($func, $elements, $keys);
