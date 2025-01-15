@@ -8,10 +8,10 @@ if (!function_exists('value')) {
     /**
      * Return the default value of the given value.
      */
-    function value(mixed $value, mixed ...$args): mixed
+    function value(mixed $value, mixed ...$params): mixed
     {
         return $value instanceof Closure || (is_object($value) && is_callable($value))
-            ? $value(...$args)
+            ? $value(...$params)
             : $value;
     }
 }
@@ -151,6 +151,13 @@ if (!function_exists('isTrue')) {
 }
 
 if (!function_exists('instance')) {
+    /**
+     * @phpstan-param T|class-string<T>|null $instance
+     * @param mixed ...$params
+     * @phpstan-return T|null
+     *
+     * @template T as object
+     */
     function instance(string|object|null $instance, mixed ...$params): ?object
     {
         if (is_object($instance)) {
