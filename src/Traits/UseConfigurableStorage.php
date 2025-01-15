@@ -12,7 +12,7 @@ use ArrayAccess;
  * @implements ArrayAccess<TKey, TValue>
  * @mixin ArrayAccess<TKey, TValue>
  */
-trait UseConfigurabeStorage
+trait UseConfigurableStorage
 {
     use UseStorage;
     use ConfigurableTrait {

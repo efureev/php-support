@@ -12,7 +12,13 @@
 
 ## Install
 
-For php >= 8.1 (8.1, 8.2)
+For php >= 8.4
+
+```bash
+composer require efureev/support "^5.1"
+```
+
+For php >= 8.1 (8.1, 8.2, 8.3)
 
 ```bash
 composer require efureev/support "^4.19"
@@ -139,11 +145,12 @@ composer require efureev/support "^2.0"
 
 - Structures
     - Collections (^4.16.0)
-      - ArrayCollections
+      - ArrayCollection
+      - HashCollection (^5.1.0)
 
 - Traits
-    + ArrayStorage
-    + ArrayStorageConfigurableTrait
+    + UseStorage
+    + UseConfigurableStorage
     + ConfigurableTrait
     + ConsolePrint
     + Maker

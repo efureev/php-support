@@ -4,13 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.1.0
+
+### Added
+
+- Add `HashCollection` Collection.
+
 ## v5.0.0
 
 ### Added
 
 - Add `PHP 8.4` support
-- Add `UseStorage` trait. Trait `ArrayStorage` is deprecated now
-- Add `UseConfigurabeStorage` trait. Trait `ArrayStorageConfigurableTrait` is deprecated now
+- Add `UseStorage` trait.
+- Add `UseConfigurabeStorage` trait.
 
 ### Removed
 

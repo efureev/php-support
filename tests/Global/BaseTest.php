@@ -303,7 +303,7 @@ final class BaseTest extends TestCase
         static::assertEquals(
             [
                 \Php\Support\Traits\Singleton::class => \Php\Support\Traits\Singleton::class,
-                \Php\Support\Traits\UseConfigurabeStorage::class => \Php\Support\Traits\UseConfigurabeStorage::class,
+                \Php\Support\Traits\UseConfigurableStorage::class => \Php\Support\Traits\UseConfigurableStorage::class,
                 \Php\Support\Traits\UseStorage::class => \Php\Support\Traits\UseStorage::class,
                 \Php\Support\Traits\ConfigurableTrait::class => \Php\Support\Traits\ConfigurableTrait::class,
             ],
@@ -318,7 +318,7 @@ final class BaseTest extends TestCase
         static::assertEquals(
             [
                 \Php\Support\Traits\Singleton::class => \Php\Support\Traits\Singleton::class,
-                \Php\Support\Traits\UseConfigurabeStorage::class => \Php\Support\Traits\UseConfigurabeStorage::class,
+                \Php\Support\Traits\UseConfigurableStorage::class => \Php\Support\Traits\UseConfigurableStorage::class,
                 \Php\Support\Traits\UseStorage::class => \Php\Support\Traits\UseStorage::class,
                 \Php\Support\Traits\ConfigurableTrait::class => \Php\Support\Traits\ConfigurableTrait::class,
                 \Php\Support\Traits\Maker::class => \Php\Support\Traits\Maker::class,
@@ -340,7 +340,7 @@ final class BaseTest extends TestCase
 class TraitUsesRecursiveClass
 {
     use \Php\Support\Traits\Singleton;
-    use \Php\Support\Traits\UseConfigurabeStorage;
+    use \Php\Support\Traits\UseConfigurableStorage;
 
     protected $username;
 }
