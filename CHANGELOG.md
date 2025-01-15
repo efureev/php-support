@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v4.29.0
+
+### Added
+
+- Add `HashCollection` Collection.
+
 ## v4.28.0
 
 ### Added
@@ -36,12 +42,6 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 - `ArrayCollection::map` - works with keys now
 - `ArrayCollection::createFrom` - receives Collections
-
-## v4.25.0
-
-### Added
-
-- Add `HashCollection` Collection.
 
 ## v4.24.0
 
