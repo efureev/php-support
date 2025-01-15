@@ -721,7 +721,8 @@ final class ArrTest extends TestCase
     }
 
     #[DataProvider('providerRemoveByValue')]
-    public function testRemoveByValue($expArray, $expIdx, $array, $val): void
+    #[Test]
+    public function removeByValue($expArray, $expIdx, $array, $val): void
     {
         $idx = Arr::removeByValue($array, $val);
         static::assertEquals($expArray, $array);
