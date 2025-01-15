@@ -37,6 +37,12 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - `ArrayCollection::map` - works with keys now
 - `ArrayCollection::createFrom` - receives Collections
 
+## v4.25.0
+
+### Added
+
+- Add `HashCollection` Collection.
+
 ## v4.24.0
 
 ### Added
