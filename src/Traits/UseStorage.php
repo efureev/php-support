@@ -17,7 +17,11 @@ use Php\Support\Storage;
  */
 trait UseStorage
 {
-    private Storage $storage;
+    private Storage $storage {
+        get {
+            return $this->storage ??= new Storage();
+        }
+    }
 
     protected function propertyExists(string $name): bool
     {
