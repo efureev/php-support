@@ -8,15 +8,15 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ### Added
 
-- Add `HashCollection` Collection.
+- Add `HashCollection` Collection
 
 ## v5.0.0
 
 ### Added
 
 - Add `PHP 8.4` support
-- Add `UseStorage` trait.
-- Add `UseConfigurabeStorage` trait.
+- Add `UseStorage` trait
+- Add `UseConfigurabeStorage` trait
 
 ### Removed
 
