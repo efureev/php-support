@@ -301,7 +301,7 @@ class ArrayCollection implements Collection, Stringable
      * @return static
      * @psalm-return static<TKey,T>
      */
-    public function filter(Closure $func = null): static
+    public function filter(?Closure $func = null): static
     {
         return $this->createFrom(array_filter($this->elements, $func, ARRAY_FILTER_USE_BOTH));
     }
