@@ -14,6 +14,7 @@ use function in_array;
 
 /**
  * @template T
+ * @template TO of object
  */
 class HashCollection implements ArrayAccess, Countable
 {
@@ -75,7 +76,7 @@ class HashCollection implements ArrayAccess, Countable
     /**
      * Adds an element at the end of the collection.
      *
-     * @param T $element The element to add.
+     * @phpstan-param TO $element The element to add.
      */
     public function add(object $element): bool
     {
