@@ -20,11 +20,11 @@
     "ext-mbstring": "*"
   },
   "require-dev": {
-    "ergebnis/composer-normalize": "^2.45",
-    "phpstan/phpstan": "^2.0",
-    "phpunit/phpunit": "^11.5",
-    "squizlabs/php_codesniffer": "^3.11",
-    "symfony/var-dumper": "^7.2"
+    "ergebnis/composer-normalize": "^2.47",
+    "phpstan/phpstan": "^2.1.20",
+    "phpunit/phpunit": "^12.2.7",
+    "squizlabs/php_codesniffer": "^3.13",
+    "symfony/var-dumper": "^v7.3"
   },
   "autoload": {
     "psr-4": {
