@@ -4,6 +4,55 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.2.0
+
+### Added
+
+- Add `Number::MAX_SAFE_INTEGER` constant
+- Add global function `remoteStaticCallOrThrow` (now properly defined) with a deprecated `remoteStaticCallOrTrow` alias for backward compatibility
+
+### Fixed
+
+- Fix `remoteStaticCallOrThrow` was never declared because of a wrong `function_exists` guard
+- Fix `Arr::removeByValue` losing valid falsy keys (`0`, `''`, `'0'`)
+- Fix `Bit::decBinPad` integer overflow on large numbers; `Bit::checkFlag` now uses `!== 0`
+- Fix `Number::safeInt` to keep large integer-like strings as string and compare strictly against `MAX_SAFE_INTEGER`; `Number::isInteger` no longer warns on non-scalars
+- Fix `ArrayCollection::sortBy` returning an empty collection for a string field name
+- Fix `ArrayCollection::getProperty` `UnhandledMatchError` on unsupported target types
+- Fix `Str` camel/delimited cache collisions and make `toLowerCamel` multibyte-safe
+- Fix `Json::encode` to return `null` only on `false`
+- Fix `UseErrorsBox::setError` to read message from any `\Throwable`
+- Fix `Whener::when` to use `??` instead of `?:`
+
+### Removed
+
+- Remove `ErrorCollection`
+- Remove `UseSetter` trait
+
+## v5.1.3
+
+### Added
+
+- Add lazy initialization of `UseStorage::$storage` via PHP 8.4 property hook
+- Add `TO` generic template to `HashCollection`
+
+### Fixed
+
+- Fix implicitly nullable parameter types for `ArrayCollection::filter` and `HasPrePostActions::getCallbackActions` (PHP 8.4 deprecation)
+
+## v5.1.2
+
+### Changed
+
+- Maintenance release (no code changes)
+
+## v5.1.1
+
+### Fixed
+
+- Fix `instance` global function (add generic type hints)
+- Fix `value` global function parameter naming
+
 ## v5.1.0
 
 ### Added
