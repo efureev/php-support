@@ -64,7 +64,7 @@ class Bit
      */
     public static function checkFlag(int|string $value, int $bit): bool
     {
-        return (static::toInt($value) & $bit) > 0;
+        return (static::toInt($value) & $bit) !== 0;
     }
 
 
@@ -103,6 +103,6 @@ class Bit
      */
     public static function decBinPad(int $bit, int $length): string
     {
-        return sprintf("%0{$length}d", decbin($bit));
+        return str_pad(decbin($bit), $length, '0', STR_PAD_LEFT);
     }
 }

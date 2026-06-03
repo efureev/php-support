@@ -233,7 +233,7 @@ interface ReadableCollection extends Countable, IteratorAggregate
      * Applies the given function to each element of the Collection. Returns the same Collection.
      *
      * @param callable $func The predicate.
-     * @phpstan-param callable(TKey, TValue):bool $func
+     * @phpstan-param callable(TValue, TKey):bool $func
      */
     public function each(callable $func): static;
 
@@ -241,7 +241,7 @@ interface ReadableCollection extends Countable, IteratorAggregate
      * Transform each item in the collection using a callback.
      *
      * @param Closure $func The predicate.
-     * @phpstan-param Closure(TKey, TValue):void $func
+     * @phpstan-param Closure(TValue):TValue $func
      */
     public function transform(Closure $func): static;
 

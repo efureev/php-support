@@ -32,7 +32,8 @@ class Point implements Jsonable, Arrayable
     /**
      * @param array $array
      *
-     * @return Point|null
+     * @return static
+     * @throws InvalidParamException if the array does not contain exactly 2 elements
      */
     public static function fromArray(array $array): ?self
     {

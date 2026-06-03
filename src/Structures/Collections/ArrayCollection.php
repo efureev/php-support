@@ -292,6 +292,11 @@ class ArrayCollection implements Collection, Stringable
             => $throwOnMiss ? $target[$keyName] : ($target[$keyName] ?? null),
             is_object($target)
             => $throwOnMiss ? $target->$keyName : (property_exists($target, $keyName) ? $target->$keyName : null),
+            default => $throwOnMiss
+                ? throw new \Php\Support\Exceptions\InvalidParamException(
+                    'Unsupported target type for property extraction'
+                )
+                : null,
         };
     }
 
@@ -685,16 +690,17 @@ class ArrayCollection implements Collection, Stringable
             return $this->sortByMany($callback);
         }
 
+        $callback = $this->valueRetriever($callback);
+
         $results = [];
 
-        if (is_callable($callback)) {
-            // First we will loop through the items and get the comparator from a callback
-            // function which we were given. Then, we will sort the returned values and
-            // grab all the corresponding values for the sorted keys from this array.
-            foreach ($this->elements as $key => $value) {
-                $results[$key] = $callback($value, $key);
-            }
+        // First we will loop through the items and get the comparator from a callback
+        // function which we were given. Then, we will sort the returned values and
+        // grab all the corresponding values for the sorted keys from this array.
+        foreach ($this->elements as $key => $value) {
+            $results[$key] = $callback($value, $key);
         }
+
         $descending ? arsort($results, $options)
             : asort($results, $options);
 
@@ -750,6 +756,8 @@ class ArrayCollection implements Collection, Stringable
 
                     return $result;
                 }
+
+                return 0;
             }
         );
 
