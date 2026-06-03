@@ -20,9 +20,9 @@
     "ext-mbstring": "*"
   },
   "require-dev": {
-    "ergebnis/composer-normalize": "^2.47",
-    "phpstan/phpstan": "^2.1.20",
-    "phpunit/phpunit": "^12.3",
+    "ergebnis/composer-normalize": "^2.52",
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^12.5",
     "squizlabs/php_codesniffer": "^4.0",
     "symfony/var-dumper": "^8.1"
   },
