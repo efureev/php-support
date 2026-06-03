@@ -17,11 +17,13 @@ use Php\Support\Storage;
  */
 trait UseStorage
 {
+    // phpcs:disable PSR2.Classes.PropertyDeclaration -- PHPCS 4.0 doesn't yet support PHP 8.4 property hooks.
     private Storage $storage {
         get {
             return $this->storage ??= new Storage();
         }
     }
+    // phpcs:enable PSR2.Classes.PropertyDeclaration
 
     protected function propertyExists(string $name): bool
     {

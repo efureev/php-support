@@ -13,7 +13,7 @@ trait UseErrorsBox
 
     public function setError(string|\Throwable $message): static
     {
-        if ($message instanceof \Exception) {
+        if ($message instanceof \Throwable) {
             $message = $message->getMessage();
         }
 

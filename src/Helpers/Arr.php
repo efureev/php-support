@@ -72,13 +72,19 @@ class Arr
      */
     public static function removeByValue(array &$array, mixed $val, bool $reindex = false): string|int|null
     {
-        if (($key = array_search($val, $array, false)) !== false) {
-            unset($array[$key]);
+        $key = array_search($val, $array, false);
+
+        if ($key === false) {
+            return null;
         }
+
+        unset($array[$key]);
+
         if ($reindex) {
             $array = array_values($array);
         }
-        return $key ?: null;
+
+        return $key;
     }
 
     /**
@@ -648,12 +654,12 @@ class Arr
             );
         }
 
-        if ($number === null) {
-            return $array[array_rand($array)];
-        }
-
         if ($number === 0) {
             return [];
+        }
+
+        if ($number === null) {
+            return $array[array_rand($array)];
         }
 
         $keys = array_rand($array, $number);

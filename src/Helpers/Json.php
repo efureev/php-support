@@ -47,7 +47,7 @@ class Json
 
         $json = json_encode($value, $options, $depth);
 
-        return $json ?: null;
+        return $json === false ? null : $json;
     }
 
     /**

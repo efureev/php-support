@@ -21,6 +21,13 @@ class Str
     protected static array $delimitedCache = [];
 
     /**
+     * The cache of camel-cased words.
+     *
+     * @var array<string, mixed>
+     */
+    protected static array $camelCache = [];
+
+    /**
      * Converts a string to snake_case
      */
     public static function toSnake(string $str): string
@@ -163,8 +170,8 @@ class Str
         $str = self::addWordBoundariesToNumbers($str);
         $str = trim($str);
 
-        if (isset(static::$delimitedCache[$str][$initCase])) {
-            return static::$delimitedCache[$str][$initCase];
+        if (isset(static::$camelCache[$str][$initCase])) {
+            return static::$camelCache[$str][$initCase];
         }
 
 
@@ -204,7 +211,7 @@ class Str
             }
         }
 
-        return static::$delimitedCache[$str][$initCase] = $res;
+        return static::$camelCache[$str][$initCase] = $res;
     }
 
     /**
@@ -216,7 +223,10 @@ class Str
             return $str;
         }
 
-        return self::toCamelInitCase(lcfirst($str), false);
+        $first = mb_strtolower(mb_substr($str, 0, 1, 'UTF-8'), 'UTF-8');
+        $str   = $first . mb_substr($str, 1, null, 'UTF-8');
+
+        return self::toCamelInitCase($str, false);
     }
 
     /**
@@ -261,7 +271,10 @@ class Str
     }
 
     /**
-     * Truncate a string to a specified length without cutting a word off
+     * Truncate a string to a specified length, trimming at the last whole word when possible.
+     *
+     * Note: if the truncated part contains no space (a single long word), the word is cut
+     * at the exact $length boundary.
      */
     public static function truncate(string $str, int $length, string $append = '...'): string
     {

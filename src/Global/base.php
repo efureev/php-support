@@ -53,7 +53,7 @@ if (!function_exists('dataGet')) {
                     $result[] = dataGet($item, $key);
                 }
 
-                return in_array('*', $key) ? Arr::collapse($result) : $result;
+                return in_array('*', $key, true) ? Arr::collapse($result) : $result;
             }
 
             if (Arr::accessible($target) && Arr::exists($target, $segment)) {
@@ -252,11 +252,11 @@ if (!function_exists('remoteStaticCall')) {
     }
 }
 
-if (!function_exists('remoteStaticCall')) {
+if (!function_exists('remoteStaticCallOrThrow')) {
     /**
-     * Returns result of an object's method if it exists in the object or trow exception.
+     * Returns result of an object's static method if it exists in the class or throws an exception.
      */
-    function remoteStaticCallOrTrow(object|string|null $class, string $method, mixed ...$params): mixed
+    function remoteStaticCallOrThrow(object|string|null $class, string $method, mixed ...$params): mixed
     {
         if (!$class) {
             throw new RuntimeException('Target Class is absent');
@@ -268,6 +268,18 @@ if (!function_exists('remoteStaticCall')) {
 
         $strClass = is_object($class) ? $class::class : $class;
         throw new \Php\Support\Exceptions\MissingMethodException("$strClass::$method");
+    }
+}
+
+if (!function_exists('remoteStaticCallOrTrow')) {
+    /**
+     * Returns result of an object's static method if it exists in the class or throws an exception.
+     *
+     * @deprecated Misspelled alias, use remoteStaticCallOrThrow() instead. Kept for backward compatibility.
+     */
+    function remoteStaticCallOrTrow(object|string|null $class, string $method, mixed ...$params): mixed
+    {
+        return remoteStaticCallOrThrow($class, $method, ...$params);
     }
 }
 

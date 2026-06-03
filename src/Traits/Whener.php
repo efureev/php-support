@@ -13,11 +13,11 @@ trait Whener
     public function when(mixed $value, callable $callback, ?callable $default = null): mixed
     {
         if ($value) {
-            return $callback($this, $value) ?: $this;
+            return $callback($this, $value) ?? $this;
         }
 
         if ($default) {
-            return $default($this, $value) ?: $this;
+            return $default($this, $value) ?? $this;
         }
 
         return $this;
