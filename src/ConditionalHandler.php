@@ -28,13 +28,8 @@ use Closure;
  *   // or
  * $field->resolve($request);
  */
-final class ConditionalHandler
+final readonly class ConditionalHandler
 {
-    /**
-     * @var array
-     */
-    private array $params = [];
-
     /**
      * @param Closure(mixed ...): mixed $handler
      * @param bool|(Closure(mixed ...): bool) $condition
@@ -49,15 +44,16 @@ final class ConditionalHandler
      */
     public function handleIf(Closure|bool $fn): self
     {
-        $this->condition = $fn;
-
-        return $this;
+        return new self($this->handler, $fn);
     }
 
-    private function resolveCondition(): bool
+    /**
+     * @param mixed ...$params
+     */
+    private function resolveCondition(mixed ...$params): bool
     {
         if ($this->condition instanceof Closure) {
-            return ($this->condition)(...$this->params);
+            return ($this->condition)(...$params);
         }
 
         return $this->condition;
@@ -68,13 +64,11 @@ final class ConditionalHandler
      */
     public function resolve(mixed ...$params): mixed
     {
-        $this->params = $params;
-
-        if (!$this->resolveCondition()) {
+        if (!$this->resolveCondition(...$params)) {
             return null;
         }
 
-        return ($this->handler)(...$this->params);
+        return ($this->handler)(...$params);
     }
 
     /**
