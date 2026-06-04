@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Lint changelog file
         uses: avto-dev/markdown-lint@v1
         with:
@@ -37,10 +37,10 @@ jobs:
       fail-fast: false
       matrix:
         setup: [ 'basic', 'lowest', 'stable' ]
-        php: [ '8.4' ]
+        php: [ '8.4', '8.5' ]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Use PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
