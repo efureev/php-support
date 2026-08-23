@@ -100,15 +100,27 @@ class Bit
     }
 
     /**
-     * Convert decimal to binary string with left pad zero-filling
+     * Convert a non-negative integer to a binary string, left-padded with zeros.
      *
-     * @param int $bit
-     * @param int $length
+     * `$length` is a minimum width, not a fixed one: a value needing more bits is not truncated.
+     *
+     * @param int $bit Must not be negative
+     * @param int $length Must not be negative
      *
      * @return string
+     * @throws InvalidParamException for a negative value, whose two's complement representation
+     *                               would be 64 characters wide and never what the caller meant
      */
     public static function decBinPad(int $bit, int $length): string
     {
+        if ($bit < 0) {
+            throw new InvalidParamException("Value must not be negative, $bit given", 'bit');
+        }
+
+        if ($length < 0) {
+            throw new InvalidParamException("Length must not be negative, $length given", 'length');
+        }
+
         return str_pad(decbin($bit), $length, '0', STR_PAD_LEFT);
     }
 }

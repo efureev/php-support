@@ -909,4 +909,20 @@ final class StrTest extends TestCase
         Str::clearCache();
         self::assertCount(0, $cache->getValue());
     }
+
+    #[Test]
+    public function slugifyTrimsAndCollapsesSeparators(): void
+    {
+        // used to keep a dangling separator wherever the string ended in punctuation
+        self::assertSame('hello-world', Str::slugify('Hello World!'));
+        self::assertSame('hello', Str::slugify('  --Hello--  '));
+        self::assertSame('privet-mir', Str::slugify('Привет мир'));
+        self::assertSame('a-b', Str::slugify('a!!!b'));
+        self::assertSame('already-ok', Str::slugify('already-ok'));
+        self::assertSame('', Str::slugify('!!!'));
+        self::assertSame('', Str::slugify(''));
+
+        self::assertSame('hello_world', Str::slugify('Hello World!', '_'));
+        self::assertSame('helloworld', Str::slugify('Hello World!', ''));
+    }
 }

@@ -145,4 +145,22 @@ final class BitTest extends TestCase
     {
         static::assertSame(3, Bit::addFlag('00001', 2));
     }
+
+    public function testDecBinPadRejectsNegativeValues(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        Bit::decBinPad(-1, 8);
+    }
+
+    public function testDecBinPadRejectsNegativeLength(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        Bit::decBinPad(1, -1);
+    }
+
+    public function testDecBinPadLengthIsAMinimumNotAWidth(): void
+    {
+        static::assertSame('00001', Bit::decBinPad(1, 5));
+        static::assertSame('1111', Bit::decBinPad(15, 2));
+    }
 }

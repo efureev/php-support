@@ -101,7 +101,7 @@ class Point implements Jsonable, Arrayable
      *
      * @return static|null
      */
-    public function castFromDatabase(?string $value): ?static
+    public static function castFromDatabase(?string $value): ?static
     {
         if (!$result = Arr::fromPostgresPoint($value)) {
             return null;

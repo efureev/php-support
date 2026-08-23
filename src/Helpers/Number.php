@@ -17,7 +17,10 @@ class Number
 
     /**
      * Convert an integer whose magnitude exceeds Number.MAX_SAFE_INTEGER (JavaScript) to string,
-     * keeping safe integers as native int. Non-integer values are returned as string.
+     * keeping safe integers as native int.
+     *
+     * Anything that is not an integer literal is returned unchanged as a string - including
+     * fractional and exponent notation, which is never truncated.
      *
      * @param int|string $value
      *
@@ -38,7 +41,9 @@ class Number
                 : (string)$value;
         }
 
-        return is_numeric($value) ? (int)$value : (string)$value;
+        // Non-integer values stay strings: casting '1.9' to int silently dropped the fraction,
+        // which is the opposite of what a "safe integer" helper should do.
+        return $value;
     }
 
     /**

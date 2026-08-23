@@ -10,6 +10,7 @@ use Closure;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;
+use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Interfaces\Arrayable;
 use Traversable;
 
@@ -169,13 +170,25 @@ class HashCollection implements ArrayAccess, Countable, IteratorAggregate, JsonS
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        if (!isset($offset)) {
-            $this->add($value);
+        if (isset($offset)) {
+            $this->set($offset, $value);
 
             return;
         }
 
-        $this->set($offset, $value);
+        // $collection[] = $value derives the key from the element's class, so it needs an object.
+        // It used to reach add() unchecked and fail with a bare TypeError from a private method.
+        if (!is_object($value)) {
+            throw new InvalidParamException(
+                sprintf(
+                    'Appending without a key needs an object (its class becomes the key), %s given; use set()',
+                    get_debug_type($value)
+                ),
+                'value'
+            );
+        }
+
+        $this->add($value);
     }
 
     /**

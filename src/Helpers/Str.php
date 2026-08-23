@@ -374,6 +374,17 @@ class Str
             return '';
         }
 
+        // collapse runs of the separator and trim it off both ends
+        if ($separator !== '') {
+            $quoted = preg_quote($separator, '/');
+            $slug   = (string)preg_replace("/{$quoted}+/", $separator, $slug);
+            $slug   = trim($slug, $separator);
+        }
+
+        if ($slug === '') {
+            return '';
+        }
+
         if ($firstLetterOnly) {
             $digits = [
                 'zero',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests\Structures\Collections;
 
+use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Structures\Collections\HashCollection;
 use PHPUnit\Framework\Attributes\Test;
@@ -299,5 +300,19 @@ final class HashCollectionTest extends TestCase
         self::assertSame(6, $c->reduce(static fn($carry, $value) => (int)$carry + $value, 0));
         self::assertSame('1,2,3', $c->implode(','));
         self::assertNull((new HashCollection())->reduce(static fn($carry, $value) => $value));
+    }
+
+    #[Test]
+    public function appendingWithoutAKeyRequiresAnObject(): void
+    {
+        $c = new HashCollection();
+
+        $obj = new \stdClass();
+        $c[] = $obj;
+        self::assertSame($obj, $c->get(\stdClass::class));
+
+        // a scalar used to reach the private add() and fail with a bare TypeError
+        $this->expectException(InvalidParamException::class);
+        $c[] = 'scalar';
     }
 }
