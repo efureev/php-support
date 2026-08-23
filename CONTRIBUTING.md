@@ -30,9 +30,8 @@ if you see one from `vendor/`, it is not yours to fix.
 
 ## Expectations for a change
 
-- **Every bug fix comes with a test that fails without it.** The audit that
-  produced most of the current test suite found several defects precisely
-  because a test was written for previously untested code.
+- **Every bug fix comes with a test that fails without it.** Several defects in this package
+  were found the same way: by writing a test for code nothing had covered yet.
 - **Do not grow `phpstan-baseline.neon` or `phpstan-tests-baseline.neon`.** They hold
   known limits of what generics can express, and findings in fixtures that are not worth
   chasing. Both are meant to shrink, not grow.
