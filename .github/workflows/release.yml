@@ -18,6 +18,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Release ${{ github.ref }}
+          name: ${{ github.ref_name }}
           draft: false
           prerelease: false
