@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## [Unreleased]
 
+## v6.1.1
+
+Documentation only - no code changes, nothing to test against when upgrading from 6.1.0.
+
+### Changed
+
+- Rewrite the README as a product page: what the package is for and what using it looks like, with runnable examples per area, and the full method inventory folded into a collapsible reference
+- Document `ConditionalHandler` and `HasPrePostActions`, neither of which was guessable from its name
+- Replace the `poser.pugx.org` badges, which cached hard enough to still advertise v5.2.0, with `shields.io` equivalents that read Packagist directly
+- Point the CI badge at the documented `actions/workflows/php.yml` URL and make it a link
+
 ## v6.1.0
 
 ### Added
@@ -444,7 +455,9 @@ See [UPGRADE.md](./UPGRADE.md) for migration instructions.
 
 [semver]:https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.0...HEAD
+[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.1...HEAD
+
+[6.1.1]: https://github.com/efureev/php-support/compare/v6.1.0...v6.1.1
 
 [6.1.0]: https://github.com/efureev/php-support/compare/v6.0.0...v6.1.0
 
