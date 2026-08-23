@@ -6,6 +6,49 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## [Unreleased]
 
+## v6.0.0
+
+See [UPGRADE.md](./UPGRADE.md) for migration instructions.
+
+### Added
+
+- Add `Php\Support\Func`, a static facade holding every global function's implementation, so the helpers can be called through a name no other package can shadow
+- Add `Bit::hasFlagIn`, replacing `Bit::exist`
+- Add `B64::decodeOrThrow`
+- Add `UPGRADE.md`
+
+### Changed
+
+- Require PHP `^8.5`
+- `Str::slugify` collapses repeated separators and trims them off both ends
+- `Str::toSnake`, `toKebab`, `toDelimited`, `toScreamingSnake` and `toScreamingDelimited` detect word boundaries in any script, not only ASCII
+- `Str::toCamel` and `toLowerCamel` keep non-ASCII letters instead of dropping them
+- `Number::safeInt` returns non-integer values unchanged as strings instead of truncating them
+- `B64::encodeSafe` uses the RFC 4648 URL-safe alphabet and strips padding; `decodeSafe` still reads the legacy `~` form
+- `B64::decode` and `decodeSafe` are strict by default and return `null` for invalid input
+- `Bit::decBinPad` rejects negative values
+- `URLify::downcode` transliterates through ICU when `ext-intl` is installed, falling back to the bundled maps
+- `WithEnhancesForStrings::casesToString` takes `(?callable $decorator, string $delimiter)`, matching `WithEnhances`
+- `Point::castFromDatabase` is static
+- `HashCollection::offsetSet` throws `InvalidParamException` instead of a bare `TypeError` when appending a non-object
+- `ReadOnlyProperties` exposes only the properties named by `readOnlyProperties()`, and nothing by default
+- `AdditionalAssertionsTrait::assertClassUsesTraits` uses the package's own trait helpers instead of reimplementing them
+- PHPStan runs at level 7; `Arr`'s generic parameters moved from the class to the methods that can bind them
+- `phpunit/phpunit` and `ext-intl` are declared in `suggest`
+
+### Removed
+
+- Remove `remoteStaticCallOrTrow`, the misspelled alias deprecated in 5.2.0
+- Remove `Interfaces\Prototype` and `Interfaces\Command`
+- Remove `UseErrorsBox::setError`, deprecated in 5.3.0
+- Remove `Str::seemsUTF8`, a one-line proxy to `URLify::seemsUTF8`
+- Remove `Bit::exist` in favour of `hasFlagIn`
+- Remove `URLify::seemsUTF8Regex`, unreachable because `ext-mbstring` is required
+
+### Fixed
+
+- Fix `Str::toCamel` silently discarding every character outside the ASCII ranges
+
 ## v5.3.0
 
 ### Added
@@ -373,7 +416,9 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 [semver]:https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/efureev/php-support/compare/v5.3.0...HEAD
+[Unreleased]: https://github.com/efureev/php-support/compare/v6.0.0...HEAD
+
+[6.0.0]: https://github.com/efureev/php-support/compare/v5.3.0...v6.0.0
 
 [5.3.0]: https://github.com/efureev/php-support/compare/v5.2.1...v5.3.0
 
