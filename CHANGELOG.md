@@ -380,4 +380,3 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 [5.2.1]: https://github.com/efureev/php-support/compare/v5.2.0...v5.2.1
 
 [5.2.0]: https://github.com/efureev/php-support/compare/v5.1.3...v5.2.0
-
