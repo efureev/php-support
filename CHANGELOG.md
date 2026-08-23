@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## [Unreleased]
 
+## v6.1.0
+
+### Added
+
+- Add to `Str`: `padBoth`, `padLeft`, `padRight` (character counts, not bytes), `wrap`, `title`, `uuid` (RFC 4122 v4) and `ulid` (sortable by creation time)
+- Add to `Arr`: `sortRecursive`, `divide`, `crossJoin`, `shuffle` (uses the CSPRNG) and `whereNotNull`
+- Add to `ArrayCollection`: `median`, `flip`, `zip`, `every`, `some`, `countBy` and `lazy`, which returns a `Generator`
+- Add to `HashCollection`: `sortBy`, `partition` and `groupBy`, bringing it level with `ArrayCollection`
+- Add to `Number`: `format`, `clamp`, `percentage`, `humanize` and `ordinal`
+- Add to `Bit`: `toggleFlag`, `flags`, `hasAll` and `hasAny`
+- Add to `Storage`: `merge`, `only` and `except`
+- Add `Json::prettyPrint` and `WithEnhances::random`
+- Add `homepage` and `support` links to composer.json, and a `normalize-check` script
+- Add a CI leg without `ext-intl` so the bundled-map fallback is exercised, and a downloadable coverage artifact
+
+### Changed
+
+- `Str::replaceByTemplate` returns `string` rather than `string|string[]`; a string input always yields a string
+- `Func::dataGet` reports a public property holding `null` as present, returning `null` instead of the default
+- `ConditionalHandler` no longer types its callbacks as `Closure(mixed ...)`, which rejected every concretely-typed closure
+- `Arr::toPostgresPoint` is annotated as accepting floats, which it always did
+- `composer test` also analyses `tests/`, through `phpstan-tests.neon`
+
+### Fixed
+
+- Fix `Arr::dataToArray` returning an empty array for a plain object, which made `Json::encode(new stdClass(...))` produce `"[]"`
+- Fix `Bit::flags` never returning for large masks: the probe overflowed to zero and looped forever
+
 ## v6.0.0
 
 See [UPGRADE.md](./UPGRADE.md) for migration instructions.
@@ -416,7 +444,9 @@ See [UPGRADE.md](./UPGRADE.md) for migration instructions.
 
 [semver]:https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/efureev/php-support/compare/v6.0.0...HEAD
+[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.0...HEAD
+
+[6.1.0]: https://github.com/efureev/php-support/compare/v6.0.0...v6.1.0
 
 [6.0.0]: https://github.com/efureev/php-support/compare/v5.3.0...v6.0.0
 

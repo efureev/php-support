@@ -10,7 +10,7 @@
 For php >= 8.5
 
 ```bash
-composer require efureev/support "^6.0"
+composer require efureev/support "^6.1"
 ```
 
 For php >= 8.4
@@ -77,6 +77,11 @@ composer require efureev/support "^2.0"
       - where (^5.3.0)
       - isAssoc (^5.3.0)
       - isList (^5.3.0)
+      - crossJoin (^6.1.0)
+      - divide (^6.1.0)
+      - shuffle (^6.1.0)
+      - sortRecursive (^6.1.0)
+      - whereNotNull (^6.1.0)
     + String
         - isRegExp
         - removeAccents (^4.9.0)
@@ -109,6 +114,13 @@ composer require efureev/support "^2.0"
         - squish (^5.3.0)
         - startsWith (^5.3.0)
         - ucFirst (^5.3.0)
+        - padBoth (^6.1.0)
+        - padLeft (^6.1.0)
+        - padRight (^6.1.0)
+        - title (^6.1.0)
+        - ulid (^6.1.0)
+        - uuid (^6.1.0)
+        - wrap (^6.1.0)
     + Json
         - decode
         - decodeOrThrow (^5.3.0)
@@ -116,11 +128,16 @@ composer require efureev/support "^2.0"
         - encodeOrThrow (^5.3.0)
         - htmlEncode
         - isValid (^5.3.0)
+        - prettyPrint (^6.1.0)
     + Bit
         - addFlag
         - checkFlag
         - decBinPad
+        - hasAll (^6.1.0)
+        - hasAny (^6.1.0)
         - hasFlagIn
+        - flags (^6.1.0)
+        - toggleFlag (^6.1.0)
         - grant
         - removeFlag
     + B64 (RFC 4648 URL-safe alphabet since ^6.0)
@@ -130,7 +147,12 @@ composer require efureev/support "^2.0"
         - encode
         - encodeSafe
     + Number
+        - clamp (^6.1.0)
+        - format (^6.1.0)
+        - humanize (^6.1.0)
         - isInteger (^4.14.0)
+        - ordinal (^6.1.0)
+        - percentage (^6.1.0)
         - safeInt (^4.1.0)
 
 - Func (^6.0) - every global function below as a static method on `Php\Support\Func`,
@@ -170,6 +192,7 @@ composer require efureev/support "^2.0"
     - values
     - fromName (^5.3.0)
     - labels (^5.3.0)
+    - random (^6.1.0)
     - tryFromName (^5.3.0)
 
 - Exceptions
@@ -199,12 +222,14 @@ composer require efureev/support "^2.0"
       - ArrayCollection - an ordered map; implements `Collection`, `Arrayable`, `JsonSerializable`,
         `IteratorAggregate`, `ArrayAccess`, `Countable`, `Stringable`
       - HashCollection (^5.1.0) - a string-keyed map; `add()` uses the element's class name as the key.
-        Iterable, with `keys`, `values`, `map`, `filter`, `each`, `reduce`, `implode` (^5.3.0)
+        Iterable, with `keys`, `values`, `map`, `filter`, `each`, `reduce`, `implode` (^5.3.0),
+        `sortBy`, `partition`, `groupBy` (^6.1.0)
 
 - ConditionalHandler
 - Storage (^5.0.0)
     + set, get, remove, exist - dot notation, `$separator` configurable on all four (^5.3.0)
     + all, toArray, isEmpty, clear, countRecursive (^5.3.0)
+    + merge, only, except (^6.1.0)
     + count, jsonSerialize, `$data` (read-only)
     + also usable through property access, `ArrayAccess` and `foreach` (^5.3.0)
 
