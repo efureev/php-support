@@ -1,17 +1,32 @@
 name: PHP Package
 
-on: [ push ]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
-  #  phpcs:
-  #    name: PHPCS
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - uses: actions/checkout@v2
-  #      - name: PHPCS check
-  #        uses: chekalsky/phpcs-action@v1
-  #        with:
-  #          enable_warnings: true
+  coding-standards:
+    name: Coding standards
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Use PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: PHPCS
+        run: composer phpcs
 
   lint-changelog:
     name: Lint changelog file
@@ -31,7 +46,7 @@ jobs:
 
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [ lint-changelog ]
+    needs: [ lint-changelog, coding-standards ]
 
     strategy:
       fail-fast: false
@@ -46,8 +61,8 @@ jobs:
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring
-          coverage: xdebug
+          extensions: mbstring, ctype, json
+          coverage: none
 
       - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
         id: composer-cache
@@ -63,7 +78,7 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Validate composer.json
-        run: composer validate
+        run: composer validate --strict
 
       - name: Install [LOWEST] Composer dependencies
         if: matrix.setup == 'lowest'
@@ -87,4 +102,4 @@ jobs:
       # Docs: https://getcomposer.org/doc/articles/scripts.md
 
       - name: Run test suite
-        run: XDEBUG_MODE=coverage composer test
+        run: composer test

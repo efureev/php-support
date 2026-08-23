@@ -17,14 +17,15 @@
   ],
   "require": {
     "php": "^8.4",
+    "ext-ctype": "*",
+    "ext-json": "*",
     "ext-mbstring": "*"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.52",
     "phpstan/phpstan": "^2.2",
     "phpunit/phpunit": "^12.5",
-    "squizlabs/php_codesniffer": "^4.0",
-    "symfony/var-dumper": "^8.1"
+    "squizlabs/php_codesniffer": "^4.0"
   },
   "autoload": {
     "psr-4": {
@@ -46,7 +47,6 @@
   },
   "scripts": {
     "cs-fix": "@php ./vendor/bin/phpcbf",
-    "infection": "@php ./vendor/bin/infection --coverage=./storage/coverage --threads=4",
     "phpcs": "@php ./vendor/bin/phpcs",
     "phpstan": "@php ./vendor/bin/phpstan analyze -c phpstan.neon --no-progress --ansi",
     "phpunit": "@php ./vendor/bin/phpunit --no-coverage --testdox --colors=always",
