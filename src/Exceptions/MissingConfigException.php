@@ -13,9 +13,9 @@ class MissingConfigException extends ConfigException
 {
     public function __construct(
         array $config = [],
-        protected ?string $needKey = null,
+        protected(set) ?string $needKey = null,
         string $message = 'Missing Config'
     ) {
-        parent::__construct($message, $config);
+        parent::__construct($this->needKey === null ? $message : "$message: $this->needKey", $config);
     }
 }

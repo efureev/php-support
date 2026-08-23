@@ -16,7 +16,7 @@ final class ArrayableTest extends TestCase
      */
     public function testArrayable(): void
     {
-        $data_arrayable = $this->getMockBuilder(\Php\Support\Interfaces\Arrayable::class)->getMock();
+        $data_arrayable = $this->createStub(\Php\Support\Interfaces\Arrayable::class);
 
         $data_arrayable
             ->method('toArray')

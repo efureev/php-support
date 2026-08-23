@@ -20,7 +20,7 @@ final class JsonTest extends TestCase
     public function testEncode(): void
     {
         // Arrayable data encoding
-        $data_arrayable = $this->getMockBuilder(\Php\Support\Interfaces\Arrayable::class)->getMock();
+        $data_arrayable = $this->createStub(\Php\Support\Interfaces\Arrayable::class);
         $data_arrayable->method('toArray')->willReturn([]);
 
         $actual = Json::encode($data_arrayable);
@@ -148,7 +148,7 @@ final class JsonTest extends TestCase
     public function testHandleJsonError(): void
     {
         $json = "{'a': '1'}";
-        static::assertNull(Json::decode($json, ));
+        static::assertNull(Json::decode($json));
         static::assertNull(Json::decode($json, true, JSON_THROW_ON_ERROR));
     }
 
@@ -219,40 +219,4 @@ final class JsonTest extends TestCase
             empty(array_diff_key($exp, $result)) && empty(array_diff_key($result, $exp))
         );
     }*/
-}
-
-/**
- * Class JsonModel
- */
-class JsonModel implements \JsonSerializable
-{
-    /** @var array */
-    public $data = ['json' => 'serializable'];
-
-    public function jsonSerialize(): mixed
-    {
-        return $this->data;
-    }
-
-    /**
-     * @return array
-     */
-    public function rules(): array
-    {
-        return [
-            [
-                'name',
-                'required',
-            ],
-            [
-                'name',
-                'string',
-                'max' => 100,
-            ],
-        ];
-    }
-
-    public function init(): void
-    {
-    }
 }

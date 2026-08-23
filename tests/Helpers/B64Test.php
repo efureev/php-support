@@ -29,10 +29,7 @@ final class B64Test extends TestCase
         '🤪 🤪 😈'                           => '8J+kqiDwn6SqIPCfmIg=',
     ];
 
-    private static $emptyList = [
-        ''   => '',
-        null => '',
-    ];
+    private static $emptyList = ['' => ''];
 
     public function testEncode(): void
     {
