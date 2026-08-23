@@ -123,4 +123,23 @@ final class URLifyTest extends TestCase
         self::assertFalse(URLify::seemsUTF8($iso));
         self::assertSame('Unicode', URLify::downcode($iso));
     }
+
+    #[Test]
+    public function downcodeFallsBackWhenTheTransliteratorIsUnavailable(): void
+    {
+        // force the "no ext-intl" path through the cached handle, then restore it
+        $cache = new \ReflectionProperty(URLify::class, 'transliterator');
+        $saved = $cache->getValue();
+
+        try {
+            $cache->setValue(null, false);
+
+            self::assertSame('Privet mir', URLify::downcode('Привет мир'));
+            self::assertSame('ue', URLify::downcode('ü', 'de'));
+            // the maps have no entry for this one, unlike ICU
+            self::assertSame('œuvre', URLify::downcode('œuvre'));
+        } finally {
+            $cache->setValue(null, $saved);
+        }
+    }
 }

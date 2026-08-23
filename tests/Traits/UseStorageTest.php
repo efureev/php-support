@@ -132,4 +132,25 @@ final class UseStorageTest extends TestCase
         self::assertNull($subject->name);
         self::assertFalse(isset($subject->name));
     }
+
+    public function testUnsetOfAnInaccessiblePropertyGoesThroughTheMagicMethod(): void
+    {
+        // __unset() only fires for a property the caller cannot reach directly
+        $subject = new class {
+            use UseStorage;
+
+            protected ?string $hidden = 'value';
+
+            public function hidden(): ?string
+            {
+                return $this->hidden;
+            }
+        };
+
+        self::assertSame('value', $subject->hidden());
+
+        unset($subject->hidden);
+
+        self::assertNull($subject->hidden());
+    }
 }

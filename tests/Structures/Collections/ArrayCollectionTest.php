@@ -897,4 +897,136 @@ final class ArrayCollectionTest extends TestCase
         self::assertInstanceOf(\Generator::class, $generator);
         self::assertSame(['a' => 1, 'b' => 2], iterator_to_array($generator));
     }
+
+    #[Test]
+    public function mapByKeyReadsThroughArrayAccess(): void
+    {
+        $row = new \ArrayObject(['id' => 7, 'name' => 'x']);
+
+        self::assertSame([7 => 'x'], (new ArrayCollection([$row]))->mapByKey('id', 'name')->all());
+    }
+
+    #[Test]
+    public function sortByManyAcceptsAComparator(): void
+    {
+        $c = new ArrayCollection([['n' => 2], ['n' => 1], ['n' => 3]]);
+
+        $sorted = $c->sortBy(
+            [
+                [static fn($a, $b) => $a['n'] <=> $b['n']],
+            ]
+        );
+
+        self::assertSame([1, 2, 3], array_column($sorted->all(), 'n'));
+    }
+
+    #[Test]
+    public function groupByNestsWhenGivenSeveralFields(): void
+    {
+        $c = new ArrayCollection(
+            [
+                [
+                    'type' => 'a',
+                    'size' => 's',
+                ],
+                [
+                    'type' => 'a',
+                    'size' => 'l',
+                ],
+                [
+                    'type' => 'b',
+                    'size' => 's',
+                ],
+            ]
+        );
+
+        $grouped = $c->groupBy(['type', 'size']);
+
+        self::assertCount(2, $grouped);
+        self::assertCount(1, $grouped->get('a')->get('s'));
+        self::assertCount(1, $grouped->get('a')->get('l'));
+    }
+
+    #[Test]
+    public function getPropertyReturnsNullWhenNotAskedToThrow(): void
+    {
+        $c = new ArrayCollection([['a' => 1]]);
+
+        // $throwOnMiss = false is only reachable from inside; exercise it directly
+        $method = new \ReflectionMethod($c, 'getProperty');
+
+        self::assertNull($method->invoke($c, ['a' => 1], 'missing', false));
+        self::assertNull($method->invoke($c, new \stdClass(), 'missing', false));
+        self::assertNull($method->invoke($c, 'scalar', 'missing', false));
+    }
+
+    #[Test]
+    public function sortByManyHonoursDescendingDirection(): void
+    {
+        $c = new ArrayCollection([['n' => 2], ['n' => 1], ['n' => 3]]);
+
+        $sorted = $c->sortBy(
+            [
+                [
+                    'n',
+                    'desc',
+                ],
+            ]
+        );
+
+        self::assertSame([3, 2, 1], array_column($sorted->all(), 'n'));
+    }
+
+    #[Test]
+    public function sortByManyFallsThroughEqualComparisons(): void
+    {
+        $c = new ArrayCollection(
+            [
+                [
+                    'a' => 1,
+                    'b' => 2,
+                ],
+                [
+                    'a' => 1,
+                    'b' => 1,
+                ],
+            ]
+        );
+
+        $sorted = $c->sortBy(
+            [
+                ['a'],
+                ['b'],
+            ]
+        );
+
+        self::assertSame([1, 2], array_column($sorted->all(), 'b'));
+    }
+
+    #[Test]
+    public function sortByManyKeepsOrderWhenEveryComparisonTies(): void
+    {
+        $c = new ArrayCollection(
+            [
+                [
+                    'a' => 1,
+                    'b' => 1,
+                ],
+                [
+                    'a' => 1,
+                    'b' => 1,
+                ],
+            ]
+        );
+
+        $sorted = $c->sortBy(
+            [
+                ['a'],
+                ['b'],
+            ]
+        );
+
+        self::assertCount(2, $sorted);
+        self::assertSame([1, 1], array_column($sorted->all(), 'a'));
+    }
 }

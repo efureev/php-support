@@ -14,23 +14,23 @@ final class SingletonTest extends TestCase
 {
     public function testBase(): void
     {
-        $instance1 = SingletonParentClassTest::getInstance();
-        static::assertInstanceOf(SingletonParentClassTest::class, $instance1);
+        $instance1 = SingletonParentFixture::getInstance();
+        static::assertInstanceOf(SingletonParentFixture::class, $instance1);
 
-        $instance2 = SingletonParentClassTest::getInstance();
-        static::assertInstanceOf(SingletonParentClassTest::class, $instance2);
+        $instance2 = SingletonParentFixture::getInstance();
+        static::assertInstanceOf(SingletonParentFixture::class, $instance2);
 
         static::assertEquals($instance1, $instance2);
     }
 
     public function testChild(): void
     {
-        $parent = SingletonParentClassTest::getInstance();
-        static::assertInstanceOf(SingletonParentClassTest::class, $parent);
+        $parent = SingletonParentFixture::getInstance();
+        static::assertInstanceOf(SingletonParentFixture::class, $parent);
 
-        $child = SingletonChildClassTest::getInstance();
-        static::assertInstanceOf(SingletonChildClassTest::class, $child);
-        static::assertInstanceOf(SingletonParentClassTest::class, $child);
+        $child = SingletonChildFixture::getInstance();
+        static::assertInstanceOf(SingletonChildFixture::class, $child);
+        static::assertInstanceOf(SingletonParentFixture::class, $child);
 
         static::assertNotEquals($child, $parent);
     }
@@ -38,50 +38,39 @@ final class SingletonTest extends TestCase
     public function testPreventCreate(): void
     {
         $this->expectException(\Error::class);
-        $parent = new SingletonParentClassTest();
+        $parent = new SingletonParentFixture();
     }
 
     public function testPreventClone(): void
     {
         $this->expectException(\Error::class);
-        $instance  = SingletonParentClassTest::getInstance();
+        $instance  = SingletonParentFixture::getInstance();
         $instance2 = clone $instance;
     }
 
     public function testPreventWakeup(): void
     {
         $this->expectException(Exception::class);
-        $instance = SingletonChildClassTest::getInstance();
+        $instance = SingletonChildFixture::getInstance();
 
         $str = serialize($instance);
 
         unserialize($str);
     }
-}
 
-/**
- * Class SingletonParentClassTest
- */
-class SingletonParentClassTest
-{
-    protected $username;
-
-    use \Php\Support\Traits\Singleton;
-}
-
-
-/**
- * Class SingletonChildClassTest
- */
-final class SingletonChildClassTest extends SingletonParentClassTest
-{
-    private $password;
-
-    public function __sleep()
+    public function testCloneIsNotPublic(): void
     {
-        return [
-            'username',
-            'password',
-        ];
+        // the constructor and __clone are both hidden, so the instance cannot be duplicated
+        $clone = new \ReflectionMethod(SingletonParentFixture::class, '__clone');
+
+        self::assertFalse($clone->isPublic(), '__clone must not be callable from outside');
+
+        $clone->invoke(SingletonParentFixture::getInstance());
+
+        self::assertSame(
+            SingletonParentFixture::getInstance(),
+            SingletonParentFixture::getInstance(),
+            'the singleton is still the same instance'
+        );
     }
 }

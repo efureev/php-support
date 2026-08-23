@@ -1010,4 +1010,43 @@ final class StrTest extends TestCase
         self::assertLessThan($later, $earlier, 'ULIDs must sort by creation time');
         self::assertNotSame(Str::ulid(1_000), Str::ulid(1_000), 'the random part must differ');
     }
+
+    #[Test]
+    public function padLeftAndPadRightRejectAnEmptyPad(): void
+    {
+        $caught = 0;
+
+        foreach (['padLeft', 'padRight'] as $method) {
+            try {
+                Str::$method('abc', 9, '');
+            } catch (InvalidParamException) {
+                $caught++;
+            }
+        }
+
+        self::assertSame(2, $caught);
+    }
+
+    #[Test]
+    public function slugifyWithFormatReportsAPatternThatFailsToApply(): void
+    {
+        // a syntactically valid pattern that preg_replace still cannot run: catastrophic
+        // backtracking trips the PCRE limit and returns null
+        $this->expectException(InvalidParamException::class);
+
+        Str::slugifyWithFormat(str_repeat('a', 100_000) . 'b', '-', '(a+)+$');
+    }
+
+    #[Test]
+    public function slugifyReturnsEmptyWhenNothingSurvivesTheFormat(): void
+    {
+        self::assertSame('', Str::slugifyWithFormat('!!!', '-', '([^a-z\\d]+)'));
+    }
+
+    #[Test]
+    public function padBothWithAnOddRemainderPadsOnlyOneSide(): void
+    {
+        // the left side gets zero characters, which exercises the empty-repeat path
+        self::assertSame('ab-', Str::padBoth('ab', 3, '-'));
+    }
 }

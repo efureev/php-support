@@ -156,13 +156,11 @@ class Arr
             } elseif ($items instanceof Traversable) {
                 $items = iterator_to_array($items);
             } else {
-                $result = [];
-                if (is_iterable($items)) {
-                    foreach ($items as $name => $value) {
-                        $result[$name] = $value;
-                    }
-                }
-                $items = $result;
+                // A plain object: keep its public properties. The previous branch guarded on
+                // is_iterable(), which for an object means Traversable and was therefore already
+                // handled above - so every plain object silently became an empty array, and
+                // Json::encode() inherited that, turning any stdClass into "[]".
+                $items = get_object_vars($items);
             }
         }
 

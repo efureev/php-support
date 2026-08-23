@@ -239,4 +239,11 @@ final class StorageTest extends TestCase
         self::assertSame(['a' => 1, 'b' => 2], $merged->all());
         self::assertSame(['a' => 9, 'b' => 2], $merged->merge(new Storage(['a' => 9]))->all());
     }
+
+    #[Test]
+    public function stringRepresentationIsJson(): void
+    {
+        self::assertSame('{"a":1}', (string)new Storage(['a' => 1]));
+        self::assertSame('[]', (string)new Storage());
+    }
 }

@@ -73,4 +73,10 @@ final class GeoPointTest extends TestCase
     {
         self::assertSame(5.0, GeoPoint::calcDistance(new GeoPoint(0, 0), new GeoPoint(3, 4)));
     }
+
+    #[Test]
+    public function fromJsonRejectsNonNumericCoordinates(): void
+    {
+        self::assertNull(GeoPoint::fromJson('{"longitude":"a","latitude":"b"}'));
+    }
 }

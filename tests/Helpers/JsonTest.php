@@ -41,11 +41,11 @@ final class JsonTest extends TestCase
             'b' => 2,
         ];
         self::assertSame('{"a":1,"b":2}', Json::encode($data));
-        // simple object encoding
+        // simple object encoding: public properties are kept
         $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
-        self::assertSame('[]', Json::encode($data));
+        self::assertSame('{"a":1,"b":2}', Json::encode($data));
         // empty data encoding
         $data = [];
         self::assertSame('[]', Json::encode($data));
@@ -87,11 +87,11 @@ final class JsonTest extends TestCase
             'b' => 2,
         ];
         self::assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
-        // simple object encoding
+        // simple object encoding: public properties are kept
         $data    = new \stdClass();
         $data->a = 1;
         $data->b = 2;
-        self::assertSame('[]', Json::htmlEncode($data));
+        self::assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
 
         $data = (object)null;
         self::assertSame('[]', Json::htmlEncode($data));
