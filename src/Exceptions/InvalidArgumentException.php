@@ -9,7 +9,7 @@ use Throwable;
 /**
  * Class InvalidArgumentException
  */
-class InvalidArgumentException extends \InvalidArgumentException
+class InvalidArgumentException extends \InvalidArgumentException implements ExceptionInterface
 {
     public function __construct(?string $message = null, int $code = 0, ?Throwable $previous = null)
     {

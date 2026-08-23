@@ -9,7 +9,7 @@ use BadMethodCallException;
 /**
  * Class InvalidCallException
  */
-class InvalidCallException extends BadMethodCallException
+class InvalidCallException extends BadMethodCallException implements ExceptionInterface
 {
     public function getName(): string
     {
