@@ -31,15 +31,19 @@ use Closure;
 final readonly class ConditionalHandler
 {
     /**
-     * @param Closure(mixed ...): mixed $handler
-     * @param bool|(Closure(mixed ...): bool) $condition
+     * The closures receive whatever is passed to resolve()/__invoke(), so their parameters are
+     * deliberately unconstrained: `Closure(mixed ...)` would reject every concretely-typed
+     * callback a caller actually writes.
+     *
+     * @param Closure $handler
+     * @param bool|Closure $condition
      */
     public function __construct(private Closure $handler, private bool|Closure $condition = true)
     {
     }
 
     /**
-     * @param (Closure(mixed ...): bool)|bool $fn
+     * @param Closure|bool $fn
      * @return ConditionalHandler
      */
     public function handleIf(Closure|bool $fn): self
@@ -80,8 +84,8 @@ final readonly class ConditionalHandler
     }
 
     /**
-     * @param Closure(mixed ...): mixed $fn
-     * @param bool|(Closure(mixed ...): bool) $condition
+     * @param Closure $fn
+     * @param bool|Closure $condition
      * @return ConditionalHandler
      */
     public static function make(Closure $fn, bool|Closure $condition = true): self

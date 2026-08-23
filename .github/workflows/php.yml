@@ -28,6 +28,9 @@ jobs:
       - name: PHPCS
         run: composer phpcs
 
+      - name: composer.json is normalized
+        run: composer normalize-check
+
   lint-changelog:
     name: Lint changelog file
     runs-on: ubuntu-latest
@@ -53,6 +56,13 @@ jobs:
       matrix:
         setup: [ 'basic', 'lowest', 'stable' ]
         php: [ '8.5' ]
+        # ext-intl is optional: URLify falls back to its bundled maps without it,
+        # and that path would otherwise never be exercised in CI
+        intl: [ true ]
+        include:
+          - setup: 'stable'
+            php: '8.5'
+            intl: false
 
     steps:
       - uses: actions/checkout@v7
@@ -61,8 +71,8 @@ jobs:
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
         with:
           php-version: ${{ matrix.php }}
-          extensions: mbstring, ctype, json, intl
-          coverage: none
+          extensions: mbstring, ctype, json${{ matrix.intl && ', intl' || '' }}
+          coverage: xdebug
 
       - name: Get Composer Cache Directory # Docs: <https://github.com/actions/cache/blob/master/examples.md#php---composer>
         id: composer-cache
@@ -103,3 +113,15 @@ jobs:
 
       - name: Run test suite
         run: composer test
+
+      - name: Collect coverage
+        if: matrix.setup == 'stable' && matrix.intl
+        run: XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-clover ./clover.xml --no-logging
+
+      - name: Upload coverage report
+        if: matrix.setup == 'stable' && matrix.intl
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-php${{ matrix.php }}
+          path: ./clover.xml
+          retention-days: 14

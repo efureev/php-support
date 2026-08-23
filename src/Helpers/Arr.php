@@ -274,7 +274,7 @@ class Arr
     }
 
     /**
-     * @param int[] $array
+     * @param array<int, int|float> $array Exactly two coordinates: [x, y]
      * @return ?string
      */
     public static function toPostgresPoint(array $array): ?string
