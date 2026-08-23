@@ -73,11 +73,35 @@ final class URLifyTest extends TestCase
     }
 
     #[Test]
-    public function oeLigatureIsNotCoveredByTheBundledMaps(): void
+    public function icuClosesTheGapsInTheBundledMaps(): void
     {
-        // Œ/œ are simply missing from the vendored tables - documented here so the gap is
-        // visible rather than surprising. Goes away when URLify is replaced (audit L-8).
-        self::assertSame('œuvre', URLify::downcode('œuvre'));
+        if (!extension_loaded('intl')) {
+            self::markTestSkipped('ext-intl is required for full transliteration');
+        }
+
+        // Œ/œ have no entry in the bundled tables; ICU knows them
+        self::assertSame('oeuvre', URLify::downcode('œuvre'));
+        self::assertSame('ri ben', URLify::downcode('日本'));
+    }
+
+    #[Test]
+    public function theBundledMapsStillWorkWithoutIntl(): void
+    {
+        // CI always has ext-intl, so the fallback would otherwise never be exercised
+        $downcode = static function (string $text, string $language = ''): string {
+            $method = new \ReflectionMethod(URLify::class, 'downcodeWithMaps');
+
+            return $method->invoke(null, $text, $language);
+        };
+
+        self::assertSame('Privet mir', $downcode('Привет мир'));
+        self::assertSame('Ellada', $downcode('Ελλάδα'));
+        self::assertSame('Aeiou', $downcode('Àéîõü'));
+        self::assertSame('ue', $downcode('ü', 'de'));
+        self::assertSame('plain ascii 123', $downcode('plain ascii 123'));
+
+        // the gap ICU covers and the maps do not
+        self::assertSame('œuvre', $downcode('œuvre'));
     }
 
     #[Test]

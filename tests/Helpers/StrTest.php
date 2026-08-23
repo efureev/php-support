@@ -713,17 +713,6 @@ final class StrTest extends TestCase
 
             // Test for not UTF-8.
             self::assertFalse(URLify::seemsUTF8($ucsChar));
-
-            // Test the worker method.
-            $method = self::setMethodAccessible(URLify::class, 'seemsUTF8Regex');
-            self::assertFalse(
-                $method->invoke(null, $invalidUTF8),
-                self::class . '::seemsUTF8Regex did not properly detect invalid UTF-8.'
-            );
-            self::assertTrue(
-                $method->invoke(null, $validUTF8),
-                self::class . '::seemsUTF8Regex did not properly detect valid UTF-8.'
-            );
         }
     }
 
