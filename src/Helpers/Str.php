@@ -7,6 +7,7 @@ namespace Php\Support\Helpers;
 use Php\Support\Exceptions\InvalidParamException;
 
 use function mb_strlen;
+use function mb_strpos;
 use function mb_strtolower;
 use function mb_strtoupper;
 use function mb_substr;
@@ -15,6 +16,14 @@ use function trim;
 
 class Str
 {
+    /**
+     * How many distinct source strings each conversion cache keeps.
+     *
+     * The caches are static, so without a bound they grow for the lifetime of the process -
+     * a leak in workers and long-running CLI processes that convert user input.
+     */
+    public const int CACHE_LIMIT = 1000;
+
     /**
      * The cache of delimited converted-cased words.
      *
@@ -28,6 +37,32 @@ class Str
      * @var array<string, mixed>
      */
     protected static array $camelCache = [];
+
+    /**
+     * Drops both conversion caches.
+     *
+     * Useful in long-running processes and between test cases.
+     */
+    public static function clearCache(): void
+    {
+        static::$delimitedCache = [];
+        static::$camelCache     = [];
+    }
+
+    /**
+     * Evicts the oldest half of a cache once it outgrows {@see self::CACHE_LIMIT}.
+     *
+     * @param array<string, mixed> $cache
+     * @param-out array<string, mixed> $cache
+     */
+    private static function evictCache(array &$cache): void
+    {
+        if (count($cache) < self::CACHE_LIMIT) {
+            return;
+        }
+
+        $cache = array_slice($cache, (int)(self::CACHE_LIMIT / 2), null, true);
+    }
 
     /**
      * Converts a string to snake_case
@@ -116,6 +151,8 @@ class Str
         } else {
             $res = mb_strtolower($res, 'UTF-8');
         }
+
+        self::evictCache(static::$delimitedCache);
 
         return static::$delimitedCache[$str][$delimiter][$screaming] = $res;
     }
@@ -212,6 +249,8 @@ class Str
                 $cap_next = false;
             }
         }
+
+        self::evictCache(static::$camelCache);
 
         return static::$camelCache[$str][$initCase] = $res;
     }
@@ -403,5 +442,223 @@ class Str
         }
 
         return $str;
+    }
+
+    /**
+     * Generate a cryptographically secure random alpha-numeric string.
+     *
+     * @param int $length
+     *
+     * @throws InvalidParamException
+     */
+    public static function random(int $length = 16): string
+    {
+        if ($length < 1) {
+            throw new InvalidParamException("Length must be a positive integer, $length given", 'length');
+        }
+
+        $result = '';
+
+        while (strlen($result) < $length) {
+            $missing = $length - strlen($result);
+            $bytes   = random_bytes((int)ceil($missing / 3) * 3);
+            $result .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $missing);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Mask a portion of a string with a repeated character.
+     *
+     * @param string $str
+     * @param string $character Replacement character; an empty one leaves the string untouched.
+     * @param int $index Where to start masking; negative counts from the end.
+     * @param ?int $length How many characters to mask; null means "to the end".
+     */
+    public static function mask(string $str, string $character = '*', int $index = 0, ?int $length = null): string
+    {
+        if ($character === '' || $str === '') {
+            return $str;
+        }
+
+        $strLength = mb_strlen($str);
+        $start     = $index < 0 ? max($strLength + $index, 0) : min($index, $strLength);
+        $segment   = mb_substr($str, $start, $length);
+
+        if ($segment === '') {
+            return $str;
+        }
+
+        $head = mb_substr($str, 0, $start);
+        $body = str_repeat(mb_substr($character, 0, 1), mb_strlen($segment));
+        $tail = mb_substr($str, $start + mb_strlen($segment));
+
+        return $head . $body . $tail;
+    }
+
+    /**
+     * Truncate a string to a given number of characters, without word awareness.
+     *
+     * Unlike {@see self::truncate()} this never trims at a word boundary.
+     *
+     * @throws InvalidParamException
+     */
+    public static function limit(string $str, int $length = 100, string $append = '...'): string
+    {
+        if ($length < 1) {
+            throw new InvalidParamException("Length must be a positive integer, $length given", 'length');
+        }
+
+        if (mb_strlen($str) <= $length) {
+            return $str;
+        }
+
+        return mb_substr($str, 0, $length) . $append;
+    }
+
+    /**
+     * Determine whether the string contains any of the given substrings.
+     *
+     * @param string|string[] $needles
+     */
+    public static function contains(string $haystack, string|array $needles, bool $ignoreCase = false): bool
+    {
+        if ($ignoreCase) {
+            $haystack = mb_strtolower($haystack, 'UTF-8');
+        }
+
+        foreach ((array)$needles as $needle) {
+            if ($needle === '') {
+                continue;
+            }
+
+            if (str_contains($haystack, $ignoreCase ? mb_strtolower($needle, 'UTF-8') : $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the string starts with any of the given substrings.
+     *
+     * @param string|string[] $needles
+     */
+    public static function startsWith(string $haystack, string|array $needles): bool
+    {
+        foreach ((array)$needles as $needle) {
+            if ($needle !== '' && str_starts_with($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the string ends with any of the given substrings.
+     *
+     * @param string|string[] $needles
+     */
+    public static function endsWith(string $haystack, string|array $needles): bool
+    {
+        foreach ((array)$needles as $needle) {
+            if ($needle !== '' && str_ends_with($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Collapse repeated whitespace and trim the result.
+     *
+     * {@see self::removeMultiSpace()} only collapses; this also trims the ends.
+     */
+    public static function squish(string $str): string
+    {
+        return trim(self::removeMultiSpace($str));
+    }
+
+    /**
+     * Return everything after the first occurrence of $search.
+     *
+     * Returns the whole string when $search is empty or not found.
+     */
+    public static function after(string $str, string $search): string
+    {
+        if ($search === '') {
+            return $str;
+        }
+
+        $position = mb_strpos($str, $search);
+
+        return $position === false ? $str : mb_substr($str, $position + mb_strlen($search));
+    }
+
+    /**
+     * Return everything before the first occurrence of $search.
+     *
+     * Returns the whole string when $search is empty or not found.
+     */
+    public static function before(string $str, string $search): string
+    {
+        if ($search === '') {
+            return $str;
+        }
+
+        $position = mb_strpos($str, $search);
+
+        return $position === false ? $str : mb_substr($str, 0, $position);
+    }
+
+    /**
+     * Return the substring between the first $from and the following $to.
+     *
+     * Returns an empty string when either delimiter is missing.
+     */
+    public static function between(string $str, string $from, string $to): string
+    {
+        if ($from === '' || $to === '') {
+            return '';
+        }
+
+        $start = mb_strpos($str, $from);
+
+        if ($start === false) {
+            return '';
+        }
+
+        $start += mb_strlen($from);
+        $end    = mb_strpos($str, $to, $start);
+
+        return $end === false ? '' : mb_substr($str, $start, $end - $start);
+    }
+
+    /**
+     * Multibyte-aware ucfirst().
+     */
+    public static function ucFirst(string $str): string
+    {
+        if ($str === '') {
+            return $str;
+        }
+
+        return mb_strtoupper(mb_substr($str, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($str, 1, null, 'UTF-8');
+    }
+
+    /**
+     * Multibyte-aware lcfirst().
+     */
+    public static function lcFirst(string $str): string
+    {
+        if ($str === '') {
+            return $str;
+        }
+
+        return mb_strtolower(mb_substr($str, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($str, 1, null, 'UTF-8');
     }
 }

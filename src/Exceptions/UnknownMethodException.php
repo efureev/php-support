@@ -9,7 +9,7 @@ use BadMethodCallException;
 /**
  * Class UnknownMethodException
  */
-class UnknownMethodException extends BadMethodCallException
+class UnknownMethodException extends BadMethodCallException implements ExceptionInterface
 {
     public function __construct(protected(set) string $method, ?string $message = null)
     {

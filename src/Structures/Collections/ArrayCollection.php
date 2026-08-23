@@ -10,11 +10,20 @@ use JsonSerializable;
 use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Exceptions\MissingPropertyException;
 use Php\Support\Helpers\Arr;
+use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Arrayable;
 use Stringable;
 use Traversable;
 
 use function array_chunk;
+use function is_numeric;
+use function min;
+use function max;
+use function implode;
+use function array_sum;
+use function array_intersect;
+use function array_diff;
+use function array_combine;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -40,23 +49,26 @@ use function spl_object_hash;
 use function uasort;
 
 /**
- * @psalm-template TKey of array-key
- * @psalm-template T
+ * @phpstan-template TKey of array-key
+ * @phpstan-template T
  * @template-implements Collection<TKey,T>
+ * @template-implements Arrayable<TKey,T>
  *
- * @psalm-consistent-constructor
+ * @phpstan-type SortComparator (callable(T, T): mixed)|(callable(T, TKey): mixed)|string
+ * @phpstan-type SortComparisons array<array-key, SortComparator|array{string, string}>
+ *
+ * @phpstan-consistent-constructor
  */
 class ArrayCollection implements Collection, Stringable, JsonSerializable, Arrayable
 {
     /**
      * @var array
-     * @psalm-var array<TKey,T>
+     * @phpstan-var array<TKey,T>
      */
     protected array $elements = [];
 
     /**
-     * @param array|Collection $elements
-     * @psalm-param array<TKey,T> $elements
+     * @param array<TKey,T>|Collection<TKey,T> $elements
      */
     public function __construct(array|Collection $elements = [])
     {
@@ -95,7 +107,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return Traversable<int|string, mixed>
-     * @psalm-return Traversable<TKey, T>
+     * @phpstan-return Traversable<TKey, T>
      */
     public function getIterator(): Traversable
     {
@@ -123,7 +135,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * @param int|string|null $offset
      * @param T $value
-     * @psalm-param TKey|null $offset
+     * @phpstan-param TKey|null $offset
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -182,8 +194,6 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function add(mixed $element): bool
     {
@@ -246,12 +256,12 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param Closure(T):U $func
+     * @phpstan-param Closure(T):U $func
      *
      * @return static
-     * @psalm-return static<TKey, U>
+     * @phpstan-return static<TKey, U>
      *
-     * @psalm-template U
+     * @phpstan-template U
      */
     public function map(Closure $func): static
     {
@@ -276,12 +286,12 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param null|Closure(T,TKey):U $func
+     * @phpstan-param null|Closure(T,TKey):U $func
      *
      * @return static
-     * @psalm-return static<TKey, U>
+     * @phpstan-return static<TKey, U>
      *
-     * @psalm-template U
+     * @phpstan-template U
      */
     public function mapByKey(string $keyName, ?string $valueName = null, ?Closure $func = null): static
     {
@@ -328,13 +338,16 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return static
-     * @psalm-return static<TKey,T>
+     * @phpstan-return static<TKey,T>
      */
     public function filter(?Closure $func = null): static
     {
         return $this->createFrom(array_filter($this->elements, $func, ARRAY_FILTER_USE_BOTH));
     }
 
+    /**
+     * @param class-string|class-string[] $type
+     */
     public function whereInstanceOf(string|array $type): static
     {
         return $this->filter(
@@ -354,7 +367,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return static
-     * @psalm-return static<TKey,T>
+     * @phpstan-return static<TKey,T>
      */
     public function reject(Closure $callback): static
     {
@@ -399,14 +412,13 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * This method is provided for derived classes to specify how a new
      * instance should be created when constructor semantics have changed.
      *
-     * @param array|Collection $elements Elements.
-     * @psalm-param array<K,V>|Collection $elements
+     * @param array<K,V>|Collection<K,V> $elements Elements.
      *
      * @return static
-     * @psalm-return static<K,V>
+     * @phpstan-return static<K,V>
      *
-     * @psalm-template K of array-key
-     * @psalm-template V
+     * @phpstan-template K of array-key
+     * @phpstan-template V
      */
     protected function createFrom(array|Collection $elements): static
     {
@@ -537,10 +549,10 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param TMaybeContained $element
+     * @phpstan-param TMaybeContained $element
      *
      * @return string|int|false
-     * @psalm-return (TMaybeContained is T ? TKey|false : false)
+     * @phpstan-return (TMaybeContained is T ? TKey|false : false)
      *
      * @template TMaybeContained
      */
@@ -576,7 +588,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      *
      *
      * @return static
-     * @psalm-return static<int,T>
+     * @phpstan-return static<int,T>
      */
     public function collapse(): static
     {
@@ -703,8 +715,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * Sort the collection using the given callback.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
-     *        |(callable(T, TKey): mixed)|string $callback
+     * @param SortComparisons|SortComparator $callback
      * @param int $options
      * @param bool $descending
      * @return static
@@ -742,8 +753,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * Sort the collection using multiple comparisons.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
-     *        $comparisons
+     * @param SortComparisons $comparisons
      * @return static
      */
     protected function sortByMany(array $comparisons = []): static
@@ -848,7 +858,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      *
      * @param (callable(T, TKey): array-key)|string[]|string $groupBy
      * @param bool $preserveKeys
-     * @psalm-return static<array-key, static<array-key, T>>
+     * @phpstan-return static<array-key, static<array-key, T>>
      * @return static<int|string, static<int|string, T>>
      */
     public function groupBy(callable|array|string $groupBy, bool $preserveKeys = false): static
@@ -898,5 +908,278 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     public function __toString(): string
     {
         return self::class . '@' . spl_object_hash($this);
+    }
+
+    /**
+     * Get the values of a given key, optionally keyed by another one.
+     *
+     * @param string|int|null $value
+     * @param string|int|null $key
+     *
+     * @return static<array-key, mixed>
+     */
+    public function pluck(string|int|null $value, string|int|null $key = null): static
+    {
+        return $this->createFrom(Arr::pluck($this->elements, $value, $key));
+    }
+
+    /**
+     * Sum the collection, optionally mapping each element first.
+     *
+     * @param (callable(T, TKey): (int|float))|string|null $callback
+     */
+    public function sum(callable|string|null $callback = null): int|float
+    {
+        $values = $this->resolveNumbers($callback);
+
+        return array_sum($values);
+    }
+
+    /**
+     * Average of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): (int|float))|string|null $callback
+     */
+    public function avg(callable|string|null $callback = null): int|float|null
+    {
+        $values = $this->resolveNumbers($callback);
+
+        return $values === [] ? null : array_sum($values) / count($values);
+    }
+
+    /**
+     * Smallest value of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     */
+    public function min(callable|string|null $callback = null): mixed
+    {
+        $values = $this->resolveValues($callback);
+
+        return $values === [] ? null : min($values);
+    }
+
+    /**
+     * Largest value of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     */
+    public function max(callable|string|null $callback = null): mixed
+    {
+        $values = $this->resolveValues($callback);
+
+        return $values === [] ? null : max($values);
+    }
+
+    /**
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     *
+     * @return array<int, int|float>
+     */
+    private function resolveNumbers(callable|string|null $callback): array
+    {
+        return array_map(static fn($value) => is_numeric($value) ? $value + 0 : 0, $this->resolveValues($callback));
+    }
+
+    /**
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     *
+     * @return array<int, mixed>
+     */
+    private function resolveValues(callable|string|null $callback): array
+    {
+        if ($callback === null) {
+            return array_values($this->elements);
+        }
+
+        $retriever = $this->valueRetriever($callback);
+        $result    = [];
+
+        foreach ($this->elements as $key => $element) {
+            $result[] = $retriever($element, $key);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Remove duplicate values. Keys of the first occurrence are preserved.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     * @param bool $strict Compare types as well.
+     *
+     * @return static<TKey, T>
+     */
+    public function unique(callable|string|null $callback = null, bool $strict = false): static
+    {
+        $retriever = $callback === null ? null : $this->valueRetriever($callback);
+        $seen      = [];
+        $result    = [];
+
+        foreach ($this->elements as $key => $element) {
+            $marker = $retriever === null ? $element : $retriever($element, $key);
+
+            if (in_array($marker, $seen, $strict)) {
+                continue;
+            }
+
+            $seen[]       = $marker;
+            $result[$key] = $element;
+        }
+
+        return $this->createFrom($result);
+    }
+
+    /**
+     * Key the collection by a field or a callback.
+     *
+     * @param (callable(T, TKey): array-key)|string|int $keyBy
+     *
+     * @return static<array-key, T>
+     */
+    public function keyBy(callable|string|int $keyBy): static
+    {
+        return $this->createFrom(Arr::keyBy($this->elements, $keyBy));
+    }
+
+    /**
+     * Flatten a multi-dimensional collection into a single level.
+     *
+     * @return static<int, mixed>
+     */
+    public function flatten(int|float $depth = INF): static
+    {
+        return $this->createFrom(Arr::flatten($this->elements, $depth));
+    }
+
+    /**
+     * Reset the keys to a sequential range.
+     *
+     * @return static<int, T>
+     */
+    public function values(): static
+    {
+        return $this->createFrom(array_values($this->elements));
+    }
+
+    /**
+     * Concatenate the elements, optionally plucking a field first.
+     */
+    public function implode(string $glue = '', string|int|null $field = null): string
+    {
+        $values = $field === null ? $this->elements : Arr::pluck($this->elements, $field);
+
+        return implode($glue, array_map(static fn($value) => (string)$value, $values));
+    }
+
+    /**
+     * Pass the collection to the callback and return the collection.
+     *
+     * @param callable(static): mixed $callback
+     */
+    public function tap(callable $callback): static
+    {
+        $callback($this);
+
+        return $this;
+    }
+
+    /**
+     * Pass the collection to the callback and return its result.
+     *
+     * @template TPipe
+     * @param callable(static): TPipe $callback
+     *
+     * @return TPipe
+     */
+    public function pipe(callable $callback): mixed
+    {
+        return $callback($this);
+    }
+
+    /**
+     * Apply the callback when the value is truthy.
+     *
+     * @param callable(static, mixed): mixed $callback
+     * @param null|callable(static, mixed): mixed $default
+     */
+    public function when(mixed $value, callable $callback, ?callable $default = null): static
+    {
+        if ($value) {
+            return $callback($this, $value) ?? $this;
+        }
+
+        if ($default !== null) {
+            return $default($this, $value) ?? $this;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Apply the callback when the value is falsy.
+     *
+     * @param callable(static, mixed): mixed $callback
+     * @param null|callable(static, mixed): mixed $default
+     */
+    public function unless(mixed $value, callable $callback, ?callable $default = null): static
+    {
+        return $this->when(!$value, $callback, $default);
+    }
+
+    /**
+     * Elements that are not present in the given items. Keys are preserved.
+     *
+     * @param iterable<array-key, T> $items
+     *
+     * @return static<TKey, T>
+     */
+    public function diff(iterable $items): static
+    {
+        return $this->createFrom(array_diff($this->elements, Arr::toArray($items)));
+    }
+
+    /**
+     * Elements that are also present in the given items. Keys are preserved.
+     *
+     * @param iterable<array-key, T> $items
+     *
+     * @return static<TKey, T>
+     */
+    public function intersect(iterable $items): static
+    {
+        return $this->createFrom(array_intersect($this->elements, Arr::toArray($items)));
+    }
+
+    /**
+     * Take the first (or, for a negative value, the last) $limit elements.
+     *
+     * @return static<TKey, T>
+     */
+    public function take(int $limit): static
+    {
+        if ($limit < 0) {
+            return $this->createFrom(array_slice($this->elements, $limit, null, true));
+        }
+
+        return $this->createFrom(array_slice($this->elements, 0, $limit, true));
+    }
+
+    /**
+     * Skip the first $count elements.
+     *
+     * @return static<TKey, T>
+     */
+    public function skip(int $count): static
+    {
+        return $this->createFrom(array_slice($this->elements, $count, null, true));
+    }
+
+    /**
+     * JSON representation of the collection.
+     */
+    public function toJson(int $options = 320): ?string
+    {
+        return Json::encode($this->elements, $options);
     }
 }

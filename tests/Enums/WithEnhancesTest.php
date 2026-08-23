@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests\Enums;
 
+use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Tests\Enums\data\IntEnum;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -78,6 +79,52 @@ final class WithEnhancesTest extends TestCase
                 3 => 'THREE',
             ],
             IntEnum::toValueKeyArray()
+        );
+    }
+
+    #[Test]
+    public function hasValueWorksForIntBackedEnums(): void
+    {
+        // previously hasValue() lived only in WithEnhancesForStrings and was typed string,
+        // so an int-backed enum had no way to ask this at all
+        self::assertTrue(IntEnum::hasValue(1));
+        self::assertTrue(IntEnum::hasValue(3));
+        self::assertFalse(IntEnum::hasValue(999));
+        self::assertFalse(IntEnum::hasValue('1'));
+    }
+
+    #[Test]
+    public function tryFromName(): void
+    {
+        self::assertSame(IntEnum::ONE, IntEnum::tryFromName('ONE'));
+        self::assertSame(IntEnum::THREE, IntEnum::tryFromName('THREE'));
+        self::assertNull(IntEnum::tryFromName('NOPE'));
+        self::assertNull(IntEnum::tryFromName('one'));
+    }
+
+    #[Test]
+    public function fromName(): void
+    {
+        self::assertSame(IntEnum::TWO, IntEnum::fromName('TWO'));
+    }
+
+    #[Test]
+    public function fromNameThrowsForAnUnknownName(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        IntEnum::fromName('NOPE');
+    }
+
+    #[Test]
+    public function labels(): void
+    {
+        self::assertSame(
+            [
+                1 => 'ONE',
+                2 => 'TWO',
+                3 => 'THREE',
+            ],
+            IntEnum::labels()
         );
     }
 }

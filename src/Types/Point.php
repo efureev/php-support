@@ -14,6 +14,10 @@ use Php\Support\Interfaces\Jsonable;
  * Class Point
  *
  * @package Php\Support\Types
+ *
+ * @implements Arrayable<int, float>
+ *
+ * @phpstan-consistent-constructor
  */
 class Point implements Jsonable, Arrayable
 {
@@ -21,6 +25,9 @@ class Point implements Jsonable, Arrayable
     {
     }
 
+    /**
+     * @return array{float, float}
+     */
     public function toArray(): array
     {
         return [
@@ -30,7 +37,7 @@ class Point implements Jsonable, Arrayable
     }
 
     /**
-     * @param array $array
+     * @param array<int, float|int> $array Exactly two elements: [x, y]
      *
      * @return static
      * @throws InvalidParamException if the array does not contain exactly 2 elements
@@ -92,9 +99,9 @@ class Point implements Jsonable, Arrayable
     /**
      * @param string|null $value
      *
-     * @return $this|null
+     * @return static|null
      */
-    public function castFromDatabase(?string $value): ?self
+    public function castFromDatabase(?string $value): ?static
     {
         if (!$result = Arr::fromPostgresPoint($value)) {
             return null;

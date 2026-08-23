@@ -5,20 +5,33 @@ declare(strict_types=1);
 namespace Php\Support\Structures\Collections;
 
 use ArrayAccess;
+use ArrayIterator;
 use Closure;
 use Countable;
+use IteratorAggregate;
 use JsonSerializable;
 use Php\Support\Interfaces\Arrayable;
+use Traversable;
 
+use function array_filter;
 use function array_key_exists;
+use function array_keys;
+use function array_map;
+use function array_values;
 use function count;
 use function in_array;
+use function implode;
 
 /**
  * @template T
  * @template TO of object
+ * @implements ArrayAccess<string, T>
+ * @implements IteratorAggregate<string, T>
+ * @implements Arrayable<string, T>
+ *
+ * @phpstan-consistent-constructor
  */
-class HashCollection implements ArrayAccess, Countable, JsonSerializable, Arrayable
+class HashCollection implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Arrayable
 {
     /**
      * @param array<string, T> $elements
@@ -215,5 +228,119 @@ class HashCollection implements ArrayAccess, Countable, JsonSerializable, Arraya
     public function find(Closure $func): mixed
     {
         return array_find($this->elements, fn($element, $key) => $func($key, $element));
+    }
+
+    /**
+     * Creates a new instance from the given elements.
+     *
+     * Provided for derived classes that need different construction semantics.
+     *
+     * @param array<string, mixed> $elements
+     *
+     * @return static
+     */
+    protected function createFrom(array $elements): static
+    {
+        return new static($elements);
+    }
+
+    /**
+     * @return Traversable<string, T>
+     */
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->elements);
+    }
+
+    /**
+     * Gets all keys of the collection.
+     *
+     * @return string[]
+     */
+    public function keys(): array
+    {
+        return array_keys($this->elements);
+    }
+
+    /**
+     * Gets all values of the collection.
+     *
+     * @return T[]
+     */
+    public function values(): array
+    {
+        return array_values($this->elements);
+    }
+
+    /**
+     * Applies the given function to each element and returns a new collection.
+     *
+     * @template U
+     * @param Closure(T, string):U $func
+     *
+     * @return static<U, TO>
+     */
+    public function map(Closure $func): static
+    {
+        $keys = array_keys($this->elements);
+        $map  = array_map($func, $this->elements, $keys);
+
+        return $this->createFrom(array_combine($keys, $map));
+    }
+
+    /**
+     * Returns all elements that satisfy the predicate. Keys are preserved.
+     *
+     * @param null|Closure(T, string):bool $func
+     *
+     * @return static<T, TO>
+     */
+    public function filter(?Closure $func = null): static
+    {
+        return $this->createFrom(array_filter($this->elements, $func, ARRAY_FILTER_USE_BOTH));
+    }
+
+    /**
+     * Applies the given function to each element. Returning false stops the iteration.
+     *
+     * @param callable(T, string):mixed $func
+     */
+    public function each(callable $func): static
+    {
+        foreach ($this->elements as $key => $element) {
+            if ($func($element, $key) === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Reduces the collection to a single value.
+     *
+     * @template TReturn
+     * @param Closure(TReturn|null, T, string):TReturn $func
+     * @param TReturn|null $initial
+     *
+     * @return TReturn|null
+     */
+    public function reduce(Closure $func, mixed $initial = null): mixed
+    {
+        $result = $initial;
+
+        foreach ($this->elements as $key => $element) {
+            $result = $func($result, $element, $key);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Concatenates the elements with the given glue.
+     */
+    public function implode(string $glue = ''): string
+    {
+        return implode($glue, $this->elements);
     }
 }

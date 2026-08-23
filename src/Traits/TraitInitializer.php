@@ -50,7 +50,7 @@ trait TraitInitializer
      */
     protected function initializeTraits(): void
     {
-        foreach (static::$traitInitializers[static::class] as $method) {
+        foreach (static::$traitInitializers[static::class] ?? [] as $method) {
             $this->{$method}();
         }
     }

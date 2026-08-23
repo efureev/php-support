@@ -12,6 +12,7 @@ trait WithEnhancesForStrings
 {
     use WithEnhances {
         casesToString as casesToStringBase;
+        hasValue as hasValueBase;
     }
 
     public static function casesToString(string $delimiter = ', ', ?callable $decorator = null): string
@@ -28,8 +29,8 @@ trait WithEnhancesForStrings
         return static::casesToString($delimiter, static fn(self $enumItem) => "'$enumItem->value'");
     }
 
-    public static function hasValue(string $value): bool
+    public static function hasValue(string|int $value): bool
     {
-        return in_array($value, static::values(), true);
+        return static::hasValueBase($value);
     }
 }

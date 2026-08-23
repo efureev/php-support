@@ -1,12 +1,22 @@
+includes:
+  # 12 remaining errors, all limits of what generics can express for these shapes:
+  #  - Arr's @template lives on the class while every method is static, so it never binds
+  #    (audit P2-15, scheduled for 6.0)
+  #  - variance of the derived-collection factories in ArrayCollection/HashCollection
+  # New code must not add to this file.
+  - phpstan-baseline.neon
+
 parameters:
-  level: '2'
+  level: 6
   paths:
     - src
-#    - tests
-#  ignoreErrors:
-#    -
-#      identifier: trait.unused
   excludePaths:
-    - 'src/Types/Point.php'
-    - 'src/Types/GeoPoint.php'
-    - 'src/Structures/Collections/ArrayCollection.php'
+    analyse:
+      # bundled third-party transliteration tables; replaced by an external
+      # dependency in 6.0 (audit L-8), not worth annotating until then
+      - 'src/Helpers/URLify.php'
+  ignoreErrors:
+    -
+      # This package exists to ship traits: nothing inside src/ uses them,
+      # consumers and the test suite do.
+      identifier: trait.unused

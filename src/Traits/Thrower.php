@@ -9,7 +9,10 @@ namespace Php\Support\Traits;
  */
 trait Thrower
 {
-    public static function throw(mixed ...$arguments): void
+    /**
+     * @phpstan-return never
+     */
+    public static function throw(mixed ...$arguments): never
     {
         // @phpstan-ignore-next-line
         throw new static(...$arguments);

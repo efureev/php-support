@@ -23,7 +23,7 @@ trait Singleton
     {
     }
 
-    public static function getInstance(): self
+    public static function getInstance(): static
     {
         $cls = static::class;
         if (!isset(static::$instances[$cls])) {

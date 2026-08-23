@@ -25,7 +25,8 @@ trait TestingHelper
     {
         $methodReflex = new \ReflectionMethod($class, $method);
 
-        return $methodReflex->invoke($class, ...$params);
+        // a class-string means a static call: ReflectionMethod::invoke() wants null, not the name
+        return $methodReflex->invoke(is_object($class) ? $class : null, ...$params);
     }
 
     /**
@@ -44,6 +45,7 @@ trait TestingHelper
 
         $property = $reflection->getProperty($propertyName);
 
-        return $property->getValue($object);
+        // likewise: a class-string can only reach a static property
+        return $property->getValue(is_object($object) ? $object : null);
     }
 }

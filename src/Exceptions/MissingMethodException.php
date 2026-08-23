@@ -7,7 +7,7 @@ namespace Php\Support\Exceptions;
 use BadMethodCallException;
 use Php\Support\Traits\Thrower;
 
-class MissingMethodException extends BadMethodCallException
+class MissingMethodException extends BadMethodCallException implements ExceptionInterface
 {
     use Thrower;
 

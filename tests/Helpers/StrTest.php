@@ -792,4 +792,121 @@ final class StrTest extends TestCase
         $this->expectException(InvalidParamException::class);
         Str::slugifyWithFormat('a/b', '-', 'a/b');
     }
+
+    #[Test]
+    public function randomProducesRequestedLength(): void
+    {
+        self::assertSame(16, strlen(Str::random()));
+        self::assertSame(1, strlen(Str::random(1)));
+        self::assertSame(64, strlen(Str::random(64)));
+        self::assertNotSame(Str::random(32), Str::random(32));
+        self::assertMatchesRegularExpression('/^[A-Za-z0-9]+$/', Str::random(40));
+    }
+
+    #[Test]
+    public function randomRejectsNonPositiveLength(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::random(0);
+    }
+
+    #[Test]
+    public function mask(): void
+    {
+        self::assertSame('1234********3456', Str::mask('1234567890123456', '*', 4, 8));
+        self::assertSame('sec***', Str::mask('secret', '*', -3));
+        self::assertSame('******', Str::mask('secret'));
+        self::assertSame('abc', Str::mask('abc', ''));
+        self::assertSame('', Str::mask('', '*'));
+        self::assertSame('abc', Str::mask('abc', '*', 10));
+        // multibyte aware
+        self::assertSame('Пр***т', Str::mask('Привет', '*', 2, 3));
+    }
+
+    #[Test]
+    public function limitCutsWithoutWordAwareness(): void
+    {
+        self::assertSame('The quick...', Str::limit('The quick brown fox', 9));
+        self::assertSame('abc', Str::limit('abc', 9));
+        self::assertSame('abc', Str::limit('abc', 3));
+        self::assertSame('ab>', Str::limit('abc', 2, '>'));
+    }
+
+    #[Test]
+    public function limitRejectsNonPositiveLength(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::limit('abc', 0);
+    }
+
+    #[Test]
+    public function containsStartsWithEndsWith(): void
+    {
+        self::assertTrue(Str::contains('Hello World', 'World'));
+        self::assertTrue(Str::contains('Hello', ['x', 'ell']));
+        self::assertFalse(Str::contains('Hello', ['x', 'y']));
+        self::assertFalse(Str::contains('Hello', ''));
+        self::assertTrue(Str::contains('Hello', 'HELLO', true));
+        self::assertFalse(Str::contains('Hello', 'HELLO'));
+
+        self::assertTrue(Str::startsWith('abc', 'a'));
+        self::assertTrue(Str::startsWith('abc', ['x', 'ab']));
+        self::assertFalse(Str::startsWith('abc', ''));
+
+        self::assertTrue(Str::endsWith('abc', 'c'));
+        self::assertTrue(Str::endsWith('abc', ['x', 'bc']));
+        self::assertFalse(Str::endsWith('abc', ''));
+    }
+
+    #[Test]
+    public function squishTrimsAndCollapses(): void
+    {
+        self::assertSame('a b c', Str::squish("  a   b \n c  "));
+        self::assertSame('', Str::squish('   '));
+        self::assertSame('abc', Str::squish('abc'));
+    }
+
+    #[Test]
+    public function afterBeforeBetween(): void
+    {
+        self::assertSame('b', Str::after('a=b', '='));
+        self::assertSame('abc', Str::after('abc', 'x'));
+        self::assertSame('abc', Str::after('abc', ''));
+
+        self::assertSame('a', Str::before('a=b', '='));
+        self::assertSame('abc', Str::before('abc', 'x'));
+        self::assertSame('abc', Str::before('abc', ''));
+
+        self::assertSame('tag', Str::between('[tag]', '[', ']'));
+        self::assertSame('', Str::between('abc', '[', ']'));
+        self::assertSame('', Str::between('[tag]', '', ']'));
+    }
+
+    #[Test]
+    public function ucFirstAndLcFirstAreMultibyte(): void
+    {
+        self::assertSame('Привет', Str::ucFirst('привет'));
+        self::assertSame('привет', Str::lcFirst('Привет'));
+        self::assertSame('', Str::ucFirst(''));
+        self::assertSame('', Str::lcFirst(''));
+    }
+
+    #[Test]
+    public function conversionCachesAreBounded(): void
+    {
+        Str::clearCache();
+
+        $cache = new \ReflectionProperty(Str::class, 'delimitedCache');
+
+        for ($i = 0; $i < Str::CACHE_LIMIT * 2; $i++) {
+            Str::toSnake("CachedValue$i");
+        }
+
+        self::assertLessThanOrEqual(Str::CACHE_LIMIT, count($cache->getValue()));
+        // eviction must not corrupt the result
+        self::assertSame('some_value', Str::toSnake('SomeValue'));
+
+        Str::clearCache();
+        self::assertCount(0, $cache->getValue());
+    }
 }

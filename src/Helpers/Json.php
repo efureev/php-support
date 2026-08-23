@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Php\Support\Helpers;
 
+use Php\Support\Exceptions\InvalidValueException;
+
 use function json_decode;
 use function json_encode;
+use function json_last_error_msg;
 
 class Json
 {
@@ -73,5 +76,67 @@ class Json
         }
 
         return json_decode($json, $asArray, $depth, $options);
+    }
+
+    /**
+     * Encodes a value into JSON or throws.
+     *
+     * {@see self::encode()} returns null for every failure, which is indistinguishable from
+     * a successful encode of a value that has no JSON representation.
+     *
+     * @param mixed $value the data to be encoded
+     * @param int $options the encoding options
+     * @param int<1, max> $depth
+     *
+     * @throws InvalidValueException when the value cannot be encoded
+     */
+    public static function encodeOrThrow(mixed $value, int $options = 320, int $depth = 512): string
+    {
+        $json = static::encode($value, $options, $depth);
+
+        if ($json === null) {
+            throw new InvalidValueException('Unable to encode value as JSON: ' . json_last_error_msg());
+        }
+
+        return $json;
+    }
+
+    /**
+     * Decodes a JSON string or throws.
+     *
+     * {@see self::decode()} returns null both for invalid JSON and for the valid document `null`,
+     * so the caller cannot tell a parse failure from a legitimate null.
+     *
+     * @param null|string $json the JSON string to be decoded
+     * @param bool $asArray whether to return objects as associative arrays
+     * @param int $options
+     * @param int<1, max> $depth
+     *
+     * @throws InvalidValueException when the string is not valid JSON
+     */
+    public static function decodeOrThrow(
+        ?string $json,
+        bool $asArray = true,
+        int $options = 0,
+        int $depth = 512
+    ): mixed {
+        if ($json === null || $json === '') {
+            throw new InvalidValueException('Unable to decode an empty string as JSON');
+        }
+
+        try {
+            return json_decode($json, $asArray, $depth, $options | JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            // rethrow through the package hierarchy so ExceptionInterface still catches it
+            throw new InvalidValueException('Unable to decode JSON: ' . $e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * Checks whether the given string is valid JSON.
+     */
+    public static function isValid(?string $json, int $depth = 512): bool
+    {
+        return $json !== null && $json !== '' && json_validate($json, $depth);
     }
 }

@@ -1616,4 +1616,146 @@ final class ArrTest extends TestCase
         $this->expectException(\Php\Support\Exceptions\InvalidArgumentException::class);
         Arr::random([1, 2], 5);
     }
+
+    #[Test]
+    public function onlyAndExcept(): void
+    {
+        $source = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+
+        self::assertSame(['a' => 1, 'c' => 3], Arr::only($source, ['a', 'c']));
+        self::assertSame(['b' => 2], Arr::only($source, 'b'));
+        self::assertSame([], Arr::only($source, 'missing'));
+
+        self::assertSame(['a' => 1, 'c' => 3], Arr::except($source, 'b'));
+        self::assertSame(['a' => 1], Arr::except($source, ['b', 'c']));
+        self::assertSame($source, Arr::except($source, []));
+    }
+
+    #[Test]
+    public function pluck(): void
+    {
+        $people = [
+            [
+                'id'   => 1,
+                'name' => 'a',
+            ],
+            [
+                'id'   => 2,
+                'name' => 'b',
+            ],
+        ];
+
+        self::assertSame(['a', 'b'], Arr::pluck($people, 'name'));
+        self::assertSame([1 => 'a', 2 => 'b'], Arr::pluck($people, 'name', 'id'));
+        self::assertSame([1, 2], Arr::pluck([1, 2], null));
+        self::assertSame([null, null], Arr::pluck($people, 'missing'));
+    }
+
+    #[Test]
+    public function firstAndLast(): void
+    {
+        self::assertSame(1, Arr::first([1, 2, 3]));
+        self::assertSame(2, Arr::first([1, 2, 3], static fn($v) => $v > 1));
+        self::assertSame('def', Arr::first([], null, 'def'));
+        self::assertSame('def', Arr::first([1, 2], static fn($v) => $v > 5, 'def'));
+
+        self::assertSame(3, Arr::last([1, 2, 3]));
+        self::assertSame(2, Arr::last([1, 2, 3], static fn($v) => $v < 3));
+        self::assertSame('def', Arr::last([], null, 'def'));
+    }
+
+    #[Test]
+    public function flattenAndWrap(): void
+    {
+        self::assertSame([1, 2, 3, 4], Arr::flatten([1, [2, [3, [4]]]]));
+        self::assertSame([1, 2, [3]], Arr::flatten([1, [2, [3]]], 1));
+        self::assertSame([], Arr::flatten([]));
+
+        self::assertSame(['x'], Arr::wrap('x'));
+        self::assertSame([], Arr::wrap(null));
+        self::assertSame([1], Arr::wrap([1]));
+    }
+
+    #[Test]
+    public function dotAndUndotAreInverse(): void
+    {
+        $nested = [
+            'a' => [
+                'b' => 1,
+                'c' => ['d' => 2],
+            ],
+            'e' => 3,
+        ];
+        $dotted = [
+            'a.b'   => 1,
+            'a.c.d' => 2,
+            'e'     => 3,
+        ];
+
+        self::assertSame($dotted, Arr::dot($nested));
+        self::assertSame($nested, Arr::undot($dotted));
+        self::assertSame($nested, Arr::undot(Arr::dot($nested)));
+
+        self::assertSame(['a/b' => 1], Arr::dot(['a' => ['b' => 1]], '', '/'));
+        self::assertSame(['a' => ['b' => 1]], Arr::undot(['a/b' => 1], '/'));
+    }
+
+    #[Test]
+    public function keyByAndWhere(): void
+    {
+        $people = [
+            [
+                'id'   => 1,
+                'name' => 'a',
+            ],
+            [
+                'id'   => 2,
+                'name' => 'b',
+            ],
+        ];
+
+        self::assertSame([1, 2], array_keys(Arr::keyBy($people, 'id')));
+        self::assertSame(['k1', 'k2'], array_keys(Arr::keyBy($people, static fn($p) => 'k' . $p['id'])));
+
+        self::assertSame(['a' => 1], Arr::where(['a' => 1, 'b' => 2], static fn($v, $k) => $k === 'a'));
+    }
+
+    #[Test]
+    public function isAssocAndIsList(): void
+    {
+        self::assertTrue(Arr::isAssoc(['a' => 1]));
+        self::assertFalse(Arr::isAssoc([1, 2]));
+        self::assertTrue(Arr::isList([1, 2]));
+        self::assertFalse(Arr::isList(['a' => 1]));
+        self::assertTrue(Arr::isList([]));
+    }
+
+    #[Test]
+    public function removeByValueStrictComparison(): void
+    {
+        // loose by default, kept for backward compatibility
+        $loose = [
+            '1',
+            '2',
+        ];
+        self::assertSame(0, Arr::removeByValue($loose, 1));
+        self::assertSame([1 => '2'], $loose);
+
+        $strict = [
+            '1',
+            '2',
+        ];
+        self::assertNull(Arr::removeByValue($strict, 1, false, true));
+        self::assertSame(['1', '2'], $strict);
+
+        $exact = [
+            1,
+            2,
+        ];
+        self::assertSame(0, Arr::removeByValue($exact, 1, false, true));
+    }
 }

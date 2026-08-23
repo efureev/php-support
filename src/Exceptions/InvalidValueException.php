@@ -9,7 +9,7 @@ use UnexpectedValueException;
 /**
  * Class InvalidValueException
  */
-class InvalidValueException extends UnexpectedValueException
+class InvalidValueException extends UnexpectedValueException implements ExceptionInterface
 {
     public function getName(): string
     {

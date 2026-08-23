@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## [Unreleased]
+
+## v5.3.0
+
+### Added
+
+- Add `Exceptions\ExceptionInterface`, implemented by every exception of the package, so all of them can be caught in one block regardless of which SPL exception they extend
+- Add `Json::decodeOrThrow`, `Json::encodeOrThrow` and `Json::isValid`
+- Add to `Storage`: `IteratorAggregate` and `Arrayable` support, `all`, `toArray`, `isEmpty`, `clear`, `countRecursive`, and a `$separator` argument on `set`, `get` and `exist`
+- Add to `HashCollection`: `IteratorAggregate` support, `toArray`, `keys`, `values`, `map`, `filter`, `each`, `reduce`, `implode` and the `createFrom` extension hook
+- Add to `Arr`: `only`, `except`, `pluck`, `first`, `last`, `flatten`, `wrap`, `dot`, `undot`, `keyBy`, `where`, `isAssoc`, `isList`, and a `$strict` argument on `removeByValue`
+- Add to `Str`: `random`, `mask`, `limit`, `contains`, `startsWith`, `endsWith`, `squish`, `after`, `before`, `between`, `ucFirst`, `lcFirst`, `clearCache` and the `CACHE_LIMIT` constant
+- Add to `ArrayCollection`: `sum`, `avg`, `min`, `max`, `pluck`, `unique`, `keyBy`, `flatten`, `values`, `implode`, `tap`, `pipe`, `when`, `unless`, `diff`, `intersect`, `take`, `skip`, `toJson`
+- Add `WithEnhances`: `hasValue` for int-backed enums, `tryFromName`, `fromName` and `labels`
+- Add `UseErrorsBox`: `addError`, `firstError`, `error` and `errorsCount`
+- Add `.editorconfig`, `CONTRIBUTING.md`, `SECURITY.md` and issue/PR templates
+
+### Changed
+
+- `Thrower::throw` returns `never`, `Maker::make` and `Singleton::getInstance` return `static`
+- `Str` conversion caches are bounded at `CACHE_LIMIT` entries instead of growing without limit
+- PHPStan runs at level 6 and no longer excludes `ArrayCollection`, `Point` and `GeoPoint`
+- `@psalm-*` annotations converted to `@phpstan-*`
+- Upgrade to PHPUnit 13
+
+### Deprecated
+
+- Deprecate `UseErrorsBox::setError`, which appends rather than replaces. Use `addError`
+
+### Fixed
+
+- Fix `URLify::downcode` leaking a language map into later calls: one call with an explicit language gave that map priority for the rest of the process, including calls that asked for no language
+- Fix `Testing\TestingHelper::runProtectedMethod` and `::getProperty` raising a `TypeError` when given a class name, although both are documented as accepting `string|object`
+- Fix the `@param` annotations of `ArrayCollection::sortBy` and `::sortByMany`, unparseable since the line wrapping in v5.2.1
+- Fix `WithEnhances` being annotated `@mixin \UnitEnum` while reading `$case->value`
+- Fix `WithEnhances::hasName` naming its parameter `$value`
+- Fix `Point::castFromDatabase` declaring `?self` while returning `static`
+- Fix `TraitInitializer::initializeTraits` reading an array key without a guard
+
 ## v5.2.1
 
 ### Fixed
@@ -333,3 +372,11 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 [keepachangelog]:https://keepachangelog.com/en/1.0.0/
 
 [semver]:https://semver.org/spec/v2.0.0.html
+
+[Unreleased]: https://github.com/efureev/php-support/compare/v5.3.0...HEAD
+
+[5.3.0]: https://github.com/efureev/php-support/compare/v5.2.1...v5.3.0
+
+[5.2.1]: https://github.com/efureev/php-support/compare/v5.2.0...v5.2.1
+
+[5.2.0]: https://github.com/efureev/php-support/compare/v5.1.3...v5.2.0

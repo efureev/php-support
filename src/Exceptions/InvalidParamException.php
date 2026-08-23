@@ -6,7 +6,7 @@ namespace Php\Support\Exceptions;
 
 use LogicException;
 
-class InvalidParamException extends LogicException
+class InvalidParamException extends LogicException implements ExceptionInterface
 {
     public function __construct(?string $message = null, public private(set) readonly ?string $name = null)
     {
