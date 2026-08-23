@@ -1,9 +1,10 @@
 # PHP Support
 
-![](https://img.shields.io/badge/php-8.5-blue.svg)
-![PHP Package](https://github.com/efureev/php-support/workflows/PHP%20Package/badge.svg?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/efureev/support/v/stable?format=flat)](https://packagist.org/packages/efureev/support)
-[![Total Downloads](https://poser.pugx.org/efureev/support/downloads)](https://packagist.org/packages/efureev/support)
+[![Latest Stable Version](https://img.shields.io/packagist/v/efureev/support)](https://packagist.org/packages/efureev/support)
+[![PHP Version](https://img.shields.io/badge/php-%3E%3D%208.5-blue)](https://www.php.net/releases/8.5/en.php)
+[![PHP Package](https://github.com/efureev/php-support/actions/workflows/php.yml/badge.svg?branch=master)](https://github.com/efureev/php-support/actions/workflows/php.yml)
+[![Total Downloads](https://img.shields.io/packagist/dt/efureev/support)](https://packagist.org/packages/efureev/support)
+[![License](https://img.shields.io/packagist/l/efureev/support)](./LICENSE)
 
 ## Install
 
