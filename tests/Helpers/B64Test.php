@@ -61,4 +61,48 @@ final class B64Test extends TestCase
             static::assertEquals($data, B64::decodeSafe(B64::encodeSafe($data)));
         }
     }
+
+    public function testUrlSafeAlphabetIsRfc4648(): void
+    {
+        $binary = "\xfb\xff\xfe\x01\x02";
+
+        // interoperable with atob/urlsafe_b64decode/base64.RawURLEncoding
+        static::assertSame(
+            rtrim(strtr(base64_encode($binary), '+/', '-_'), '='),
+            B64::encodeSafe($binary)
+        );
+        static::assertStringNotContainsString('~', B64::encodeSafe($binary));
+        static::assertStringNotContainsString('=', B64::encodeSafe($binary));
+    }
+
+    public function testUrlSafeRoundTrip(): void
+    {
+        foreach (["\xfb\xff\xfe", 'a', 'ab', 'abc', 'Привет, мир!', ''] as $value) {
+            static::assertSame($value, B64::decodeSafe(B64::encodeSafe($value)), 'round trip');
+        }
+    }
+
+    public function testUrlSafeStillReadsTheLegacyTildePadding(): void
+    {
+        $legacy = strtr(base64_encode('ab'), '+/=', '-_~');
+
+        static::assertSame('ab', B64::decodeSafe($legacy));
+    }
+
+    public function testDecodeIsStrictByDefault(): void
+    {
+        // used to return '' for garbage, indistinguishable from decoding an empty string
+        static::assertNull(B64::decode('!!!!'));
+        static::assertSame('', B64::decode(''));
+        static::assertNull(B64::decodeSafe('!!!!!'));
+        static::assertSame('ab', B64::decode(base64_encode('ab')));
+    }
+
+    public function testDecodeOrThrow(): void
+    {
+        static::assertSame('ab', B64::decodeOrThrow(base64_encode('ab')));
+
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        B64::decodeOrThrow('!!!!');
+    }
 }

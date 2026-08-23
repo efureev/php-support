@@ -684,18 +684,18 @@ final class StrTest extends TestCase
     {
         // Test a valid UTF-8 sequence: "ÜTF-8 Fµñ".
         $validUTF8 = "\xC3\x9CTF-8 F\xC2\xB5\xC3\xB1";
-        self::assertTrue(Str::seemsUTF8($validUTF8));
+        self::assertTrue(URLify::seemsUTF8($validUTF8));
 
         self::assertTrue(
-            Str::seemsUTF8("\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid UTF-8 \xEF\xBF\xBD")
+            URLify::seemsUTF8("\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid UTF-8 \xEF\xBF\xBD")
         );
 
         // Test invalid UTF-8 sequences
         $invalidUTF8 = "\xc3 this has \xe6\x9d some invalid UTF-8 \xe6";
-        self::assertFalse(Str::seemsUTF8($invalidUTF8));
+        self::assertFalse(URLify::seemsUTF8($invalidUTF8));
 
         // And test some plain ASCII
-        self::assertTrue(Str::seemsUTF8('The quick brown fox jumps over the lazy dog'));
+        self::assertTrue(URLify::seemsUTF8('The quick brown fox jumps over the lazy dog'));
 
         // Test an invalid non-UTF-8 string.
         if (function_exists('mb_convert_encoding')) {
@@ -712,18 +712,7 @@ final class StrTest extends TestCase
             self::assertEquals($utf8Char, pack('n', 50087), 'Something is wrong with your ICU unicode library.');
 
             // Test for not UTF-8.
-            self::assertFalse(Str::seemsUTF8($ucsChar));
-
-            // Test the worker method.
-            $method = self::setMethodAccessible(URLify::class, 'seemsUTF8Regex');
-            self::assertFalse(
-                $method->invoke(null, $invalidUTF8),
-                self::class . '::seemsUTF8Regex did not properly detect invalid UTF-8.'
-            );
-            self::assertTrue(
-                $method->invoke(null, $validUTF8),
-                self::class . '::seemsUTF8Regex did not properly detect valid UTF-8.'
-            );
+            self::assertFalse(URLify::seemsUTF8($ucsChar));
         }
     }
 
@@ -908,5 +897,55 @@ final class StrTest extends TestCase
 
         Str::clearCache();
         self::assertCount(0, $cache->getValue());
+    }
+
+    #[Test]
+    public function slugifyTrimsAndCollapsesSeparators(): void
+    {
+        // used to keep a dangling separator wherever the string ended in punctuation
+        self::assertSame('hello-world', Str::slugify('Hello World!'));
+        self::assertSame('hello', Str::slugify('  --Hello--  '));
+        self::assertSame('privet-mir', Str::slugify('Привет мир'));
+        self::assertSame('a-b', Str::slugify('a!!!b'));
+        self::assertSame('already-ok', Str::slugify('already-ok'));
+        self::assertSame('', Str::slugify('!!!'));
+        self::assertSame('', Str::slugify(''));
+
+        self::assertSame('hello_world', Str::slugify('Hello World!', '_'));
+        self::assertSame('helloworld', Str::slugify('Hello World!', ''));
+    }
+
+    #[Test]
+    public function caseConversionsFindWordBoundariesInAnyScript(): void
+    {
+        // the boundary detection used to compare against the ASCII ranges, so a non-Latin
+        // string was merely lower-cased and never split
+        self::assertSame('привет_мир', Str::toSnake('ПриветМир'));
+        self::assertSame('привет-мир', Str::toKebab('ПриветМир'));
+        self::assertSame('ελλάδα_χώρα', Str::toSnake('ΕλλάδαΧώρα'));
+        self::assertSame('über_straße', Str::toSnake('ÜberStraße'));
+        self::assertSame('ПРИВЕТ_МИР', Str::toScreamingSnake('ПриветМир'));
+    }
+
+    #[Test]
+    public function toCamelKeepsNonAsciiLetters(): void
+    {
+        // toCamel used to drop every character outside the ASCII ranges outright:
+        // 'ÜberStraße' came back as 'berStrae' and Cyrillic as an empty string
+        self::assertSame('ÜberStraße', Str::toCamel('über_straße'));
+        self::assertSame('ПриветМир', Str::toCamel('привет_мир'));
+        self::assertSame('ПриветМир', Str::toCamel('Привет Мир'));
+        self::assertSame('ΕλλάδαΧώρα', Str::toCamel('ελλάδα-χώρα'));
+        self::assertSame('приветМир', Str::toLowerCamel('привет_мир'));
+    }
+
+    #[Test]
+    public function asciiCaseConversionsAreUnchanged(): void
+    {
+        self::assertSame('json_data', Str::toSnake('JSONData'));
+        self::assertSame('some_value', Str::toSnake('someValue'));
+        self::assertSame('user_123_name', Str::toSnake('user123Name'));
+        self::assertSame('SomeValue', Str::toCamel('some_value'));
+        self::assertSame('someValue', Str::toLowerCamel('some_value'));
     }
 }

@@ -7,6 +7,12 @@ namespace Php\Support\Traits;
 use ArrayAccess;
 
 /**
+ * {@see ConfigurableTrait} plus a {@see \Php\Support\Storage} fallback.
+ *
+ * A key that matches a setter or a declared property is applied as usual; anything else is kept in
+ * the storage instead of raising InvalidParamException. The two traits compose - use
+ * ConfigurableTrait on its own when an unknown key should be an error.
+ *
  * @template TKey of array-key
  * @template TValue
  * @implements ArrayAccess<TKey, TValue>

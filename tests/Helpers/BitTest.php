@@ -107,14 +107,14 @@ final class BitTest extends TestCase
     }
 
 
-    public function testExistFlag(): void
+    public function testHasFlagIn(): void
     {
         foreach (self::permissions() as $permission) {
-            static::assertTrue(Bit::exist(self::permissions(), $permission));
+            static::assertTrue(Bit::hasFlagIn(self::permissions(), $permission));
         }
 
         for ($i = 5; $i <= 20; $i++) {
-            static::assertFalse(Bit::exist(self::permissions(), 1 << $i));
+            static::assertFalse(Bit::hasFlagIn(self::permissions(), 1 << $i));
         }
     }
 
@@ -144,5 +144,23 @@ final class BitTest extends TestCase
     public function testBinaryStringIsAccepted(): void
     {
         static::assertSame(3, Bit::addFlag('00001', 2));
+    }
+
+    public function testDecBinPadRejectsNegativeValues(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        Bit::decBinPad(-1, 8);
+    }
+
+    public function testDecBinPadRejectsNegativeLength(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        Bit::decBinPad(1, -1);
+    }
+
+    public function testDecBinPadLengthIsAMinimumNotAWidth(): void
+    {
+        static::assertSame('00001', Bit::decBinPad(1, 5));
+        static::assertSame('1111', Bit::decBinPad(15, 2));
     }
 }

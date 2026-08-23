@@ -93,7 +93,7 @@ final class PointTest extends TestCase
     #[Test]
     public function castFromDatabase(): void
     {
-        $point = (new Point())->castFromDatabase('(1.5,2.5)');
+        $point = Point::castFromDatabase('(1.5,2.5)');
 
         self::assertInstanceOf(Point::class, $point);
         self::assertSame(1.5, $point->x);
@@ -103,8 +103,8 @@ final class PointTest extends TestCase
     #[Test]
     public function castFromDatabaseReturnsNullOnEmpty(): void
     {
-        self::assertNull((new Point())->castFromDatabase(null));
-        self::assertNull((new Point())->castFromDatabase(''));
+        self::assertNull(Point::castFromDatabase(null));
+        self::assertNull(Point::castFromDatabase(''));
     }
 
     #[Test]

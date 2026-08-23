@@ -8,6 +8,12 @@ use ArrayAccess;
 use Php\Support\Exceptions\InvalidParamException;
 
 /**
+ * Configures an object from a map of attributes, through setters or declared properties.
+ *
+ * An unknown key is an error by default. If you want unknown keys to be kept instead of rejected,
+ * use {@see UseConfigurableStorage}, which adds a {@see \Php\Support\Storage} fallback on top of
+ * this trait rather than replacing it.
+ *
  * @template TKey of array-key
  * @template TValue
  * @implements ArrayAccess<TKey, TValue>

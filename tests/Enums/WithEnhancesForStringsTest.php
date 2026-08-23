@@ -65,4 +65,23 @@ final class WithEnhancesForStringsTest extends TestCase
         self::assertFalse(StringsEnum::hasName('short'));
         self::assertFalse(StringsEnum::hasName('empty'));
     }
+
+    #[Test]
+    public function casesToStringHasTheSameSignatureAsWithEnhances(): void
+    {
+        // until 6.0 this trait took ($delimiter, $decorator) while WithEnhances took
+        // ($decorator, $delimiter), so the same call meant different things
+        self::assertSame('short, long, empty', StringsEnum::casesToString());
+        self::assertSame('short|long|empty', StringsEnum::casesToString(null, '|'));
+        self::assertSame(
+            'SHORT, LONG, EMPTY',
+            StringsEnum::casesToString(static fn(StringsEnum $item) => strtoupper($item->value))
+        );
+    }
+
+    #[Test]
+    public function casesToEscapeStringHonoursTheDelimiter(): void
+    {
+        self::assertSame("'short'|'long'|'empty'", StringsEnum::casesToEscapeString('|'));
+    }
 }

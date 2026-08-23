@@ -1,11 +1,17 @@
 # PHP Support
 
-![](https://img.shields.io/badge/php-8.4-blue.svg)
+![](https://img.shields.io/badge/php-8.5-blue.svg)
 ![PHP Package](https://github.com/efureev/php-support/workflows/PHP%20Package/badge.svg?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/efureev/support/v/stable?format=flat)](https://packagist.org/packages/efureev/support)
 [![Total Downloads](https://poser.pugx.org/efureev/support/downloads)](https://packagist.org/packages/efureev/support)
 
 ## Install
+
+For php >= 8.5
+
+```bash
+composer require efureev/support "^6.0"
+```
 
 For php >= 8.4
 
@@ -77,7 +83,6 @@ composer require efureev/support "^2.0"
         - removeMultiSpace
         - replaceByTemplate
         - replaceStrTo
-        - seemsUTF8 (^4.9.0)
         - slugify (^4.9.0)
         - slugifyWithFormat
         - toCamel
@@ -115,17 +120,21 @@ composer require efureev/support "^2.0"
         - addFlag
         - checkFlag
         - decBinPad
-        - exist
+        - hasFlagIn
         - grant
         - removeFlag
-    + B64
+    + B64 (RFC 4648 URL-safe alphabet since ^6.0)
         - decode
+        - decodeOrThrow (^6.0)
         - decodeSafe
         - encode
         - encodeSafe
     + Number
         - isInteger (^4.14.0)
         - safeInt (^4.1.0)
+
+- Func (^6.0) - every global function below as a static method on `Php\Support\Func`,
+  which no other package can shadow
 
 - Global functions
     + attributeToGetterMethod (^4.28.0)
@@ -183,9 +192,7 @@ composer require efureev/support "^2.0"
 
 - Interfaces
     + Arrayable
-    + Command
     + Jsonable
-    + Prototype
 
 - Structures
     - Collections (^4.16.0)
@@ -221,12 +228,14 @@ composer require efureev/support "^2.0"
     + GeoPoint
     + Point
 
-- Testing (traits for your own test suite)
+- Testing (traits for your own test suite; `AdditionalAssertionsTrait` needs phpunit/phpunit,
+  declared in `suggest`)
     + AdditionalAssertionsTrait - `assertClassUsesTraits`
     + TestingHelper - `runProtectedMethod`, `getProperty`
 
 - URLify
-    + downcode - transliterates characters to their ASCII equivalents
+    + downcode - transliterates to ASCII through ICU when `ext-intl` is present (^6.0),
+      through the bundled character maps otherwise
     + seemsUTF8
 
 ## Notes
@@ -243,8 +252,14 @@ try {
 ```
 
 
-`Str::to*` case conversions detect word boundaries with ASCII comparisons, so non-Latin input
-(Cyrillic, Greek) is lower-cased but not split into words.
+`Str::slugify()` and `Str::removeAccents()` transliterate through ICU when `ext-intl` is installed,
+and fall back to a bundled character map otherwise. The map covers Latin, Cyrillic and Greek but
+not the `Œ`/`œ` ligature or CJK, so installing `ext-intl` is recommended.
+
+The global functions are all declared under `function_exists()`. If another package - Laravel
+defines `value()`, `class_basename()` and `class_uses_recursive()` - got there first, its version
+wins and this one is skipped, which makes behaviour depend on autoload order. Call
+`Php\Support\Func::method()` where that matters.
 
 `Arr::toPostgresArray` quotes an element only when the PostgreSQL array literal requires it, and
 writes PHP `null` as the `NULL` keyword. `Arr::fromPostgresArray` reads unquoted `NULL` back as the

@@ -7,6 +7,18 @@ namespace Php\Support\Helpers;
 class URLify
 {
     /**
+     * ICU transliteration rule used when ext-intl is available.
+     */
+    private const string TRANSLITERATOR_RULES = 'Any-Latin; Latin-ASCII';
+
+    /**
+     * Cached transliterator, or false when ext-intl is missing.
+     *
+     * @var \Transliterator|false|null
+     */
+    private static \Transliterator|false|null $transliterator = null;
+
+    /**
      * The current language
      *
      * @see https://github.com/jbroadway/urlify/blob/master/URLify.php
@@ -654,54 +666,102 @@ class URLify
      */
     public static function downcode(string $text, string $language = ''): string
     {
+        if (!self::seemsUTF8($text)) {
+            return self::downcodeIso8859($text);
+        }
+
+        // Language-specific rules first: ICU has no notion of "German ü transliterates to ue",
+        // it would give plain "u". Applying the map up front keeps that distinction.
+        if ($language !== '' && isset(self::$maps[$language])) {
+            $text = strtr($text, self::$maps[$language]);
+        }
+
+        $transliterator = self::transliterator();
+
+        if ($transliterator !== false) {
+            $result = $transliterator->transliterate($text);
+
+            if ($result !== false) {
+                return $result;
+            }
+        }
+
+        return self::downcodeWithMaps($text, $language);
+    }
+
+    /**
+     * @return \Transliterator|false `false` when ext-intl is not installed
+     */
+    private static function transliterator(): \Transliterator|false
+    {
+        if (self::$transliterator === null) {
+            self::$transliterator = class_exists(\Transliterator::class)
+                ? (\Transliterator::create(self::TRANSLITERATOR_RULES) ?? false)
+                : false;
+        }
+
+        return self::$transliterator;
+    }
+
+    /**
+     * Transliteration through the bundled character maps.
+     *
+     * Used when ext-intl is unavailable. The maps cover Latin, Cyrillic, Greek and a dozen more
+     * scripts, but not everything ICU knows - the Œ/œ ligature and CJK have no entries.
+     */
+    private static function downcodeWithMaps(string $text, string $language = ''): string
+    {
         self::initLanguageMap($language);
 
-        if (self::seemsUTF8($text)) {
-            if (preg_match_all(self::$regex, $text, $matches)) {
-                for ($i = 0, $iMax = count($matches[0]); $i < $iMax; $i++) {
-                    $char = $matches[0][$i];
-                    if (isset(self::$map[$char])) {
-                        $text = str_replace($char, self::$map[$char], $text);
-                    }
+        if (preg_match_all(self::$regex, $text, $matches)) {
+            for ($i = 0, $iMax = count($matches[0]); $i < $iMax; $i++) {
+                $char = $matches[0][$i];
+                if (isset(self::$map[$char])) {
+                    $text = str_replace($char, self::$map[$char], $text);
                 }
             }
-        } else {
-            // Not a UTF-8 string so we assume its ISO-8859-1
-            $search  = "\x80\x83\x8a\x8e\x9a\x9e\x9f\xa2\xa5\xb5\xc0\xc1\xc2\xc3\xc4\xc5\xc7\xc8\xc9\xca\xcb\xcc\xcd";
-            $search .= "\xce\xcf\xd1\xd2\xd3\xd4\xd5\xd6\xd8\xd9\xda\xdb\xdc\xdd\xe0\xe1\xe2\xe3\xe4\xe5\xe7\xe8\xe9";
-            $search .= "\xea\xeb\xec\xed\xee\xef\xf1\xf2\xf3\xf4\xf5\xf6\xf8\xf9\xfa\xfb\xfc\xfd\xff";
-            $text    = strtr($text, $search, 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy');
-
-            // These latin characters should be represented by two characters so
-            // we can't use strtr
-            $complexSearch  = [
-                "\x8c",
-                "\x9c",
-                "\xc6",
-                "\xd0",
-                "\xde",
-                "\xdf",
-                "\xe6",
-                "\xf0",
-                "\xfe",
-            ];
-            $complexReplace = [
-                'OE',
-                'oe',
-                'AE',
-                'DH',
-                'TH',
-                'ss',
-                'ae',
-                'dh',
-                'th',
-            ];
-            $text           = str_replace($complexSearch, $complexReplace, $text);
         }
 
         return $text;
     }
 
+    /**
+     * Fallback for input that is not UTF-8, assumed to be ISO-8859-1.
+     */
+    private static function downcodeIso8859(string $text): string
+    {
+        $search  = "\x80\x83\x8a\x8e\x9a\x9e\x9f\xa2\xa5\xb5\xc0\xc1\xc2\xc3\xc4\xc5\xc7\xc8\xc9\xca\xcb\xcc\xcd";
+        $search .= "\xce\xcf\xd1\xd2\xd3\xd4\xd5\xd6\xd8\xd9\xda\xdb\xdc\xdd\xe0\xe1\xe2\xe3\xe4\xe5\xe7\xe8\xe9";
+        $search .= "\xea\xeb\xec\xed\xee\xef\xf1\xf2\xf3\xf4\xf5\xf6\xf8\xf9\xfa\xfb\xfc\xfd\xff";
+        $text    = strtr($text, $search, 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy');
+
+        // These latin characters should be represented by two characters so
+        // we can't use strtr
+        $complexSearch  = [
+            "\x8c",
+            "\x9c",
+            "\xc6",
+            "\xd0",
+            "\xde",
+            "\xdf",
+            "\xe6",
+            "\xf0",
+            "\xfe",
+        ];
+        $complexReplace = [
+            'OE',
+            'oe',
+            'AE',
+            'DH',
+            'TH',
+            'ss',
+            'ae',
+            'dh',
+            'th',
+        ];
+
+        return str_replace($complexSearch, $complexReplace, $text);
+    }
 
     /**
      * Checks to see if a string is utf8 encoded.
@@ -717,43 +777,7 @@ class URLify
      */
     public static function seemsUTF8(string $string): bool
     {
-        if (function_exists('mb_check_encoding')) {
-            // If mb-string is available, this is significantly faster than using PHP regexps.
-            return mb_check_encoding($string, 'UTF-8');
-        }
-
-        // @codeCoverageIgnoreStart
-        return self::seemsUTF8Regex($string);
-        // @codeCoverageIgnoreEnd
-    }
-
-    /**
-     * A non-Mb-string UTF-8 checker.
-     *
-     * @param string $string
-     *
-     * @return bool
-     */
-    protected static function seemsUTF8Regex(string $string): bool
-    {
-        // Obtained from http://stackoverflow.com/a/11709412/430062 with permission.
-        $regex = '/(
-    [\xC0-\xC1] # Invalid UTF-8 Bytes
-    | [\xF5-\xFF] # Invalid UTF-8 Bytes
-    | \xE0[\x80-\x9F] # Overlong encoding of prior code point
-    | \xF0[\x80-\x8F] # Overlong encoding of prior code point
-    | [\xC2-\xDF](?![\x80-\xBF]) # Invalid UTF-8 Sequence Start
-    | [\xE0-\xEF](?![\x80-\xBF]{2}) # Invalid UTF-8 Sequence Start
-    | [\xF0-\xF4](?![\x80-\xBF]{3}) # Invalid UTF-8 Sequence Start
-    | (?<=[\x00-\x7F\xF5-\xFF])[\x80-\xBF] # Invalid UTF-8 Sequence Middle
-    | (?<![\xC2-\xDF]|[\xE0-\xEF]|[\xE0-\xEF][\x80-\xBF]|[\xF0-\xF4]
-    |[\xF0-\xF4][\x80-\xBF]|[\xF0-\xF4][\x80-\xBF]{2})[\x80-\xBF] # Overlong Sequence
-    | (?<=[\xE0-\xEF])[\x80-\xBF](?![\x80-\xBF]) # Short 3 byte sequence
-    | (?<=[\xF0-\xF4])[\x80-\xBF](?![\x80-\xBF]{2}) # Short 4 byte sequence
-    | (?<=[\xF0-\xF4][\x80-\xBF])[\x80-\xBF](?![\x80-\xBF]) # Short 4 byte sequence (2)
-)/x';
-
-        return !preg_match($regex, $string);
+        return mb_check_encoding($string, 'UTF-8');
     }
 
     /**

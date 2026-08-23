@@ -135,6 +135,9 @@ class Json
     /**
      * Checks whether the given string is valid JSON.
      */
+    /**
+     * @param int<1, max> $depth
+     */
     public static function isValid(?string $json, int $depth = 512): bool
     {
         return $json !== null && $json !== '' && json_validate($json, $depth);

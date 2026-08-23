@@ -49,12 +49,6 @@ final class RemoteCallTest extends TestCase
     }
 
     #[Test]
-    public function misspelledAliasStillWorks(): void
-    {
-        self::assertSame('static:z', remoteStaticCallOrTrow(RemoteCallSubject::class, 'staticGreet', 'z'));
-    }
-
-    #[Test]
     public function remoteCall(): void
     {
         self::assertSame('instance:x', remoteCall(new RemoteCallSubject(), 'greet', 'x'));

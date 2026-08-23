@@ -204,4 +204,13 @@ final class NumberTest extends TestCase
     {
         self::assertEquals($exp, Number::isInteger($value));
     }
+
+    public function testSafeIntKeepsNonIntegerValuesAsStrings(): void
+    {
+        // '1.9' used to come back as int 1, silently dropping the fraction
+        self::assertSame('1.9', Number::safeInt('1.9'));
+        self::assertSame('-0.5', Number::safeInt('-0.5'));
+        self::assertSame('1e3', Number::safeInt('1e3'));
+        self::assertSame('  42  ', Number::safeInt('  42  '));
+    }
 }

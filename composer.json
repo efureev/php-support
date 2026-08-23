@@ -16,7 +16,7 @@
     }
   ],
   "require": {
-    "php": "^8.4",
+    "php": "^8.5",
     "ext-ctype": "*",
     "ext-json": "*",
     "ext-mbstring": "*"
@@ -26,6 +26,10 @@
     "phpstan/phpstan": "^2.2",
     "phpunit/phpunit": "^13.0",
     "squizlabs/php_codesniffer": "^4.0"
+  },
+  "suggest": {
+    "ext-intl": "For full Unicode transliteration in Str::slugify()/removeAccents(); a bundled character map is used otherwise",
+    "phpunit/phpunit": "To use the Php\\Support\\Testing traits in your own test suite"
   },
   "autoload": {
     "psr-4": {

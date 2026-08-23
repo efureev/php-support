@@ -4,81 +4,43 @@ declare(strict_types=1);
 
 namespace Php\Support\Testing;
 
-use function array_merge;
-use function array_reverse;
-use function array_values;
-use function class_parents;
-use function class_uses;
-use function get_class;
-use function is_object;
+use Php\Support\Func;
 
 /**
+ * Extra assertions for your own test suite.
+ *
+ * Requires phpunit/phpunit, which this package only suggests - see composer.json. The trait is
+ * shipped in src/ rather than autoload-dev so that consumers can use it in their tests.
+ *
  * @mixin \PHPUnit\Framework\TestCase
  */
 trait AdditionalAssertionsTrait
 {
     /**
-     * Asserts that passed class uses expected traits.
+     * Asserts that the class uses the expected traits, including ones inherited from a parent
+     * or pulled in by another trait.
      *
-     * @param string $class
-     * @param string|string[] $expected_traits
-     * @param string $message
-     *
-     * @return void
-     * @throws \InvalidArgumentException
+     * @param object|class-string $class
+     * @param string|string[] $expectedTraits
      *
      * @throws \PHPUnit\Framework\ExpectationFailedException
      *
      * @example
-     *  static::assertClassUsesTraits(new Class(), [HasCasts::class, NestedSetTrait::class,]);
+     *  static::assertClassUsesTraits(new Model(), [HasCasts::class, NestedSetTrait::class]);
      */
-    public static function assertClassUsesTraits($class, $expected_traits, string $message = ''): void
-    {
-        /**
-         * Returns all traits used by a trait and its traits.
-         *
-         * @param string $trait
-         *
-         * @return string[]
-         */
-        $trait_uses_recursive = static function ($trait) use (&$trait_uses_recursive) {
-            $traits = class_uses($trait);
-            $tt     = [[]];
-            foreach ($traits as $trait_iterate) {
-                $tt[] = $trait_uses_recursive($trait_iterate);
-            }
-            $traits = array_merge($traits, ...$tt);
-            return $traits;
-        };
+    public static function assertClassUsesTraits(
+        object|string $class,
+        string|array $expectedTraits,
+        string $message = ''
+    ): void {
+        // this used to reimplement the recursion inline, duplicating helpers the package ships
+        $uses = Func::classUsesRecursive($class);
 
-        /**
-         * Returns all traits used by a class, its subclasses and trait of their traits.
-         *
-         * @param object|string $class
-         *
-         * @return array
-         */
-        $class_uses_recursive = static function ($class) use ($trait_uses_recursive) {
-            if (is_object($class)) {
-                $class = get_class($class);
-            }
-            $results = [[]];
-            foreach (array_reverse(class_parents($class)) + [$class => $class] as $class_iterate) {
-                $results[] = $trait_uses_recursive($class_iterate);
-            }
-            return array_values(array_merge(...$results));
-        };
-
-        $uses = $class_uses_recursive($class);
-        $uses = array_flip($uses);
-
-        foreach ((array)$expected_traits as $k => $trait_class) {
-            static::assertArrayHasKey(
-                $trait_class,
+        foreach ((array)$expectedTraits as $trait) {
+            static::assertContains(
+                $trait,
                 $uses,
-                $message === ''
-                    ? 'Class does not uses passed traits'
-                    : $message
+                $message === '' ? "Class does not use trait $trait" : $message
             );
         }
     }

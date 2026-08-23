@@ -1,22 +1,64 @@
+# Generic-variance limits, not defects.
+#
+# PHP cannot express "the same class with different type parameters" for a static-returning
+# factory, so every derived-collection method (map, filter, chunk, groupBy, createFrom, ...) reads
+# as returning its own type when it in fact returns a re-parameterised one. Arr hits the same wall
+# from the other side: its methods are static, so the class templates never bind at a call site.
+#
+# Dropping the generics would silence all of this and leave the package less typed, not more.
+# Level 8 with an empty baseline is therefore not reachable for these shapes today.
+#
+# New code must not add to this file.
+
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Parameter &\$array @param\-out type of method Php\\Support\\Helpers\\Arr\:\:set\(\) expects array\<TKey of \(int\|string\), mixed\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<mixed\> given\.$#'
-			identifier: paramOut.type
+			message: '#^Method Php\\Support\\Helpers\\Arr\:\:map\(\) should return array\<TKey of \(int\|string\), U\> but returns array\<TKey of \(int\|string\), array\<U\>\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Helpers/Arr.php
 
 		-
-			message: '#^Parameter &\$array by\-ref type of method Php\\Support\\Helpers\\Arr\:\:remove\(\) expects array\<TKey of \(int\|string\), T\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<TKey of \(int\|string\), mixed\>\|ArrayObject\<TKey of \(int\|string\), T\> given\.$#'
-			identifier: parameterByRef.type
-			count: 3
+			message: '#^Method Php\\Support\\Helpers\\Arr\:\:merge\(\) should return array\<TKey of \(int\|string\), T\> but returns array\<TKey of \(int\|string\), array\<mixed\>\|T\>\.$#'
+			identifier: return.type
+			count: 1
 			path: src/Helpers/Arr.php
 
 		-
-			message: '#^Parameter &\$array by\-ref type of method Php\\Support\\Helpers\\Arr\:\:remove\(\) expects array\<TKey of \(int\|string\), T\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<mixed, mixed\> given\.$#'
-			identifier: parameterByRef.type
+			message: '#^Method Php\\Support\\Helpers\\Arr\:\:prepend\(\) should return array\<TKey of \(int\|string\), T\> but returns array\<int\|string, mixed\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Method Php\\Support\\Helpers\\Arr\:\:toIndexedArray\(\) should return array\<T\> but returns list\<array\<mixed\>\|T\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Method Php\\Support\\Helpers\\Arr\:\:undot\(\) should return array\<mixed\> but returns array\<mixed\>\|ArrayObject\<\(int\|string\), mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Parameter \#1 \$offset of method ArrayAccess\<TKey of \(int\|string\),T\>\:\:offsetExists\(\) expects TKey of \(int\|string\), int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Method Php\\Support\\Storage\:\:countRecursive\(\) should return int\<0, max\> but returns int\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Storage.php
+
+		-
+			message: '#^Property Php\\Support\\Storage\<TKey of \(int\|string\),TValue\>\:\:\$data \(array\<TKey of \(int\|string\), TValue\>\) does not accept array\<mixed\>\|ArrayObject\<\(int\|string\), mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: src/Storage.php
 
 		-
 			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:chunk\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<int, static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), T\>\)\>\) but returns static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<int, static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), T\>\)\>\)\.$#'
@@ -43,6 +85,30 @@ parameters:
 			path: src/Structures/Collections/ArrayCollection.php
 
 		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:random\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<int, T\>\)\|T but returns array\<T\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Parameter \#1 \$comparisons of method Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\),T\>\:\:sortByMany\(\) expects array\<array\{string, string\}\|\(callable\(T, T\)\: mixed\)\|\(callable\(T, TKey\)\: mixed\)\|string\>, array\<array\{string, string\}\|\(callable\(T, T\)\: mixed\)\|\(callable\(T, TKey\)\: mixed\)\|object\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Parameter \#1 \$groupBy of method Php\\Support\\Structures\\Collections\\Collection\<\(int\|string\),mixed\>\:\:groupBy\(\) expects array\<string\>\|\(callable\(mixed, int\|string\)\: \(int\|string\)\)\|string, non\-empty\-array\<object\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\),T\>\:\:set\(\) expects TKey of \(int\|string\), int\|string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
 			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:createFrom\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<mixed, object\>\)\.$#'
 			identifier: return.type
 			count: 1
@@ -57,5 +123,17 @@ parameters:
 		-
 			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:map\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<U, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\.$#'
 			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Parameter \#1 \$element of method Php\\Support\\Structures\\Collections\\HashCollection\<T,TO of object\>\:\:add\(\) expects TO of object, object&T given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Property Php\\Support\\Structures\\Collections\\HashCollection\<T,TO of object\>\:\:\$elements \(array\<string, T\>\) does not accept array\<string, T\|TO of object\>\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/Structures/Collections/HashCollection.php
