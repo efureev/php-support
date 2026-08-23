@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## [Unreleased]
 
+## v6.1.2
+
+Documentation only - no code changes, nothing to test against when upgrading from 6.1.1.
+
+### Removed
+
+- Remove `AUDIT.md`, whose findings are all closed and released; what it recorded lives in `CHANGELOG.md` and `UPGRADE.md`
+
+### Changed
+
+- Point `CONTRIBUTING.md` at `UPGRADE.md` for the list of breaking changes, replacing a reference to a release plan that no longer existed
+
 ## v6.1.1
 
 Documentation only - no code changes, nothing to test against when upgrading from 6.1.0.
@@ -455,7 +467,9 @@ See [UPGRADE.md](./UPGRADE.md) for migration instructions.
 
 [semver]:https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.1...HEAD
+[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.2...HEAD
+
+[6.1.2]: https://github.com/efureev/php-support/compare/v6.1.1...v6.1.2
 
 [6.1.1]: https://github.com/efureev/php-support/compare/v6.1.0...v6.1.1
 
