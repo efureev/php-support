@@ -3,6 +3,10 @@ includes:
 
 parameters:
   level: 7
+  # The baseline is generated against one PHPStan version but CI also runs --prefer-lowest, where
+  # a slightly older analyser reports fewer errors. An entry that then goes unmatched must not
+  # fail the build; entries that do match are still enforced.
+  reportUnmatchedIgnoredErrors: false
   paths:
     - src
   excludePaths:
