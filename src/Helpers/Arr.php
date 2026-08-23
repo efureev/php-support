@@ -68,12 +68,18 @@ class Arr
      * @param array<T> $array
      * @param mixed $val If $val is a string, the comparison is done in a case-sensitive manner.
      * @param bool $reindex
+     * @param bool $strict Compare types as well. Loose by default for backward compatibility,
+     *                     which means removeByValue(['1'], 1) removes the string '1'.
      *
      * @return string|int|null Index of removed element or null if it don't exist
      */
-    public static function removeByValue(array &$array, mixed $val, bool $reindex = false): string|int|null
-    {
-        $key = array_search($val, $array, false);
+    public static function removeByValue(
+        array &$array,
+        mixed $val,
+        bool $reindex = false,
+        bool $strict = false
+    ): string|int|null {
+        $key = array_search($val, $array, $strict);
 
         if ($key === false) {
             return null;
@@ -764,5 +770,242 @@ class Arr
         $map  = array_map($func, $elements, $keys);
 
         return array_combine($keys, $map);
+    }
+
+    /**
+     * Get a subset of the items, keeping only the given keys.
+     *
+     * @param array<TKey, T> $array
+     * @param string[]|int[]|string|int $keys
+     *
+     * @return array<TKey, T>
+     */
+    public static function only(array $array, array|string|int $keys): array
+    {
+        return array_intersect_key($array, array_flip((array)$keys));
+    }
+
+    /**
+     * Get all of the items except for those with the given keys.
+     *
+     * @param array<TKey, T> $array
+     * @param string[]|int[]|string|int $keys
+     *
+     * @return array<TKey, T>
+     */
+    public static function except(array $array, array|string|int $keys): array
+    {
+        return array_diff_key($array, array_flip((array)$keys));
+    }
+
+    /**
+     * Pluck an array of values from an array, optionally keyed by another field.
+     *
+     * Both `$value` and `$key` support the "dot" notation understood by {@see self::get()}.
+     *
+     * @param iterable<TKey, T> $array
+     * @param string|int|null $value
+     * @param string|int|null $key
+     *
+     * @return array<mixed>
+     */
+    public static function pluck(iterable $array, string|int|null $value, string|int|null $key = null): array
+    {
+        $results = [];
+
+        foreach ($array as $item) {
+            $itemValue = $value === null ? $item : dataGet($item, $value);
+
+            if ($key === null) {
+                $results[] = $itemValue;
+                continue;
+            }
+
+            $itemKey = dataGet($item, $key);
+            $results[is_object($itemKey) && $itemKey instanceof \Stringable ? (string)$itemKey : $itemKey] = $itemValue;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Return the first element passing a given truth test.
+     *
+     * @param iterable<TKey, T> $array
+     * @param null|callable(T, TKey): bool $callback
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public static function first(iterable $array, ?callable $callback = null, mixed $default = null): mixed
+    {
+        foreach ($array as $key => $value) {
+            if ($callback === null || $callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return value($default);
+    }
+
+    /**
+     * Return the last element passing a given truth test.
+     *
+     * @param array<TKey, T> $array
+     * @param null|callable(T, TKey): bool $callback
+     * @param mixed $default
+     *
+     * @return mixed
+     */
+    public static function last(array $array, ?callable $callback = null, mixed $default = null): mixed
+    {
+        if ($callback === null) {
+            return $array === [] ? value($default) : end($array);
+        }
+
+        return static::first(array_reverse($array, true), $callback, $default);
+    }
+
+    /**
+     * Flatten a multi-dimensional array into a single level.
+     *
+     * @param iterable<mixed> $array
+     * @param int $depth How many levels to flatten; INF for all of them.
+     *
+     * @return array<mixed>
+     */
+    public static function flatten(iterable $array, int|float $depth = INF): array
+    {
+        $result = [];
+
+        foreach ($array as $item) {
+            if (!is_array($item)) {
+                $result[] = $item;
+                continue;
+            }
+
+            if ($depth === 1) {
+                $result = array_merge($result, array_values($item));
+                continue;
+            }
+
+            $result = array_merge($result, static::flatten($item, $depth - 1));
+        }
+
+        return $result;
+    }
+
+    /**
+     * If the given value is not an array and not null, wrap it in one.
+     *
+     * @param mixed $value
+     *
+     * @return array<mixed>
+     */
+    public static function wrap(mixed $value): array
+    {
+        if ($value === null) {
+            return [];
+        }
+
+        return is_array($value) ? $value : [$value];
+    }
+
+    /**
+     * Flatten a nested array into a single level using the "dot" notation.
+     *
+     * @param array<mixed> $array
+     * @param string $prepend
+     * @param non-empty-string $separator
+     *
+     * @return array<string, mixed>
+     */
+    public static function dot(array $array, string $prepend = '', string $separator = '.'): array
+    {
+        $results = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value) && $value !== []) {
+                $results += static::dot($value, $prepend . $key . $separator, $separator);
+                continue;
+            }
+
+            $results[$prepend . $key] = $value;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Expand a "dot" notated array back into a nested one. The inverse of {@see self::dot()}.
+     *
+     * @param array<string, mixed> $array
+     * @param non-empty-string $separator
+     *
+     * @return array<mixed>
+     */
+    public static function undot(array $array, string $separator = '.'): array
+    {
+        $results = [];
+
+        foreach ($array as $key => $value) {
+            static::set($results, (string)$key, $value, $separator);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Key an array by a field or using a callback.
+     *
+     * @param iterable<TKey, T> $array
+     * @param (callable(T, TKey): array-key)|string|int $keyBy
+     *
+     * @return array<array-key, T>
+     */
+    public static function keyBy(iterable $array, callable|string|int $keyBy): array
+    {
+        $results = [];
+
+        foreach ($array as $key => $item) {
+            $resolved = is_callable($keyBy) ? $keyBy($item, $key) : dataGet($item, $keyBy);
+
+            $results[$resolved instanceof \Stringable ? (string)$resolved : $resolved] = $item;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Filter the array using the given callback, preserving keys.
+     *
+     * @param array<TKey, T> $array
+     * @param callable(T, TKey): bool $callback
+     *
+     * @return array<TKey, T>
+     */
+    public static function where(array $array, callable $callback): array
+    {
+        return array_filter($array, $callback, ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
+     * Determine whether the array is associative, that is: not a list.
+     *
+     * @param array<mixed> $array
+     */
+    public static function isAssoc(array $array): bool
+    {
+        return !array_is_list($array);
+    }
+
+    /**
+     * Determine whether the array is a list: sequential integer keys starting at 0.
+     *
+     * @param array<mixed> $array
+     */
+    public static function isList(array $array): bool
+    {
+        return array_is_list($array);
     }
 }

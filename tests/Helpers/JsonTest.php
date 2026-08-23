@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Php\Support\Tests\Helpers;
 
 use JsonException;
+use Php\Support\Exceptions\ExceptionInterface;
+use Php\Support\Exceptions\InvalidValueException;
 use Php\Support\Helpers\Json;
 use PHPUnit\Framework\TestCase;
 use Throwable;
@@ -219,4 +221,51 @@ final class JsonTest extends TestCase
             empty(array_diff_key($exp, $result)) && empty(array_diff_key($result, $exp))
         );
     }*/
+
+    public function testDecodeOrThrowSeparatesNullFromFailure(): void
+    {
+        // the valid document "null" decodes to null instead of looking like a failure
+        self::assertNull(Json::decodeOrThrow('null'));
+        self::assertSame(['a' => 1], Json::decodeOrThrow('{"a":1}'));
+    }
+
+    public function testDecodeOrThrowRejectsInvalidJson(): void
+    {
+        $this->expectException(InvalidValueException::class);
+        Json::decodeOrThrow('{bad');
+    }
+
+    public function testDecodeOrThrowRejectsEmptyInput(): void
+    {
+        $this->expectException(InvalidValueException::class);
+        Json::decodeOrThrow('');
+    }
+
+    public function testDecodeFailureIsCatchableThroughTheMarker(): void
+    {
+        try {
+            Json::decodeOrThrow('{bad');
+            self::fail('expected an exception');
+        } catch (ExceptionInterface $e) {
+            self::assertInstanceOf(InvalidValueException::class, $e);
+            self::assertInstanceOf(\JsonException::class, $e->getPrevious());
+        }
+    }
+
+    public function testEncodeOrThrow(): void
+    {
+        self::assertSame('[1,2]', Json::encodeOrThrow([1, 2]));
+
+        $this->expectException(InvalidValueException::class);
+        Json::encodeOrThrow(NAN);
+    }
+
+    public function testIsValid(): void
+    {
+        self::assertTrue(Json::isValid('{"a":1}'));
+        self::assertTrue(Json::isValid('null'));
+        self::assertFalse(Json::isValid('{bad'));
+        self::assertFalse(Json::isValid(''));
+        self::assertFalse(Json::isValid(null));
+    }
 }
