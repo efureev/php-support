@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Php\Support\Tests\Structures\Collections;
 
 use Php\Support\Exceptions\InvalidParamException;
+use Php\Support\Exceptions\MissingPropertyException;
+use Php\Support\Interfaces\Arrayable;
 use Php\Support\Structures\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -612,5 +614,15 @@ final class ArrayCollectionTest extends TestCase
         $c = new ArrayCollection();
 
         self::assertStringContainsString(ArrayCollection::class, (string)$c);
+    }
+
+    #[Test]
+    public function serializesToJson(): void
+    {
+        self::assertSame('[1,2]', json_encode(new ArrayCollection([1, 2])));
+        self::assertSame('{"a":1}', json_encode(new ArrayCollection(['a' => 1])));
+        self::assertSame('[]', json_encode(new ArrayCollection()));
+        self::assertInstanceOf(Arrayable::class, new ArrayCollection());
+        self::assertInstanceOf(\JsonSerializable::class, new ArrayCollection());
     }
 }

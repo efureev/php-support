@@ -6,7 +6,9 @@ namespace Php\Support\Structures\Collections;
 
 use ArrayIterator;
 use Closure;
+use JsonSerializable;
 use Php\Support\Helpers\Arr;
+use Php\Support\Interfaces\Arrayable;
 use Stringable;
 use Traversable;
 
@@ -42,7 +44,7 @@ use function uasort;
  *
  * @psalm-consistent-constructor
  */
-class ArrayCollection implements Collection, Stringable
+class ArrayCollection implements Collection, Stringable, JsonSerializable, Arrayable
 {
     /**
      * @var array
@@ -75,6 +77,14 @@ class ArrayCollection implements Collection, Stringable
      * {@inheritDoc}
      */
     public function all(): array
+    {
+        return $this->elements;
+    }
+
+    /**
+     * @return array<TKey, T>
+     */
+    public function jsonSerialize(): array
     {
         return $this->elements;
     }
@@ -679,7 +689,8 @@ class ArrayCollection implements Collection, Stringable
     /**
      * Sort the collection using the given callback.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>|(callable(T, TKey): mixed)|string $callback
+     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
+     *        |(callable(T, TKey): mixed)|string $callback
      * @param int $options
      * @param bool $descending
      * @return static
@@ -717,7 +728,8 @@ class ArrayCollection implements Collection, Stringable
     /**
      * Sort the collection using multiple comparisons.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}> $comparisons
+     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
+     *        $comparisons
      * @return static
      */
     protected function sortByMany(array $comparisons = []): static

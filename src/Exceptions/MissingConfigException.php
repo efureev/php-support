@@ -11,8 +11,11 @@ namespace Php\Support\Exceptions;
  */
 class MissingConfigException extends ConfigException
 {
-    public function __construct(array $config = [], protected ?string $needKey = null, string $message = 'Missing Config')
-    {
+    public function __construct(
+        array $config = [],
+        protected ?string $needKey = null,
+        string $message = 'Missing Config'
+    ) {
         parent::__construct($message, $config);
     }
 }

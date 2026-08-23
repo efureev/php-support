@@ -490,8 +490,10 @@ final class ArrTest extends TestCase
 
     public function testToPostgresArray(): void
     {
+        // NULL is written as the SQL keyword and an empty string is quoted, so the two are
+        // no longer indistinguishable in the literal
         static::assertEquals(
-            '{val1,test,null,,null}',
+            '{val1,test,NULL,"",NULL}',
             Arr::ToPostgresArray(
                 [
                     'key1'     => 'val1',
@@ -524,7 +526,7 @@ final class ArrTest extends TestCase
         );
 
         static::assertEquals(
-            '{1,null,0,,null}',
+            '{1,NULL,0,"",NULL}',
             Arr::ToPostgresArray(
                 [
                     1,
@@ -1345,5 +1347,194 @@ final class ArrTest extends TestCase
             'Two' => 2,
         ];
         self::assertEquals(['Five' => 5, 'One' => 1, 'Two' => 2], Arr::prepend($list, 5, 'Five'));
+    }
+
+    #[Test]
+    public function toPostgresArrayKeepsPlainValuesUnquoted(): void
+    {
+        self::assertSame('{}', Arr::toPostgresArray([]));
+        self::assertSame(
+            '{a,b}',
+            Arr::toPostgresArray(
+                [
+                    'a',
+                    'b',
+                ]
+            )
+        );
+        self::assertSame(
+            '{1,2.5,true,false}',
+            Arr::toPostgresArray(
+                [
+                    1,
+                    2.5,
+                    true,
+                    false,
+                ]
+            )
+        );
+        // string keys are dropped
+        self::assertSame(
+            '{a,b}',
+            Arr::toPostgresArray(
+                [
+                    'first'  => 'a',
+                    'second' => 'b',
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function toPostgresArrayQuotesWhenRequired(): void
+    {
+        // a comma inside an element must not split it into two elements
+        self::assertSame(
+            '{"a,b",c}',
+            Arr::toPostgresArray(
+                [
+                    'a,b',
+                    'c',
+                ]
+            )
+        );
+        self::assertSame('{"a b"}', Arr::toPostgresArray(['a b']));
+        self::assertSame('{""}', Arr::toPostgresArray(['']));
+        self::assertSame('{"{brace}"}', Arr::toPostgresArray(['{brace}']));
+
+        // the word NULL as a string is quoted, otherwise Postgres reads it back as SQL NULL
+        self::assertSame(
+            '{"NULL","null"}',
+            Arr::toPostgresArray(
+                [
+                    'NULL',
+                    'null',
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function toPostgresArrayEscapesQuotesAndBackslashes(): void
+    {
+        self::assertSame('{"he said \\"hi\\""}', Arr::toPostgresArray(['he said "hi"']));
+        self::assertSame('{"back\\\\slash"}', Arr::toPostgresArray(['back\\slash']));
+    }
+
+    #[Test]
+    public function toPostgresArrayWritesNullAndNestedArrays(): void
+    {
+        self::assertSame(
+            '{NULL,x}',
+            Arr::toPostgresArray(
+                [
+                    null,
+                    'x',
+                ]
+            )
+        );
+        self::assertSame(
+            '{{a,b},{c}}',
+            Arr::toPostgresArray(
+                [
+                    [
+                        'a',
+                        'b',
+                    ],
+                    ['c'],
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function postgresArrayRoundTrip(): void
+    {
+        $cases = [
+            [
+                'a',
+                'b',
+            ],
+            [
+                'a,b',
+                'c',
+            ],
+            ['he said "hi"'],
+            [''],
+            [
+                'NULL',
+                'null',
+            ],
+            ['a b'],
+            ['back\\slash'],
+            ['{brace}'],
+            [],
+            [
+                [
+                    'a',
+                    'b',
+                ],
+                ['c'],
+            ],
+        ];
+
+        foreach ($cases as $case) {
+            self::assertSame(
+                $case,
+                Arr::fromPostgresArray(Arr::toPostgresArray($case)),
+                'round trip failed for ' . var_export($case, true)
+            );
+        }
+    }
+
+    #[Test]
+    public function fromPostgresArrayKeepsQuotedEmptyString(): void
+    {
+        self::assertSame([''], Arr::fromPostgresArray('{""}'));
+        self::assertSame([], Arr::fromPostgresArray('{}'));
+    }
+
+    #[Test]
+    public function fromPostgresPointRejectsMalformedInput(): void
+    {
+        $malformed = [
+            'garbage',
+            '(1,2,3)',
+            '(1,)',
+            '1,2',
+            '(a,b)',
+            '(',
+            '(1;2)',
+        ];
+
+        foreach ($malformed as $value) {
+            self::assertNull(Arr::fromPostgresPoint($value), "expected null for '$value'");
+        }
+    }
+
+    #[Test]
+    public function fromPostgresPointAcceptsSpacesAndSigns(): void
+    {
+        self::assertSame(
+            [
+                1.0,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('( 1 , 2 )')
+        );
+        self::assertSame(
+            [
+                -1.5,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('(-1.5,+2)')
+        );
+        self::assertSame(
+            [
+                1000.0,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('(1e3,2)')
+        );
     }
 }
