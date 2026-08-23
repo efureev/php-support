@@ -1051,4 +1051,116 @@ class Arr
     {
         return array_is_list($array);
     }
+
+    /**
+     * Sort the array, and every nested array, by value - or by key for associative ones.
+     *
+     * @param array<array-key, mixed> $array
+     * @param int $options
+     * @param bool $descending
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function sortRecursive(array $array, int $options = SORT_REGULAR, bool $descending = false): array
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = static::sortRecursive($value, $options, $descending);
+            }
+        }
+
+        unset($value);
+
+        if (static::isAssoc($array)) {
+            $descending ? krsort($array, $options) : ksort($array, $options);
+
+            return $array;
+        }
+
+        $descending ? rsort($array, $options) : sort($array, $options);
+
+        return $array;
+    }
+
+    /**
+     * Split the array into its keys and its values.
+     *
+     * @param array<array-key, mixed> $array
+     *
+     * @return array{array<int, array-key>, array<int, mixed>}
+     */
+    public static function divide(array $array): array
+    {
+        return [
+            array_keys($array),
+            array_values($array),
+        ];
+    }
+
+    /**
+     * Every combination of one element from each of the given arrays.
+     *
+     * @param array<array-key, mixed> ...$arrays
+     *
+     * @return array<int, array<int, mixed>>
+     */
+    public static function crossJoin(array ...$arrays): array
+    {
+        $results = [[]];
+
+        foreach ($arrays as $array) {
+            $append = [];
+
+            foreach ($results as $product) {
+                foreach ($array as $item) {
+                    $product[] = $item;
+                    $append[]  = $product;
+                    array_pop($product);
+                }
+            }
+
+            $results = $append;
+        }
+
+        return $results;
+    }
+
+    /**
+     * Shuffle the array. Keys are not preserved.
+     *
+     * Uses the CSPRNG, unlike shuffle(), so the result is safe for drawing and sampling.
+     *
+     * @param array<array-key, mixed> $array
+     *
+     * @return array<int, mixed>
+     */
+    public static function shuffle(array $array): array
+    {
+        $values = array_values($array);
+
+        for ($i = count($values) - 1; $i > 0; $i--) {
+            $j = random_int(0, $i);
+            [
+                $values[$i],
+                $values[$j],
+            ]  = [
+                $values[$j],
+                $values[$i],
+            ];
+        }
+
+        return $values;
+    }
+
+    /**
+     * Drop the null values, preserving keys.
+     *
+     * @param array<array-key, mixed> $array
+     *
+     * @return array<array-key, mixed>
+     */
+    public static function whereNotNull(array $array): array
+    {
+        return array_filter($array, static fn($value) => $value !== null);
+    }
 }

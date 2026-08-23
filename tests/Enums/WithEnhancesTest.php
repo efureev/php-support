@@ -127,4 +127,10 @@ final class WithEnhancesTest extends TestCase
             IntEnum::labels()
         );
     }
+
+    #[Test]
+    public function randomReturnsACase(): void
+    {
+        self::assertContains(IntEnum::random(), IntEnum::cases());
+    }
 }

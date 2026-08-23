@@ -1758,4 +1758,86 @@ final class ArrTest extends TestCase
         ];
         self::assertSame(0, Arr::removeByValue($exact, 1, false, true));
     }
+
+    #[Test]
+    public function sortRecursive(): void
+    {
+        self::assertSame([1, 3, [2, 9]], Arr::sortRecursive([3, 1, [9, 2]]));
+        self::assertSame(
+            [
+                'a' => [
+                    'c' => 2,
+                    'd' => 1,
+                ],
+                'b' => 1,
+            ],
+            Arr::sortRecursive(['b' => 1, 'a' => ['d' => 1, 'c' => 2]])
+        );
+        self::assertSame([3, 2, 1], Arr::sortRecursive([1, 3, 2], SORT_REGULAR, true));
+        self::assertSame([], Arr::sortRecursive([]));
+    }
+
+    #[Test]
+    public function divideAndCrossJoin(): void
+    {
+        self::assertSame([['a', 'b'], [1, 2]], Arr::divide(['a' => 1, 'b' => 2]));
+        self::assertSame([[], []], Arr::divide([]));
+
+        self::assertSame(
+            [
+                [
+                    1,
+                    'a',
+                ],
+                [
+                    1,
+                    'b',
+                ],
+                [
+                    2,
+                    'a',
+                ],
+                [
+                    2,
+                    'b',
+                ],
+            ],
+            Arr::crossJoin([1, 2], ['a', 'b'])
+        );
+        self::assertCount(8, Arr::crossJoin([1, 2], [3, 4], [5, 6]));
+        self::assertSame([[]], Arr::crossJoin());
+    }
+
+    #[Test]
+    public function shufflePreservesTheElements(): void
+    {
+        $source   = [
+            1,
+            2,
+            3,
+            4,
+            5,
+        ];
+        $shuffled = Arr::shuffle($source);
+
+        self::assertCount(5, $shuffled);
+        self::assertTrue(array_is_list($shuffled), 'keys are not preserved');
+
+        sort($shuffled);
+        self::assertSame($source, $shuffled);
+        self::assertSame([], Arr::shuffle([]));
+    }
+
+    #[Test]
+    public function whereNotNullKeepsFalsyValues(): void
+    {
+        self::assertSame(
+            [
+                'a' => 1,
+                'c' => 0,
+                'd' => '',
+            ],
+            Arr::whereNotNull(['a' => 1, 'b' => null, 'c' => 0, 'd' => ''])
+        );
+    }
 }

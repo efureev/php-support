@@ -224,4 +224,19 @@ final class StorageTest extends TestCase
 
         self::assertFalse($storage->exist('x/y', '/'));
     }
+
+    #[Test]
+    public function mergeOnlyExcept(): void
+    {
+        $storage = new Storage(['a' => 1, 'b' => 2]);
+
+        self::assertSame(['a' => 1], $storage->only('a')->all());
+        self::assertSame(['b' => 2], $storage->except(['a'])->all());
+        // the source is untouched
+        self::assertSame(['a' => 1, 'b' => 2], $storage->all());
+
+        $merged = (new Storage(['a' => 1]))->merge(['b' => 2]);
+        self::assertSame(['a' => 1, 'b' => 2], $merged->all());
+        self::assertSame(['a' => 9, 'b' => 2], $merged->merge(new Storage(['a' => 9]))->all());
+    }
 }

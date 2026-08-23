@@ -21,6 +21,8 @@ use Traversable;
  * @implements IteratorAggregate<TKey, TValue>
  * @implements Arrayable<TKey, TValue>
  * @mixin ArrayAccess<TKey, TValue>
+ *
+ * @phpstan-consistent-constructor
  */
 class Storage implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Arrayable
 {
@@ -101,6 +103,42 @@ class Storage implements ArrayAccess, Countable, IteratorAggregate, JsonSerializ
     public function clear(): void
     {
         $this->data = [];
+    }
+
+    /**
+     * Merge the given data in, recursively. Existing keys are overwritten.
+     *
+     * @param array<array-key, mixed>|self<array-key, mixed> $data
+     */
+    public function merge(array|self $data): static
+    {
+        $this->data = Arr::merge($this->data, $data instanceof self ? $data->all() : $data);
+
+        return $this;
+    }
+
+    /**
+     * A new storage holding only the given top-level keys.
+     *
+     * @param string[]|string $keys
+     *
+     * @return static
+     */
+    public function only(array|string $keys): static
+    {
+        return new static(Arr::only($this->data, (array)$keys));
+    }
+
+    /**
+     * A new storage without the given top-level keys.
+     *
+     * @param string[]|string $keys
+     *
+     * @return static
+     */
+    public function except(array|string $keys): static
+    {
+        return new static(Arr::except($this->data, (array)$keys));
     }
 
     /**

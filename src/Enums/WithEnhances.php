@@ -99,6 +99,18 @@ trait WithEnhances
     }
 
     /**
+     * A random case.
+     *
+     * @return static
+     */
+    public static function random(): static
+    {
+        $cases = static::cases();
+
+        return $cases[random_int(0, count($cases) - 1)];
+    }
+
+    /**
      * Names of the cases, keyed by value: ready to feed a select box.
      *
      * @return array<TValue, string>

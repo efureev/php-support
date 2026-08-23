@@ -15,6 +15,8 @@ use Php\Support\Interfaces\Arrayable;
 use Traversable;
 
 use function array_filter;
+use function asort;
+use function arsort;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
@@ -355,5 +357,74 @@ class HashCollection implements ArrayAccess, Countable, IteratorAggregate, JsonS
     public function implode(string $glue = ''): string
     {
         return implode($glue, $this->elements);
+    }
+
+    /**
+     * Sort by the value the callback returns, or by the value itself. Keys are preserved.
+     *
+     * @param null|Closure(T, string):mixed $callback
+     *
+     * @return static<T, TO>
+     */
+    public function sortBy(?Closure $callback = null, bool $descending = false): static
+    {
+        $marks = [];
+
+        foreach ($this->elements as $key => $element) {
+            $marks[$key] = $callback === null ? $element : $callback($element, $key);
+        }
+
+        $descending ? arsort($marks) : asort($marks);
+
+        $result = [];
+
+        foreach (array_keys($marks) as $key) {
+            $result[$key] = $this->elements[$key];
+        }
+
+        return $this->createFrom($result);
+    }
+
+    /**
+     * Split into the elements satisfying the predicate and the rest. Keys are preserved.
+     *
+     * @param Closure(T, string):bool $func
+     *
+     * @return array{0: static<T, TO>, 1: static<T, TO>}
+     */
+    public function partition(Closure $func): array
+    {
+        $matches = $noMatches = [];
+
+        foreach ($this->elements as $key => $element) {
+            if ($func($element, $key)) {
+                $matches[$key] = $element;
+            } else {
+                $noMatches[$key] = $element;
+            }
+        }
+
+        return [
+            $this->createFrom($matches),
+            $this->createFrom($noMatches),
+        ];
+    }
+
+    /**
+     * Group the elements by the key the callback returns.
+     *
+     * @param Closure(T, string):array-key $groupBy
+     *
+     * @return array<array-key, static<T, TO>>
+     */
+    public function groupBy(Closure $groupBy): array
+    {
+        $groups = [];
+
+        foreach ($this->elements as $key => $element) {
+            $groups[$groupBy($element, $key)][$key] = $element;
+        }
+
+        return array_map(fn(array $group) => $this->createFrom($group), $groups);
     }
 }
