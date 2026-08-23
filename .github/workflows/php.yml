@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 5
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Use PHP 8.4
         uses: shivammathur/setup-php@v2
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Lint changelog file
         uses: avto-dev/markdown-lint@v1
         with:
@@ -55,7 +55,7 @@ jobs:
         php: [ '8.4', '8.5' ]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Use PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2 # Action page: <https://github.com/shivammathur/setup-php>
