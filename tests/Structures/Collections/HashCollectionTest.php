@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests\Structures\Collections;
 
+use Php\Support\Interfaces\Arrayable;
 use Php\Support\Structures\Collections\HashCollection;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -150,5 +151,15 @@ final class HashCollectionTest extends TestCase
         self::assertSame(2, $c->find(static fn($key, $element) => $element === 2));
         self::assertSame(3, $c->find(static fn($key, $element) => $key === 'c'));
         self::assertNull($c->find(static fn($key, $element) => $element === 99));
+    }
+
+    #[Test]
+    public function serializesToJson(): void
+    {
+        self::assertSame('{"a":1}', json_encode(new HashCollection(['a' => 1])));
+        self::assertSame('[]', json_encode(new HashCollection()));
+        self::assertSame(['a' => 1], (new HashCollection(['a' => 1]))->toArray());
+        self::assertInstanceOf(Arrayable::class, new HashCollection());
+        self::assertInstanceOf(\JsonSerializable::class, new HashCollection());
     }
 }

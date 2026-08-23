@@ -20,10 +20,9 @@ class GeoPoint extends Point
     /**
      * @param int $options
      *
-     * @return string
-     * @throws \Php\Support\Exceptions\JsonException
+     * @return string|null
      */
-    public function toJson($options = 320): string
+    public function toJson($options = 320): ?string
     {
         return Json::encode(
             [
@@ -37,15 +36,20 @@ class GeoPoint extends Point
     /**
      * @param string|null $string
      *
-     * @return Jsonable|null
-     * @throws \Php\Support\Exceptions\JsonException
+     * @return Jsonable|null `null` when the JSON does not describe a geo point
      */
     public static function fromJson(?string $string): ?Jsonable
     {
-        if (!$array = Json::decode($string)) {
+        $array = Json::decode($string);
+
+        if (!is_array($array) || !isset($array['longitude'], $array['latitude'])) {
             return null;
         }
 
-        return new static($array['longitude'], $array['latitude']);
+        if (!is_numeric($array['longitude']) || !is_numeric($array['latitude'])) {
+            return null;
+        }
+
+        return new static((float)$array['longitude'], (float)$array['latitude']);
     }
 }

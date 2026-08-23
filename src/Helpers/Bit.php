@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Php\Support\Helpers;
 
+use Php\Support\Exceptions\InvalidParamException;
+
 /**
  * Class Bit
  *
@@ -48,6 +50,10 @@ class Bit
     protected static function toInt(int|string $value): int
     {
         if (is_string($value)) {
+            if (!preg_match('/^[01]+$/', $value)) {
+                throw new InvalidParamException("Value must be a binary string, '$value' given", 'value');
+            }
+
             return (int)bindec($value);
         }
 

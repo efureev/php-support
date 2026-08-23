@@ -7,6 +7,8 @@ namespace Php\Support\Structures\Collections;
 use ArrayAccess;
 use Closure;
 use Countable;
+use JsonSerializable;
+use Php\Support\Interfaces\Arrayable;
 
 use function array_key_exists;
 use function count;
@@ -16,7 +18,7 @@ use function in_array;
  * @template T
  * @template TO of object
  */
-class HashCollection implements ArrayAccess, Countable
+class HashCollection implements ArrayAccess, Countable, JsonSerializable, Arrayable
 {
     /**
      * @param array<string, T> $elements
@@ -31,6 +33,24 @@ class HashCollection implements ArrayAccess, Countable
      * @return array<string, T>
      */
     public function all(): array
+    {
+        return $this->elements;
+    }
+
+    /**
+     * Gets a native PHP array representation of the collection.
+     *
+     * @return array<string, T>
+     */
+    public function toArray(): array
+    {
+        return $this->elements;
+    }
+
+    /**
+     * @return array<string, T>
+     */
+    public function jsonSerialize(): array
     {
         return $this->elements;
     }

@@ -99,4 +99,37 @@ final class UseStorageTest extends TestCase
 
         self::assertFalse($subject->propExists('storage'));
     }
+
+    public function testUnsetDeclaredPropertyFallsBackToStorage(): void
+    {
+        $subject = new class {
+            use UseStorage;
+
+            public string $name = 'initial';
+        };
+
+        unset($subject->name);
+
+        // an uninitialized typed property must not shadow the storage any more
+        self::assertFalse(isset($subject->name));
+        self::assertSame('default', $subject->get('name', 'default'));
+
+        $subject->name = 'from-storage';
+
+        self::assertSame('from-storage', $subject->name);
+    }
+
+    public function testUnsetNullableDeclaredPropertyReadsAsNull(): void
+    {
+        $subject = new class {
+            use UseStorage;
+
+            public ?string $name = 'initial';
+        };
+
+        unset($subject->name);
+
+        self::assertNull($subject->name);
+        self::assertFalse(isset($subject->name));
+    }
 }

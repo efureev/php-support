@@ -12,11 +12,7 @@ class MissingMethodException extends BadMethodCallException
     use Thrower;
 
     public function __construct(
-        protected string $method {
-        get {
-        return $this->method;
-        }
-        },
+        protected string $method,
         ?string $message = null
     ) {
         parent::__construct($message ?? ($this->getName() . ": $this->method"));

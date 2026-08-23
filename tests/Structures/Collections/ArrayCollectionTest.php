@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Php\Support\Tests\Structures\Collections;
 
 use Php\Support\Exceptions\InvalidParamException;
+use Php\Support\Exceptions\MissingPropertyException;
+use Php\Support\Interfaces\Arrayable;
 use Php\Support\Structures\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -438,8 +440,15 @@ final class ArrayCollectionTest extends TestCase
         self::assertSame([1, 2], $chunks->get(0)->all());
         self::assertSame([2 => 3, 3 => 4], $chunks->get(1)->all());
         self::assertSame([4 => 5], $chunks->get(2)->all());
+    }
 
-        self::assertTrue($c->chunk(0)->isEmpty());
+    #[Test]
+    public function chunkRejectsNonPositiveSize(): void
+    {
+        $c = new ArrayCollection([1, 2, 3]);
+
+        $this->expectException(InvalidParamException::class);
+        $c->chunk(0);
     }
 
     #[Test]
@@ -612,5 +621,45 @@ final class ArrayCollectionTest extends TestCase
         $c = new ArrayCollection();
 
         self::assertStringContainsString(ArrayCollection::class, (string)$c);
+    }
+
+    #[Test]
+    public function serializesToJson(): void
+    {
+        self::assertSame('[1,2]', json_encode(new ArrayCollection([1, 2])));
+        self::assertSame('{"a":1}', json_encode(new ArrayCollection(['a' => 1])));
+        self::assertSame('[]', json_encode(new ArrayCollection()));
+        self::assertInstanceOf(Arrayable::class, new ArrayCollection());
+        self::assertInstanceOf(\JsonSerializable::class, new ArrayCollection());
+    }
+
+    #[Test]
+    public function mapByKeyThrowsOnMissingKey(): void
+    {
+        $c = new ArrayCollection([['a' => 1]]);
+
+        $this->expectException(MissingPropertyException::class);
+        $c->mapByKey('nope');
+    }
+
+    #[Test]
+    public function mapByKeyThrowsOnMissingObjectProperty(): void
+    {
+        $obj     = new \stdClass();
+        $obj->id = 5;
+
+        $c = new ArrayCollection([$obj]);
+
+        $this->expectException(MissingPropertyException::class);
+        $c->mapByKey('nope');
+    }
+
+    #[Test]
+    public function randomUsesCreateFromForSubclasses(): void
+    {
+        $c = new class ([1, 2, 3, 4, 5]) extends ArrayCollection {
+        };
+
+        self::assertInstanceOf($c::class, $c->random(2));
     }
 }

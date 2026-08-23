@@ -16,7 +16,7 @@ final class JsonableTest extends TestCase
      */
     public function testToJson(): void
     {
-        $data_jsonable = $this->getMockBuilder(\Php\Support\Interfaces\Jsonable::class)->getMock();
+        $data_jsonable = $this->createStub(\Php\Support\Interfaces\Jsonable::class);
 
         $data_jsonable
             ->method('toJson')
@@ -25,7 +25,7 @@ final class JsonableTest extends TestCase
         $this->assertIsString($data_jsonable->toJson());
         $this->assertEquals(json_encode(['key' => 'value']), $data_jsonable->toJson());
 
-        $null_jsonable = $this->getMockBuilder(\Php\Support\Interfaces\Jsonable::class)->getMock();
+        $null_jsonable = $this->createStub(\Php\Support\Interfaces\Jsonable::class);
 
         $null_jsonable
             ->method('toJson')

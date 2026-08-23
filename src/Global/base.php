@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Php\Support\Helpers\Arr;
 use Php\Support\Helpers\Str;
 use Php\Support\Structures\Collections\ReadableCollection;

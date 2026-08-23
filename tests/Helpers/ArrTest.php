@@ -122,7 +122,7 @@ final class ArrTest extends TestCase
                 return $this->data;
             }
         };
-        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
+        $jsonableClass  = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = [
                 '32',
                 12,
@@ -163,24 +163,24 @@ final class ArrTest extends TestCase
             ],
             [
                 [
-                    'test' => 1,
-                    0 => 14,
+                    'test'   => 1,
+                    0        => 14,
                     'nested' => [
-                        'cl' => $arrayableClass,
+                        'cl'  => $arrayableClass,
                         'cl2' => $arrayableClass,
-                        '1' => [
+                        '1'   => [
                             1,
                             2,
                             $jsonableClass,
                         ],
                     ],
-                    'csl' => $arrayableClass,
+                    'csl'    => $arrayableClass,
                 ],
                 [
-                    'test' => 1,
-                    0 => 14,
+                    'test'   => 1,
+                    0        => 14,
                     'nested' => [
-                        'cl' => [
+                        'cl'  => [
                             '1',
                             2,
                             'test',
@@ -190,7 +190,7 @@ final class ArrTest extends TestCase
                             2,
                             'test',
                         ],
-                        '1' => [
+                        '1'   => [
                             1,
                             2,
                             [
@@ -200,7 +200,7 @@ final class ArrTest extends TestCase
                             ],
                         ],
                     ],
-                    'csl' => [
+                    'csl'    => [
                         '1',
                         2,
                         'test',
@@ -276,7 +276,7 @@ final class ArrTest extends TestCase
                 return $this->data;
             }
         };
-        $jsonableClass = new class () implements \Php\Support\Interfaces\Jsonable {
+        $jsonableClass  = new class () implements \Php\Support\Interfaces\Jsonable {
             private $data = [
                 '32',
                 12,
@@ -411,8 +411,8 @@ final class ArrTest extends TestCase
     {
         $array = [
             'key1' => 'val1',
-            2 => 'val2',
-            0 => 'val0',
+            2      => 'val2',
+            0      => 'val0',
             'test' => 'test',
         ];
 
@@ -442,9 +442,9 @@ final class ArrTest extends TestCase
     public function testToIndexedArray(): void
     {
         $array = [
-            'key1' => 'val1',
-            'test' => 'test',
-            'nested' => [
+            'key1'     => 'val1',
+            'test'     => 'test',
+            'nested'   => [
                 'n1' => 'test1',
                 'n2' => 'test2',
             ],
@@ -490,13 +490,15 @@ final class ArrTest extends TestCase
 
     public function testToPostgresArray(): void
     {
+        // NULL is written as the SQL keyword and an empty string is quoted, so the two are
+        // no longer indistinguishable in the literal
         static::assertEquals(
-            '{val1,test,null,,null}',
+            '{val1,test,NULL,"",NULL}',
             Arr::ToPostgresArray(
                 [
-                    'key1' => 'val1',
-                    'test' => 'test',
-                    'nested' => null,
+                    'key1'     => 'val1',
+                    'test'     => 'test',
+                    'nested'   => null,
                     'indexed1' => '',
                     'indexed2' => null,
                 ]
@@ -524,7 +526,7 @@ final class ArrTest extends TestCase
         );
 
         static::assertEquals(
-            '{1,null,0,,null}',
+            '{1,NULL,0,"",NULL}',
             Arr::ToPostgresArray(
                 [
                     1,
@@ -888,7 +890,7 @@ final class ArrTest extends TestCase
     public static function providerGet(): array
     {
         $array = [
-            'key' => [
+            'key'  => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -990,7 +992,7 @@ final class ArrTest extends TestCase
     public static function providerHas(): array
     {
         $array = [
-            'key' => [
+            'key'  => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -1119,7 +1121,7 @@ final class ArrTest extends TestCase
 
     public function testSetWithDivider(): void
     {
-        $array = ['key' => ['sub2' => 1]];
+        $array  = ['key' => ['sub2' => 1]];
         $expVal = 121;
         Arr::set($array, 'key/sub3/sub4sub', $expVal, '/');
 
@@ -1129,7 +1131,7 @@ final class ArrTest extends TestCase
     public static function providerRemove(): array
     {
         $array = [
-            'key' => [
+            'key'  => [
                 'sub1' => 'val1',
                 'sub2' => [
                     'val2',
@@ -1206,79 +1208,79 @@ final class ArrTest extends TestCase
             ],
             [
                 [
-                    'key' => '{{%KEY%}}',
+                    'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 [
-                    '{{%KEY%}}' => 'vKey',
+                    '{{%KEY%}}'   => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
                 ],
                 [
-                    'key' => 'vKey',
+                    'key'   => 'vKey',
                     'token' => 'vToken',
                 ],
             ],
             [
                 [
-                    'key' => '{{%KEY%}}',
+                    'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => 'vKey'],
                 [
-                    'key' => 'vKey',
+                    'key'   => 'vKey',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
-                    'key' => '{{%KEY%}}',
+                    'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => ''],
                 [
-                    'key' => '',
+                    'key'   => '',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
-                    'key' => '{{%KEY%}}',
+                    'key'   => '{{%KEY%}}',
                     'token' => '{{%TOKEN%}}',
                 ],
                 ['{{%KEY%}}' => null],
                 [
-                    'key' => '',
+                    'key'   => '',
                     'token' => '{{%TOKEN%}}',
                 ],
             ],
             [
                 [
                     'step1' => [
-                        'key' => '{{%KEY%}}',
+                        'key'   => '{{%KEY%}}',
                         'token' => '{{%TOKEN%}}',
                     ],
                     'step2' => [
                         'subStep2' => [
                             'token' => '{{%TOKEN%}}',
-                            'key' => '{{%KEY%}}',
+                            'key'   => '{{%KEY%}}',
                         ],
                     ],
                     'step3' => ['val' => '{{%VALUE%}}'],
                 ],
                 [
-                    '{{%KEY%}}' => 'vKey',
+                    '{{%KEY%}}'   => 'vKey',
                     '{{%TOKEN%}}' => 'vToken',
                     '{{%VALUE%}}' => 12,
                 ],
                 [
                     'step1' => [
-                        'key' => 'vKey',
+                        'key'   => 'vKey',
                         'token' => 'vToken',
                     ],
                     'step2' => [
                         'subStep2' => [
                             'token' => 'vToken',
-                            'key' => 'vKey',
+                            'key'   => 'vKey',
                         ],
                     ],
                     'step3' => ['val' => '12'],
@@ -1287,7 +1289,7 @@ final class ArrTest extends TestCase
             [
                 ['sdasdas'],
                 [
-                    '{{%KEY%}}' => 'key',
+                    '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 ['sdasdas'],
@@ -1315,7 +1317,17 @@ final class ArrTest extends TestCase
     #[Test]
     public function collapse(): void
     {
-        $list = [new ArrayCollection([1, 2, 3]), 4, 5, 6, [7, 8, 9]];
+        $list = [
+            new ArrayCollection([1, 2, 3]),
+            4,
+            5,
+            6,
+            [
+                7,
+                8,
+                9,
+            ],
+        ];
 
         self::assertEquals([1, 2, 3, 7, 8, 9], Arr::collapse($list));
     }
@@ -1323,10 +1335,285 @@ final class ArrTest extends TestCase
     #[Test]
     public function prepend(): void
     {
-        $list = [1, 2, 3];
+        $list = [
+            1,
+            2,
+            3,
+        ];
         self::assertEquals([5, 1, 2, 3], Arr::prepend($list, 5));
 
-        $list = ['One' => 1, 'Two' => 2];
+        $list = [
+            'One' => 1,
+            'Two' => 2,
+        ];
         self::assertEquals(['Five' => 5, 'One' => 1, 'Two' => 2], Arr::prepend($list, 5, 'Five'));
+    }
+
+    #[Test]
+    public function toPostgresArrayKeepsPlainValuesUnquoted(): void
+    {
+        self::assertSame('{}', Arr::toPostgresArray([]));
+        self::assertSame(
+            '{a,b}',
+            Arr::toPostgresArray(
+                [
+                    'a',
+                    'b',
+                ]
+            )
+        );
+        self::assertSame(
+            '{1,2.5,true,false}',
+            Arr::toPostgresArray(
+                [
+                    1,
+                    2.5,
+                    true,
+                    false,
+                ]
+            )
+        );
+        // string keys are dropped
+        self::assertSame(
+            '{a,b}',
+            Arr::toPostgresArray(
+                [
+                    'first'  => 'a',
+                    'second' => 'b',
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function toPostgresArrayQuotesWhenRequired(): void
+    {
+        // a comma inside an element must not split it into two elements
+        self::assertSame(
+            '{"a,b",c}',
+            Arr::toPostgresArray(
+                [
+                    'a,b',
+                    'c',
+                ]
+            )
+        );
+        self::assertSame('{"a b"}', Arr::toPostgresArray(['a b']));
+        self::assertSame('{""}', Arr::toPostgresArray(['']));
+        self::assertSame('{"{brace}"}', Arr::toPostgresArray(['{brace}']));
+
+        // the word NULL as a string is quoted, otherwise Postgres reads it back as SQL NULL
+        self::assertSame(
+            '{"NULL","null"}',
+            Arr::toPostgresArray(
+                [
+                    'NULL',
+                    'null',
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function toPostgresArrayEscapesQuotesAndBackslashes(): void
+    {
+        self::assertSame('{"he said \\"hi\\""}', Arr::toPostgresArray(['he said "hi"']));
+        self::assertSame('{"back\\\\slash"}', Arr::toPostgresArray(['back\\slash']));
+    }
+
+    #[Test]
+    public function toPostgresArrayWritesNullAndNestedArrays(): void
+    {
+        self::assertSame(
+            '{NULL,x}',
+            Arr::toPostgresArray(
+                [
+                    null,
+                    'x',
+                ]
+            )
+        );
+        self::assertSame(
+            '{{a,b},{c}}',
+            Arr::toPostgresArray(
+                [
+                    [
+                        'a',
+                        'b',
+                    ],
+                    ['c'],
+                ]
+            )
+        );
+    }
+
+    #[Test]
+    public function postgresArrayRoundTrip(): void
+    {
+        $cases = [
+            [
+                'a',
+                'b',
+            ],
+            [
+                'a,b',
+                'c',
+            ],
+            ['he said "hi"'],
+            [''],
+            [
+                'NULL',
+                'null',
+            ],
+            ['a b'],
+            ['back\\slash'],
+            ['{brace}'],
+            [],
+            [
+                [
+                    'a',
+                    'b',
+                ],
+                ['c'],
+            ],
+        ];
+
+        foreach ($cases as $case) {
+            self::assertSame(
+                $case,
+                Arr::fromPostgresArray(Arr::toPostgresArray($case)),
+                'round trip failed for ' . var_export($case, true)
+            );
+        }
+    }
+
+    #[Test]
+    public function fromPostgresArrayKeepsQuotedEmptyString(): void
+    {
+        self::assertSame([''], Arr::fromPostgresArray('{""}'));
+        self::assertSame([], Arr::fromPostgresArray('{}'));
+    }
+
+    #[Test]
+    public function fromPostgresPointRejectsMalformedInput(): void
+    {
+        $malformed = [
+            'garbage',
+            '(1,2,3)',
+            '(1,)',
+            '1,2',
+            '(a,b)',
+            '(',
+            '(1;2)',
+        ];
+
+        foreach ($malformed as $value) {
+            self::assertNull(Arr::fromPostgresPoint($value), "expected null for '$value'");
+        }
+    }
+
+    #[Test]
+    public function fromPostgresPointAcceptsSpacesAndSigns(): void
+    {
+        self::assertSame(
+            [
+                1.0,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('( 1 , 2 )')
+        );
+        self::assertSame(
+            [
+                -1.5,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('(-1.5,+2)')
+        );
+        self::assertSame(
+            [
+                1000.0,
+                2.0,
+            ],
+            Arr::fromPostgresPoint('(1e3,2)')
+        );
+    }
+
+    #[Test]
+    public function mergeAppendsWhenIntKeyHoldsNull(): void
+    {
+        self::assertSame(
+            [
+                null,
+                'x',
+            ],
+            Arr::merge([0 => null], [0 => 'x'])
+        );
+    }
+
+    #[Test]
+    public function fillKeysByValuesMatchesPositionally(): void
+    {
+        self::assertSame(
+            [
+                'a' => 'x',
+                'b' => 'y',
+            ],
+            Arr::fillKeysByValues(
+                [
+                    'k1' => 'a',
+                    'k2' => 'b',
+                ],
+                [
+                    'x',
+                    'y',
+                ]
+            )
+        );
+
+        // a missing value still becomes null
+        self::assertSame(
+            [
+                'a' => 'x',
+                'b' => null,
+            ],
+            Arr::fillKeysByValues(
+                [
+                    'a',
+                    'b',
+                ],
+                ['x']
+            )
+        );
+    }
+
+    #[Test]
+    public function setReturnsTheWholeArray(): void
+    {
+        $array = [];
+
+        self::assertSame(['a' => ['b' => 1]], Arr::set($array, 'a.b', 1));
+        self::assertSame(['a' => ['b' => 1]], $array);
+    }
+
+    #[Test]
+    public function removeHonoursCustomSeparator(): void
+    {
+        $array = [
+            'key' => [
+                'sub'  => 1,
+                'keep' => 2,
+            ],
+        ];
+
+        Arr::remove($array, 'key/sub', '/');
+
+        self::assertSame(['key' => ['keep' => 2]], $array);
+    }
+
+    #[Test]
+    public function randomThrowsPackageException(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidArgumentException::class);
+        Arr::random([1, 2], 5);
     }
 }

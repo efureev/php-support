@@ -25,9 +25,15 @@ trait UseStorage
     }
     // phpcs:enable PSR2.Classes.PropertyDeclaration
 
+    /**
+     * A declared but uninitialized typed property must not shadow the storage:
+     * `property_exists()` alone is true for it and reading such a property is a fatal error.
+     */
     protected function propertyExists(string $name): bool
     {
-        return $name !== 'storage' && property_exists($this, $name);
+        return $name !== 'storage'
+            && property_exists($this, $name)
+            && (new \ReflectionProperty($this, $name))->isInitialized($this);
     }
 
 
@@ -68,7 +74,7 @@ trait UseStorage
     public function __unset(string $name): void
     {
         if ($this->propertyExists($name)) {
-            $this->$name = null;
+            unset($this->$name);
             return;
         }
 

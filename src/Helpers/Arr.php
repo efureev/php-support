@@ -8,6 +8,7 @@ use Closure;
 use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
+use Php\Support\Exceptions\InvalidArgumentException;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
 use Php\Support\Structures\Collections\ReadableCollection;
@@ -177,7 +178,7 @@ class Arr
     {
         foreach ($b as $key => $val) {
             if (is_int($key)) {
-                if (isset($res[$key])) {
+                if (array_key_exists($key, $res)) {
                     $res[] = $val;
                 } else {
                     $res[$key] = $val;
@@ -195,7 +196,11 @@ class Arr
     }
 
     /**
-     * Changes PHP array to default Postgres array format
+     * Changes PHP array to default Postgres array format.
+     *
+     * String keys are dropped, see {@see self::toIndexedArray()}.
+     * Elements are quoted only when the PostgreSQL array literal syntax requires it: empty strings,
+     * the literal `NULL` and values containing `{`, `}`, `,`, `"`, a backslash or whitespace.
      *
      * @param array<TKey, T> $array
      *
@@ -203,11 +208,54 @@ class Arr
      */
     public static function toPostgresArray(array $array): string
     {
-        if (!$json = Json::encode(self::toIndexedArray($array), JSON_UNESCAPED_UNICODE)) {
-            return '{}';
+        return self::toPostgresArrayLiteral(self::toIndexedArray($array));
+    }
+
+    /**
+     * @param array<int, mixed> $array
+     */
+    private static function toPostgresArrayLiteral(array $array): string
+    {
+        $parts = [];
+
+        foreach ($array as $value) {
+            $parts[] = self::toPostgresArrayElement($value);
         }
 
-        return str_replace(['[', ']', '"'], ['{', '}', ''], $json);
+        return '{' . implode(',', $parts) . '}';
+    }
+
+    private static function toPostgresArrayElement(mixed $value): string
+    {
+        if ($value === null) {
+            return 'NULL';
+        }
+
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+
+        if (is_int($value) || is_float($value)) {
+            return (string)$value;
+        }
+
+        if (is_array($value) || $value instanceof Arrayable || $value instanceof Traversable) {
+            return self::toPostgresArrayLiteral(self::toIndexedArray(self::toArray($value)));
+        }
+
+        return self::quotePostgresValue((string)$value);
+    }
+
+    /**
+     * Wraps a value into double quotes when the PostgreSQL array literal syntax requires it.
+     */
+    private static function quotePostgresValue(string $value): string
+    {
+        if ($value !== '' && strcasecmp($value, 'NULL') !== 0 && !preg_match('/[{},"\\\\\\s]/', $value)) {
+            return $value;
+        }
+
+        return '"' . str_replace(['\\', '"'], ['\\\\', '\\"'], $value) . '"';
     }
 
     /**
@@ -274,45 +322,61 @@ class Arr
             return [];
         }
 
-        $return = [];
-        $string = false;
-        $quote  = '';
-        $len    = strlen($s);
-        $v      = '';
+        $return   = [];
+        $string   = false;
+        $quote    = '';
+        $hasValue = false;
+        $len      = strlen($s);
+        $v        = '';
 
         for ($i = $start + 1; $i < $len; $i++) {
             $ch = $s[$i];
-            if (!$string && $ch === $braceClose) {
-                if ($v !== '' || !empty($return)) {
+
+            if ($string) {
+                if ($ch === '\\' && $i + 1 < $len) {
+                    $v .= $s[++$i];
+                    continue;
+                }
+
+                if ($ch === $quote) {
+                    $string = false;
+                    continue;
+                }
+
+                $v .= $ch;
+                continue;
+            }
+
+            if ($ch === $braceClose) {
+                if ($hasValue || $return !== []) {
                     $return[] = $v;
                 }
                 $end = $i;
                 break;
-            } else {
-                if (!$string && $ch === $braceOpen) {
-                    $v = self::fromPostgresArray($s, (int)$i, $i);
-                } else {
-                    if (!$string && $ch === ',') {
-                        $return[] = $v;
-                        $v        = '';
-                    } else {
-                        if (!$string && ($ch === '"' || $ch === "'")) {
-                            $string = true;
-                            $quote  = $ch;
-                        } else {
-                            if ($string && $ch === $quote) {
-                                if ($s[$i - 1] === "\\") {
-                                    $v = substr($v, 0, -1) . $ch;
-                                } else {
-                                    $string = false;
-                                }
-                            } else {
-                                $v .= $ch;
-                            }
-                        }
-                    }
-                }
             }
+
+            if ($ch === $braceOpen) {
+                $v        = self::fromPostgresArray($s, $i, $i);
+                $hasValue = true;
+                continue;
+            }
+
+            if ($ch === ',') {
+                $return[] = $v;
+                $v        = '';
+                $hasValue = false;
+                continue;
+            }
+
+            if ($ch === '"' || $ch === "'") {
+                $string   = true;
+                $quote    = $ch;
+                $hasValue = true;
+                continue;
+            }
+
+            $v       .= $ch;
+            $hasValue = true;
         }
 
         foreach ($return as &$r) {
@@ -341,28 +405,29 @@ class Arr
     }
 
     /**
+     * Parses a PostgreSQL point literal `(x,y)`.
+     *
+     * Returns `null` for anything that is not a well-formed point.
+     *
      * @param ?string $value
      *
      * @return ?array{float,float}
      */
     public static function fromPostgresPoint(?string $value): ?array
     {
-        if (empty($value)) {
+        if ($value === null || $value === '') {
             return null;
         }
 
-        $string = mb_substr($value, 1, -1);
-        if (empty($string)) {
+        $number = '[-+]?\\d*\\.?\\d+(?:[eE][-+]?\\d+)?';
+
+        if (!preg_match('/^\\(\\s*(' . $number . ')\\s*,\\s*(' . $number . ')\\s*\\)$/', $value, $m)) {
             return null;
         }
 
-        [
-            $x,
-            $y,
-        ] = explode(',', $string);
         return [
-            (float)$x,
-            (float)$y,
+            (float)$m[1],
+            (float)$m[2],
         ];
     }
 
@@ -374,8 +439,12 @@ class Arr
      * @param mixed $default
      * @param non-empty-string $separator
      */
-    public static function get(mixed $array, string|int|null $key, mixed $default = null, string $separator = '.'): mixed
-    {
+    public static function get(
+        mixed $array,
+        string|int|null $key,
+        mixed $default = null,
+        string $separator = '.'
+    ): mixed {
         if (!static::accessible($array)) {
             return value($default);
         }
@@ -485,7 +554,8 @@ class Arr
         mixed $value,
         string $separator = '.'
     ): array|ArrayObject {
-        $keys = explode($separator, $key);
+        $original = &$array;
+        $keys     = explode($separator, $key);
 
         while (count($keys) > 1) {
             $key = array_shift($keys);
@@ -499,7 +569,7 @@ class Arr
 
         $array[array_shift($keys)] = $value;
 
-        return $array;
+        return $original;
     }
 
     /**
@@ -507,10 +577,11 @@ class Arr
      *
      * @param array<TKey,T>|ArrayObject<TKey,T> $array
      * @param string[]|string $keys
+     * @param non-empty-string $separator
      *
      * @return void
      */
-    public static function remove(array|ArrayObject &$array, array|string $keys): void
+    public static function remove(array|ArrayObject &$array, array|string $keys, string $separator = '.'): void
     {
         $original = &$array;
         $keys     = (array)$keys;
@@ -527,7 +598,7 @@ class Arr
                 continue;
             }
 
-            $parts = explode('.', $key);
+            $parts = explode($separator, $key);
 
             // clean up before each pass
             $array = &$original;
@@ -605,9 +676,10 @@ class Arr
     public static function fillKeysByValues(array $keys, array $values): array
     {
         $result = [];
+        $values = array_values($values);
 
-        foreach ($keys as $key => $keyName) {
-            $result[$keyName] = $values[$key] ?? null;
+        foreach (array_values($keys) as $index => $keyName) {
+            $result[$keyName] = $values[$index] ?? null;
         }
 
         return $result;
@@ -640,7 +712,7 @@ class Arr
      * @param bool $preserveKeys
      * @return T[]|array<TKey, T>
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function random(array $array, ?int $number = null, bool $preserveKeys = false): mixed
     {
@@ -649,7 +721,7 @@ class Arr
         $count = count($array);
 
         if ($requested > $count) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "You requested {$requested} items, but there are only {$count} items available."
             );
         }
