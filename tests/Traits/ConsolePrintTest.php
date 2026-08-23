@@ -53,6 +53,22 @@ final class ConsolePrintTest extends TestCase
         $this->assertEquals($str1, InterceptFilter::$cache);
     }*/
 
+    public function testStdErr(): void
+    {
+        stream_filter_register('intercept-err', InterceptFilter::class);
+        $filter = stream_filter_append(STDERR, 'intercept-err');
+
+        try {
+            $this->cls()->printError('Error message');
+            $this->assertEquals('Error message' . PHP_EOL, InterceptFilter::$cache);
+
+            $this->cls()->printError('Error message', false);
+            $this->assertEquals('Error message', InterceptFilter::$cache);
+        } finally {
+            stream_filter_remove($filter);
+        }
+    }
+
     private function cls()
     {
         return new class () {
