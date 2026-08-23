@@ -133,6 +133,17 @@ class Json
     }
 
     /**
+     * Encodes a value as human-readable JSON.
+     *
+     * @param mixed $value
+     * @param int<1, max> $depth
+     */
+    public static function prettyPrint(mixed $value, int $depth = 512): ?string
+    {
+        return static::encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, $depth);
+    }
+
+    /**
      * Checks whether the given string is valid JSON.
      */
     /**

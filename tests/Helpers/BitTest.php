@@ -163,4 +163,33 @@ final class BitTest extends TestCase
         static::assertSame('00001', Bit::decBinPad(1, 5));
         static::assertSame('1111', Bit::decBinPad(15, 2));
     }
+
+    public function testToggleFlag(): void
+    {
+        static::assertSame(0b0100, Bit::toggleFlag(0b0101, 0b0001));
+        static::assertSame(0b0101, Bit::toggleFlag(0b0100, 0b0001));
+        static::assertSame(0b0101, Bit::toggleFlag(Bit::toggleFlag(0b0101, 0b0001), 0b0001));
+    }
+
+    public function testFlags(): void
+    {
+        static::assertSame([1, 2, 8], Bit::flags(0b1011));
+        static::assertSame([], Bit::flags(0));
+        static::assertSame([1], Bit::flags(1));
+        static::assertSame([1, 2, 8], Bit::flags('1011'));
+
+        // a probe that doubles overflows to 0 for the top mask and never terminates
+        static::assertCount(PHP_INT_SIZE * 8 - 1, Bit::flags(PHP_INT_MAX));
+    }
+
+    public function testHasAllAndHasAny(): void
+    {
+        static::assertTrue(Bit::hasAll(0b0111, [1, 2]));
+        static::assertFalse(Bit::hasAll(0b0101, [1, 2]));
+        static::assertFalse(Bit::hasAll(0b0101, []), 'an empty list matches nothing');
+
+        static::assertTrue(Bit::hasAny(0b0101, [2, 4]));
+        static::assertFalse(Bit::hasAny(0b0001, [2, 4]));
+        static::assertFalse(Bit::hasAny(0b0101, []));
+    }
 }

@@ -948,4 +948,66 @@ final class StrTest extends TestCase
         self::assertSame('SomeValue', Str::toCamel('some_value'));
         self::assertSame('someValue', Str::toLowerCamel('some_value'));
     }
+
+    #[Test]
+    public function padding(): void
+    {
+        self::assertSame('---abc---', Str::padBoth('abc', 9, '-'));
+        self::assertSame('abc', Str::padBoth('abc', 3));
+        self::assertSame('abc', Str::padBoth('abc', 1));
+        // an odd remainder goes to the right
+        self::assertSame('-abc--', Str::padBoth('abc', 6, '-'));
+
+        self::assertSame('007', Str::padLeft('7', 3, '0'));
+        self::assertSame('700', Str::padRight('7', 3, '0'));
+        self::assertSame('7', Str::padLeft('7', 1, '0'));
+
+        // multibyte: the length is in characters, not bytes
+        self::assertSame('——ы——', Str::padBoth('ы', 5, '—'));
+        self::assertSame(5, mb_strlen(Str::padBoth('ы', 5, '—')));
+        // a multi-character pad is cut to fit exactly
+        self::assertSame('abab7', Str::padLeft('7', 5, 'ab'));
+    }
+
+    #[Test]
+    public function paddingRejectsAnEmptyPad(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::padBoth('abc', 9, '');
+    }
+
+    #[Test]
+    public function wrapAndTitle(): void
+    {
+        self::assertSame('"x"', Str::wrap('x', '"'));
+        self::assertSame('<x>', Str::wrap('x', '<', '>'));
+
+        self::assertSame('Hello World', Str::title('hello world'));
+        self::assertSame('Привет Мир', Str::title('привет мир'));
+        self::assertSame('', Str::title(''));
+    }
+
+    #[Test]
+    public function uuidIsAValidVersion4(): void
+    {
+        $uuid = Str::uuid();
+
+        self::assertMatchesRegularExpression(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+            $uuid
+        );
+        self::assertNotSame($uuid, Str::uuid());
+    }
+
+    #[Test]
+    public function ulidIsSortableByTime(): void
+    {
+        $earlier = Str::ulid(1_000);
+        $later   = Str::ulid(2_000);
+
+        self::assertSame(26, strlen($earlier));
+        self::assertMatchesRegularExpression('/^[0-9A-HJKMNP-TV-Z]{26}$/', $earlier);
+        self::assertLessThan($later, $earlier, 'ULIDs must sort by creation time');
+        self::assertNotSame(Str::ulid(1_000), Str::ulid(1_000), 'the random part must differ');
+    }
 }

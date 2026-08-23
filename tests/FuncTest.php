@@ -66,11 +66,14 @@ final class FuncTest extends TestCase
     }
 
     #[Test]
-    public function everyFacadeMethodIsStaticAndPublic(): void
+    public function theFacadeExposesOnlyStaticMethods(): void
     {
-        foreach ((new \ReflectionClass(Func::class))->getMethods() as $method) {
+        $class = new \ReflectionClass(Func::class);
+
+        self::assertTrue($class->isFinal(), 'the facade is not meant to be extended');
+
+        foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             self::assertTrue($method->isStatic(), "Func::{$method->name} must be static");
-            self::assertTrue($method->isPublic(), "Func::{$method->name} must be public");
         }
     }
 

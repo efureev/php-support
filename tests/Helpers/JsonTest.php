@@ -268,4 +268,11 @@ final class JsonTest extends TestCase
         self::assertFalse(Json::isValid(''));
         self::assertFalse(Json::isValid(null));
     }
+
+    public function testPrettyPrint(): void
+    {
+        self::assertSame("{\n    \"a\": 1\n}", Json::prettyPrint(['a' => 1]));
+        self::assertSame('[]', Json::prettyPrint([]));
+        self::assertNull(Json::prettyPrint(NAN));
+    }
 }
