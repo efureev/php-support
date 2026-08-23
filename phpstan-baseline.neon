@@ -1,0 +1,61 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter &\$array @param\-out type of method Php\\Support\\Helpers\\Arr\:\:set\(\) expects array\<TKey of \(int\|string\), mixed\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<mixed\> given\.$#'
+			identifier: paramOut.type
+			count: 1
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Parameter &\$array by\-ref type of method Php\\Support\\Helpers\\Arr\:\:remove\(\) expects array\<TKey of \(int\|string\), T\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<TKey of \(int\|string\), mixed\>\|ArrayObject\<TKey of \(int\|string\), T\> given\.$#'
+			identifier: parameterByRef.type
+			count: 3
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Parameter &\$array by\-ref type of method Php\\Support\\Helpers\\Arr\:\:remove\(\) expects array\<TKey of \(int\|string\), T\>\|ArrayObject\<TKey of \(int\|string\), T\>, array\<mixed, mixed\> given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: src/Helpers/Arr.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:chunk\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<int, static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), T\>\)\>\) but returns static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<int, static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), T\>\)\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:groupBy\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\(int\|string\), static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\(int\|string\), T\>\)\>\) but returns static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\(int\|string\), static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\*NEVER\*, \*NEVER\*\>\)\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:groupBy\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\(int\|string\), static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<\(int\|string\), T\>\)\>\) but returns static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), Php\\Support\\Structures\\Collections\\Collection\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\ArrayCollection\:\:mapInto\(\) should return static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), T\>\) but returns static\(Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\), object\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:createFrom\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<mixed, object\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:filter\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:map\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<U, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php

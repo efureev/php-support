@@ -19,6 +19,7 @@ use Traversable;
  * @template TValue
  * @implements ArrayAccess<TKey, TValue>
  * @implements IteratorAggregate<TKey, TValue>
+ * @implements Arrayable<TKey, TValue>
  * @mixin ArrayAccess<TKey, TValue>
  */
 class Storage implements ArrayAccess, Countable, IteratorAggregate, JsonSerializable, Arrayable

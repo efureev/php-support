@@ -49,23 +49,26 @@ use function spl_object_hash;
 use function uasort;
 
 /**
- * @psalm-template TKey of array-key
- * @psalm-template T
+ * @phpstan-template TKey of array-key
+ * @phpstan-template T
  * @template-implements Collection<TKey,T>
+ * @template-implements Arrayable<TKey,T>
  *
- * @psalm-consistent-constructor
+ * @phpstan-type SortComparator (callable(T, T): mixed)|(callable(T, TKey): mixed)|string
+ * @phpstan-type SortComparisons array<array-key, SortComparator|array{string, string}>
+ *
+ * @phpstan-consistent-constructor
  */
 class ArrayCollection implements Collection, Stringable, JsonSerializable, Arrayable
 {
     /**
      * @var array
-     * @psalm-var array<TKey,T>
+     * @phpstan-var array<TKey,T>
      */
     protected array $elements = [];
 
     /**
-     * @param array|Collection $elements
-     * @psalm-param array<TKey,T> $elements
+     * @param array<TKey,T>|Collection<TKey,T> $elements
      */
     public function __construct(array|Collection $elements = [])
     {
@@ -104,7 +107,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return Traversable<int|string, mixed>
-     * @psalm-return Traversable<TKey, T>
+     * @phpstan-return Traversable<TKey, T>
      */
     public function getIterator(): Traversable
     {
@@ -132,7 +135,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * @param int|string|null $offset
      * @param T $value
-     * @psalm-param TKey|null $offset
+     * @phpstan-param TKey|null $offset
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -191,8 +194,6 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
 
     /**
      * {@inheritDoc}
-     *
-     * @psalm-suppress InvalidPropertyAssignmentValue
      */
     public function add(mixed $element): bool
     {
@@ -255,12 +256,12 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param Closure(T):U $func
+     * @phpstan-param Closure(T):U $func
      *
      * @return static
-     * @psalm-return static<TKey, U>
+     * @phpstan-return static<TKey, U>
      *
-     * @psalm-template U
+     * @phpstan-template U
      */
     public function map(Closure $func): static
     {
@@ -285,12 +286,12 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param null|Closure(T,TKey):U $func
+     * @phpstan-param null|Closure(T,TKey):U $func
      *
      * @return static
-     * @psalm-return static<TKey, U>
+     * @phpstan-return static<TKey, U>
      *
-     * @psalm-template U
+     * @phpstan-template U
      */
     public function mapByKey(string $keyName, ?string $valueName = null, ?Closure $func = null): static
     {
@@ -337,13 +338,16 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return static
-     * @psalm-return static<TKey,T>
+     * @phpstan-return static<TKey,T>
      */
     public function filter(?Closure $func = null): static
     {
         return $this->createFrom(array_filter($this->elements, $func, ARRAY_FILTER_USE_BOTH));
     }
 
+    /**
+     * @param class-string|class-string[] $type
+     */
     public function whereInstanceOf(string|array $type): static
     {
         return $this->filter(
@@ -363,7 +367,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * {@inheritDoc}
      *
      * @return static
-     * @psalm-return static<TKey,T>
+     * @phpstan-return static<TKey,T>
      */
     public function reject(Closure $callback): static
     {
@@ -408,14 +412,13 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      * This method is provided for derived classes to specify how a new
      * instance should be created when constructor semantics have changed.
      *
-     * @param array|Collection $elements Elements.
-     * @psalm-param array<K,V>|Collection $elements
+     * @param array<K,V>|Collection<K,V> $elements Elements.
      *
      * @return static
-     * @psalm-return static<K,V>
+     * @phpstan-return static<K,V>
      *
-     * @psalm-template K of array-key
-     * @psalm-template V
+     * @phpstan-template K of array-key
+     * @phpstan-template V
      */
     protected function createFrom(array|Collection $elements): static
     {
@@ -546,10 +549,10 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * {@inheritDoc}
      *
-     * @psalm-param TMaybeContained $element
+     * @phpstan-param TMaybeContained $element
      *
      * @return string|int|false
-     * @psalm-return (TMaybeContained is T ? TKey|false : false)
+     * @phpstan-return (TMaybeContained is T ? TKey|false : false)
      *
      * @template TMaybeContained
      */
@@ -585,7 +588,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      *
      *
      * @return static
-     * @psalm-return static<int,T>
+     * @phpstan-return static<int,T>
      */
     public function collapse(): static
     {
@@ -712,8 +715,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * Sort the collection using the given callback.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
-     *        |(callable(T, TKey): mixed)|string $callback
+     * @param SortComparisons|SortComparator $callback
      * @param int $options
      * @param bool $descending
      * @return static
@@ -751,8 +753,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     /**
      * Sort the collection using multiple comparisons.
      *
-     * @param array<array-key, (callable(T, T): mixed)|(callable(T, TKey): mixed)|string|array{string, string}>
-     *        $comparisons
+     * @param SortComparisons $comparisons
      * @return static
      */
     protected function sortByMany(array $comparisons = []): static
@@ -857,7 +858,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
      *
      * @param (callable(T, TKey): array-key)|string[]|string $groupBy
      * @param bool $preserveKeys
-     * @psalm-return static<array-key, static<array-key, T>>
+     * @phpstan-return static<array-key, static<array-key, T>>
      * @return static<int|string, static<int|string, T>>
      */
     public function groupBy(callable|array|string $groupBy, bool $preserveKeys = false): static

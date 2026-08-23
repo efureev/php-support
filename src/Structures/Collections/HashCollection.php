@@ -27,6 +27,7 @@ use function implode;
  * @template TO of object
  * @implements ArrayAccess<string, T>
  * @implements IteratorAggregate<string, T>
+ * @implements Arrayable<string, T>
  *
  * @phpstan-consistent-constructor
  */

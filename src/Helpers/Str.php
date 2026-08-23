@@ -447,7 +447,7 @@ class Str
     /**
      * Generate a cryptographically secure random alpha-numeric string.
      *
-     * @param int<1, max> $length
+     * @param int $length
      *
      * @throws InvalidParamException
      */
