@@ -925,4 +925,38 @@ final class StrTest extends TestCase
         self::assertSame('hello_world', Str::slugify('Hello World!', '_'));
         self::assertSame('helloworld', Str::slugify('Hello World!', ''));
     }
+
+    #[Test]
+    public function caseConversionsFindWordBoundariesInAnyScript(): void
+    {
+        // the boundary detection used to compare against the ASCII ranges, so a non-Latin
+        // string was merely lower-cased and never split
+        self::assertSame('привет_мир', Str::toSnake('ПриветМир'));
+        self::assertSame('привет-мир', Str::toKebab('ПриветМир'));
+        self::assertSame('ελλάδα_χώρα', Str::toSnake('ΕλλάδαΧώρα'));
+        self::assertSame('über_straße', Str::toSnake('ÜberStraße'));
+        self::assertSame('ПРИВЕТ_МИР', Str::toScreamingSnake('ПриветМир'));
+    }
+
+    #[Test]
+    public function toCamelKeepsNonAsciiLetters(): void
+    {
+        // toCamel used to drop every character outside the ASCII ranges outright:
+        // 'ÜberStraße' came back as 'berStrae' and Cyrillic as an empty string
+        self::assertSame('ÜberStraße', Str::toCamel('über_straße'));
+        self::assertSame('ПриветМир', Str::toCamel('привет_мир'));
+        self::assertSame('ПриветМир', Str::toCamel('Привет Мир'));
+        self::assertSame('ΕλλάδαΧώρα', Str::toCamel('ελλάδα-χώρα'));
+        self::assertSame('приветМир', Str::toLowerCamel('привет_мир'));
+    }
+
+    #[Test]
+    public function asciiCaseConversionsAreUnchanged(): void
+    {
+        self::assertSame('json_data', Str::toSnake('JSONData'));
+        self::assertSame('some_value', Str::toSnake('someValue'));
+        self::assertSame('user_123_name', Str::toSnake('user123Name'));
+        self::assertSame('SomeValue', Str::toCamel('some_value'));
+        self::assertSame('someValue', Str::toLowerCamel('some_value'));
+    }
 }

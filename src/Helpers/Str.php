@@ -110,31 +110,19 @@ class Str
             if ($i + 1 < $len) {
                 $next_letter = $get_letter($i + 1, $str);
                 if (
-                    (
-                        $letter >= 'A'
-                        && $letter <= 'Z'
-                        && $next_letter >= 'a'
-                        && $next_letter <= 'z'
-                    )
-                    || (
-                        $letter >= 'a'
-                        && $letter <= 'z'
-                        && $next_letter >= 'A'
-                        && $next_letter <= 'Z'
-                    )
+                    (self::isUpper($letter) && self::isLower($next_letter))
+                    || (self::isLower($letter) && self::isUpper($next_letter))
                 ) {
                     $next_case_is_changed = true;
                 }
             }
 
             if ($i > 0 && ($get_letter(mb_strlen($res, 'UTF-8') - 1, $res) !== $delimiter) && $next_case_is_changed) {
-                // add underscore if next letter case type is changed
-                if ($letter >= 'A' && $letter <= 'Z') {
+                // add the delimiter where the letter case flips
+                if (self::isUpper($letter)) {
                     $res .= $delimiter . $letter;
                 } else {
-                    if ($letter >= 'a' && $letter <= 'z') {
-                        $res .= $letter . $delimiter;
-                    }
+                    $res .= $letter . $delimiter;
                 }
             } else {
                 if ($letter === ' ' || $letter === '_' || $letter === '-') {
@@ -155,6 +143,37 @@ class Str
         self::evictCache(static::$delimitedCache);
 
         return static::$delimitedCache[$str][$delimiter][$screaming] = $res;
+    }
+
+    /**
+     * Whether the character is an upper-case letter, in any script.
+     *
+     * The conversions used to compare against the ASCII ranges 'A'..'Z', which silently treated
+     * every non-Latin letter as neither upper nor lower case.
+     */
+    private static function isUpper(string $char): bool
+    {
+        return $char !== ''
+            && mb_strtoupper($char, 'UTF-8') === $char
+            && mb_strtolower($char, 'UTF-8') !== $char;
+    }
+
+    /**
+     * Whether the character is a lower-case letter, in any script.
+     */
+    private static function isLower(string $char): bool
+    {
+        return $char !== ''
+            && mb_strtolower($char, 'UTF-8') === $char
+            && mb_strtoupper($char, 'UTF-8') !== $char;
+    }
+
+    /**
+     * Whether the character is a decimal digit.
+     */
+    private static function isDigit(string $char): bool
+    {
+        return $char >= '0' && $char <= '9' && strlen($char) === 1;
     }
 
     /**
@@ -227,27 +246,18 @@ class Str
         for ($i = 0; $i < $len; $i++) {
             $letter = $get_letter($i, $str);
 
-            if ($letter >= 'A' && $letter <= 'Z') {
-                $res .= $letter;
-            }
-
-            if ($letter >= '0' && $letter <= '9') {
-                $res .= $letter;
-            }
-
-            if ($letter >= 'a' && $letter <= 'z') {
-                if ($cap_next) {
-                    $res .= mb_strtoupper($letter);
-                } else {
-                    $res .= $letter;
-                }
-            }
-
             if ($letter === '_' || $letter === ' ' || $letter === '-') {
                 $cap_next = true;
-            } else {
-                $cap_next = false;
+                continue;
             }
+
+            if (self::isUpper($letter) || self::isDigit($letter)) {
+                $res .= $letter;
+            } elseif (self::isLower($letter)) {
+                $res .= $cap_next ? mb_strtoupper($letter, 'UTF-8') : $letter;
+            }
+
+            $cap_next = false;
         }
 
         self::evictCache(static::$camelCache);
