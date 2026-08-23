@@ -2,19 +2,15 @@
 
 ![](https://img.shields.io/badge/php-8.4-blue.svg)
 ![PHP Package](https://github.com/efureev/php-support/workflows/PHP%20Package/badge.svg?branch=master)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a53fb85fd1ab46169758e10dd2d818cb)](https://app.codacy.com/app/efureev/php-support?utm_source=github.com&utm_medium=referral&utm_content=efureev/php-support&utm_campaign=Badge_Grade_Settings)
 [![Latest Stable Version](https://poser.pugx.org/efureev/support/v/stable?format=flat)](https://packagist.org/packages/efureev/support)
 [![Total Downloads](https://poser.pugx.org/efureev/support/downloads)](https://packagist.org/packages/efureev/support)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a7cf8708bf58fa7e5096/maintainability)](https://codeclimate.com/github/efureev/php-support/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a7cf8708bf58fa7e5096/test_coverage)](https://codeclimate.com/github/efureev/php-support/test_coverage)
-[![codecov](https://codecov.io/gh/efureev/php-support/branch/v2/graph/badge.svg)](https://codecov.io/gh/efureev/php-support/tree/v2)
 
 ## Install
 
 For php >= 8.4
 
 ```bash
-composer require efureev/support "^5.1"
+composer require efureev/support "^5.2"
 ```
 
 For php >= 8.1 (8.1, 8.2, 8.3)
@@ -160,11 +156,15 @@ composer require efureev/support "^2.0"
 
 - Structures
     - Collections (^4.16.0)
-      - ArrayCollection
-      - HashCollection (^5.1.0)
+      - ArrayCollection - an ordered map; implements `Collection`, `Arrayable`, `JsonSerializable`,
+        `IteratorAggregate`, `ArrayAccess`, `Countable`, `Stringable`
+      - HashCollection (^5.1.0) - a string-keyed map; `add()` uses the element's class name as the key
 
 - ConditionalHandler
 - Storage (^5.0.0)
+    + set, get, remove, exist - dot notation, `$separator` configurable on `remove`
+    + count, jsonSerialize, `$data` (read-only)
+    + also usable through property access and `ArrayAccess`
 
 - Traits
     + UseStorage
@@ -185,6 +185,23 @@ composer require efureev/support "^2.0"
 - Types
     + GeoPoint
     + Point
+
+- Testing (traits for your own test suite)
+    + AdditionalAssertionsTrait - `assertClassUsesTraits`
+    + TestingHelper - `runProtectedMethod`, `getProperty`
+
+- URLify
+    + downcode - transliterates characters to their ASCII equivalents
+    + seemsUTF8
+
+## Notes
+
+`Str::to*` case conversions detect word boundaries with ASCII comparisons, so non-Latin input
+(Cyrillic, Greek) is lower-cased but not split into words.
+
+`Arr::toPostgresArray` quotes an element only when the PostgreSQL array literal requires it, and
+writes PHP `null` as the `NULL` keyword. `Arr::fromPostgresArray` reads unquoted `NULL` back as the
+string `'NULL'`, so a round trip is not value-preserving for `null`.
 
 ## Test
 

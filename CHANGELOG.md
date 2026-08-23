@@ -4,6 +4,63 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog][keepachangelog] and this project adheres to [Semantic Versioning][semver].
 
+## v5.2.1
+
+### Fixed
+
+- Fix `Arr::toPostgresArray` producing a broken array literal: an element containing a comma was split
+  into several elements, quotes and backslashes leaked from the JSON escaping, and a string equal to
+  `null` was written unquoted, so PostgreSQL read it back as SQL NULL
+- Fix `Arr::fromPostgresArray` losing a quoted empty string and not unescaping backslash sequences
+- Fix `Arr::fromPostgresPoint` turning any malformed value into the point `(0, 0)` with a warning
+- Fix `ArrayCollection` and `HashCollection` not implementing `JsonSerializable`, so `json_encode()`
+  on a collection silently returned `{}`
+- Fix `UseConfigurableStorage` never calling `configureProps()`: an unknown key threw instead of
+  being written to the `Storage`
+- Fix `UseStorage` treating a declared but uninitialized typed property as present, which made
+  reading it a fatal error instead of a storage lookup
+- Fix `Arr::fillKeysByValues` returning all-null values for an associative `$keys` array
+- Fix `Arr::merge` overwriting instead of appending when an integer key already held `null`
+- Fix `Point::fromJson` and `GeoPoint::fromJson` raising warnings and a `TypeError` on a payload
+  without the expected keys
+- Fix `GeoPoint::toJson` declaring `string` while `Json::encode` may return `null`
+- Fix `HasPrePostActions::getCallbackActions('0')` returning every group
+- Fix `ConsolePrint` using the CLI-only `STDOUT`/`STDERR` constants
+- Fix `Str::truncate` accepting a non-positive length
+- Fix `Str::slugifyWithFormat` interpolating `$format` into the pattern unescaped
+- Fix `Bit::toInt` silently converting a non-binary string to `0`
+- Fix `ArrayCollection::getProperty` ignoring `$throwOnMiss` for arrays
+- Fix `ArrayCollection::random` bypassing `createFrom()`, which broke subclasses
+- Fix `MissingConfigException::$needKey` being stored but never used
+- Fix deprecated `ReflectionMethod::setAccessible()` calls in `Testing\TestingHelper`
+- Fix the release workflow not matching patch tags, and CI not running on pull requests
+
+### Changed
+
+- `Arr::toPostgresArray` quotes an element only when the array literal syntax requires it, and writes
+  PHP `null` as the `NULL` keyword
+- `Arr::set` returns the whole array instead of the innermost sub-array
+- `Arr::remove` and `Storage::remove` accept a `$separator` argument, like `get`, `set` and `has`
+- `Arr::random` throws `Php\Support\Exceptions\InvalidArgumentException`, a subclass of the global one
+- `ArrayCollection::chunk` throws `InvalidParamException` for a non-positive size instead of returning
+  an empty collection
+- `ArrayCollection::mapByKey` throws `MissingPropertyException` for a missing key or property
+- `Str::truncate`, `Str::slugifyWithFormat` and `Bit::toInt` throw `InvalidParamException` on invalid input
+- `UseConfigurableStorage::configurable` writes unknown keys to the `Storage` instead of throwing
+- PHPUnit now fails on warnings, deprecations, notices and risky tests
+
+### Added
+
+- Add `ext-json` and `ext-ctype` to the package requirements
+- Add `Arrayable` and `JsonSerializable` to `ArrayCollection` and `HashCollection`, plus
+  `HashCollection::toArray`
+- Add a PHPCS job to CI and a dependabot configuration
+
+### Removed
+
+- Remove the unused `candidates/` directory and `infection.json`
+- Remove the unused `symfony/var-dumper` dev dependency and the `infection` composer script
+
 ## v5.2.0
 
 ### Added
