@@ -17,8 +17,16 @@ use Php\Support\Exceptions\InvalidParamException;
  */
 trait WithEnhances
 {
-    public static function casesToString(callable $decorator, string $delimiter = ', '): string
+    /**
+     * Joins the cases into a string.
+     *
+     * @param null|callable(static): string $decorator Defaults to the case value
+     * @param string $delimiter
+     */
+    public static function casesToString(?callable $decorator = null, string $delimiter = ', '): string
     {
+        $decorator ??= static fn(self $enumItem) => (string)$enumItem->value;
+
         return implode(
             $delimiter,
             array_map($decorator, self::cases())

@@ -5,32 +5,27 @@ declare(strict_types=1);
 namespace Php\Support\Enums;
 
 /**
- * @method static string[] values();
+ * String-flavoured additions on top of {@see WithEnhances}.
+ *
+ * Everything else - values, names, hasValue, hasName, tryFromName, fromName, labels,
+ * casesToString - comes from that trait unchanged. Until 6.0 this trait redeclared
+ * casesToString() with the arguments the other way round, so the same call meant different
+ * things depending on which trait an enum happened to use.
+ *
+ * @method static string[] values()
  * @mixin \BackedEnum
  */
 trait WithEnhancesForStrings
 {
-    use WithEnhances {
-        casesToString as casesToStringBase;
-        hasValue as hasValueBase;
-    }
+    use WithEnhances;
 
-    public static function casesToString(string $delimiter = ', ', ?callable $decorator = null): string
-    {
-        if ($decorator === null) {
-            $decorator = static fn(self $enumItem) => "{$enumItem->value}";
-        }
-
-        return self::casesToStringBase($decorator, $delimiter);
-    }
-
+    /**
+     * Joins the case values into a string, each wrapped in single quotes.
+     *
+     * Handy for building an SQL IN list or an enum type definition.
+     */
     public static function casesToEscapeString(string $delimiter = ', '): string
     {
-        return static::casesToString($delimiter, static fn(self $enumItem) => "'$enumItem->value'");
-    }
-
-    public static function hasValue(string|int $value): bool
-    {
-        return static::hasValueBase($value);
+        return static::casesToString(static fn(self $enumItem) => "'$enumItem->value'", $delimiter);
     }
 }
