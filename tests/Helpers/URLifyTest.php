@@ -59,12 +59,17 @@ final class URLifyTest extends TestCase
     }
 
     #[Test]
-    public function languageMapIsRebuiltBetweenCalls(): void
+    public function aLanguageMapDoesNotLeakIntoLaterCalls(): void
     {
+        // regression: initLanguageMap() used to promote the requested language inside the shared
+        // $maps array permanently, and the cache guard accepted "no language" as a cache hit,
+        // so one call with 'de' made ü decode as "ue" for the rest of the process
+        self::assertSame('u', URLify::downcode('ü'));
         self::assertSame('ue', URLify::downcode('ü', 'de'));
+        self::assertSame('u', URLify::downcode('ü'));
         self::assertSame('ue', URLify::downcode('ü', 'de'));
-        // switching language must not keep the previous priority
-        self::assertSame('a', URLify::downcode('à', 'latin'));
+        self::assertSame('u', URLify::downcode('ü', 'latin'));
+        self::assertSame('u', URLify::downcode('ü'));
     }
 
     #[Test]

@@ -765,16 +765,23 @@ class URLify
      */
     private static function initLanguageMap(string $language = ''): void
     {
-        if (count(self::$map) > 0 && (($language === '') || ($language === self::$language))) {
+        // Only reuse the cached map when it was built for this very language. The old guard
+        // also accepted an empty $language, which meant "no language" silently reused whichever
+        // language-specific map happened to be cached from a previous call.
+        if (self::$map !== [] && $language === self::$language) {
             return;
         }
 
-        // Is a specific map associated with $language?
-        if (isset(self::$maps[$language]) && is_array(self::$maps[$language])) {
-            // Move this map to end. This means it will have priority over others
-            $map = self::$maps[$language];
-            unset(self::$maps[$language]);
-            self::$maps[$language] = $map;
+        $maps = self::$maps;
+
+        // Give the requested language priority by applying its map last.
+        // This must not reorder self::$maps itself: that promotion used to be permanent, so a
+        // single downcode($text, 'de') made the German map win for every later call, including
+        // the ones that asked for no language at all.
+        if (isset($maps[$language]) && is_array($maps[$language])) {
+            $languageMap = $maps[$language];
+            unset($maps[$language]);
+            $maps[$language] = $languageMap;
         }
 
         // Reset static vars
@@ -782,7 +789,7 @@ class URLify
         self::$map      = [];
         self::$chars    = '';
 
-        foreach (self::$maps as $map) {
+        foreach ($maps as $map) {
             foreach ($map as $orig => $conv) {
                 self::$map[$orig] = $conv;
                 self::$chars     .= $orig;

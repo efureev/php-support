@@ -10,7 +10,7 @@
 For php >= 8.4
 
 ```bash
-composer require efureev/support "^5.2"
+composer require efureev/support "^5.3"
 ```
 
 For php >= 8.1 (8.1, 8.2, 8.3)
@@ -58,6 +58,19 @@ composer require efureev/support "^2.0"
       - toIndexedArray
       - toPostgresArray
       - toPostgresPoint (^4.8.0)
+      - only (^5.3.0)
+      - except (^5.3.0)
+      - pluck (^5.3.0)
+      - first (^5.3.0)
+      - last (^5.3.0)
+      - flatten (^5.3.0)
+      - wrap (^5.3.0)
+      - dot (^5.3.0)
+      - undot (^5.3.0)
+      - keyBy (^5.3.0)
+      - where (^5.3.0)
+      - isAssoc (^5.3.0)
+      - isList (^5.3.0)
     + String
         - isRegExp
         - removeAccents (^4.9.0)
@@ -78,10 +91,26 @@ composer require efureev/support "^2.0"
         - trimPrefix
         - trimSuffix
         - truncate (^4.9.0)
+        - after (^5.3.0)
+        - before (^5.3.0)
+        - between (^5.3.0)
+        - clearCache (^5.3.0)
+        - contains (^5.3.0)
+        - endsWith (^5.3.0)
+        - lcFirst (^5.3.0)
+        - limit (^5.3.0)
+        - mask (^5.3.0)
+        - random (^5.3.0)
+        - squish (^5.3.0)
+        - startsWith (^5.3.0)
+        - ucFirst (^5.3.0)
     + Json
         - decode
+        - decodeOrThrow (^5.3.0)
         - encode
+        - encodeOrThrow (^5.3.0)
         - htmlEncode
+        - isValid (^5.3.0)
     + Bit
         - addFlag
         - checkFlag
@@ -130,8 +159,12 @@ composer require efureev/support "^2.0"
     - toKeyValueArray (^4.27.0)
     - toValueKeyArray (^4.27.0)
     - values
+    - fromName (^5.3.0)
+    - labels (^5.3.0)
+    - tryFromName (^5.3.0)
 
 - Exceptions
+    + ExceptionInterface (^5.3.0) - marker implemented by all of them
     + ConfigException
     + Exception
     + InvalidArgumentException
@@ -158,13 +191,15 @@ composer require efureev/support "^2.0"
     - Collections (^4.16.0)
       - ArrayCollection - an ordered map; implements `Collection`, `Arrayable`, `JsonSerializable`,
         `IteratorAggregate`, `ArrayAccess`, `Countable`, `Stringable`
-      - HashCollection (^5.1.0) - a string-keyed map; `add()` uses the element's class name as the key
+      - HashCollection (^5.1.0) - a string-keyed map; `add()` uses the element's class name as the key.
+        Iterable, with `keys`, `values`, `map`, `filter`, `each`, `reduce`, `implode` (^5.3.0)
 
 - ConditionalHandler
 - Storage (^5.0.0)
-    + set, get, remove, exist - dot notation, `$separator` configurable on `remove`
+    + set, get, remove, exist - dot notation, `$separator` configurable on all four (^5.3.0)
+    + all, toArray, isEmpty, clear, countRecursive (^5.3.0)
     + count, jsonSerialize, `$data` (read-only)
-    + also usable through property access and `ArrayAccess`
+    + also usable through property access, `ArrayAccess` and `foreach` (^5.3.0)
 
 - Traits
     + UseStorage
@@ -195,6 +230,18 @@ composer require efureev/support "^2.0"
     + seemsUTF8
 
 ## Notes
+
+Every exception this package throws implements `Php\Support\Exceptions\ExceptionInterface`, so a
+consumer can catch all of them at once even though the concrete classes extend different SPL
+exceptions:
+
+```php
+try {
+    // ...
+} catch (\Php\Support\Exceptions\ExceptionInterface $e) {
+}
+```
+
 
 `Str::to*` case conversions detect word boundaries with ASCII comparisons, so non-Latin input
 (Cyrillic, Greek) is lower-cased but not split into words.
