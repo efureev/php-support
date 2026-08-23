@@ -162,4 +162,142 @@ final class HashCollectionTest extends TestCase
         self::assertInstanceOf(Arrayable::class, new HashCollection());
         self::assertInstanceOf(\JsonSerializable::class, new HashCollection());
     }
+
+    #[Test]
+    public function iteratesOverElements(): void
+    {
+        $c = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+            ]
+        );
+
+        $seen = [];
+        foreach ($c as $key => $value) {
+            $seen[$key] = $value;
+        }
+
+        self::assertSame(
+            [
+                'a' => 1,
+                'b' => 2,
+            ],
+            $seen
+        );
+        self::assertInstanceOf(\IteratorAggregate::class, $c);
+    }
+
+    #[Test]
+    public function keysAndValues(): void
+    {
+        $c = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+            ]
+        );
+
+        self::assertSame(
+            [
+                'a',
+                'b',
+            ],
+            $c->keys()
+        );
+        self::assertSame(
+            [
+                1,
+                2,
+            ],
+            $c->values()
+        );
+    }
+
+    #[Test]
+    public function mapReceivesValueAndKey(): void
+    {
+        $c = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+            ]
+        );
+
+        self::assertSame(
+            [
+                'a' => 'a1',
+                'b' => 'b2',
+            ],
+            $c->map(static fn($value, $key) => $key . $value)->all()
+        );
+        self::assertSame([], (new HashCollection())->map(static fn($v) => $v)->all());
+    }
+
+    #[Test]
+    public function filterPreservesKeys(): void
+    {
+        $c = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
+
+        self::assertSame(
+            [
+                'b' => 2,
+                'c' => 3,
+            ],
+            $c->filter(static fn($value) => $value > 1)->all()
+        );
+        self::assertSame(['a' => 1], $c->filter(static fn($value, $key) => $key === 'a')->all());
+    }
+
+    #[Test]
+    public function eachStopsOnFalse(): void
+    {
+        $c    = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
+        $seen = [];
+
+        $result = $c->each(
+            static function ($value, $key) use (&$seen) {
+                $seen[] = $key;
+
+                return $value < 2;
+            }
+        );
+
+        self::assertSame($c, $result);
+        self::assertSame(
+            [
+                'a',
+                'b',
+            ],
+            $seen
+        );
+    }
+
+    #[Test]
+    public function reduceAndImplode(): void
+    {
+        $c = new HashCollection(
+            [
+                'a' => 1,
+                'b' => 2,
+                'c' => 3,
+            ]
+        );
+
+        self::assertSame(6, $c->reduce(static fn($carry, $value) => (int)$carry + $value, 0));
+        self::assertSame('1,2,3', $c->implode(','));
+        self::assertNull((new HashCollection())->reduce(static fn($carry, $value) => $value));
+    }
 }

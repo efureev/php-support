@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests;
 
+use Php\Support\Interfaces\Arrayable;
 use Php\Support\Storage;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -21,7 +22,7 @@ final class StorageTest extends TestCase
     #[Test]
     public function setSimpleProp(): void
     {
-        $storage = new Storage();
+        $storage       = new Storage();
         $storage->test = 'name';
 
         self::assertEquals(['test' => 'name'], $storage->jsonSerialize());
@@ -30,7 +31,7 @@ final class StorageTest extends TestCase
     #[Test]
     public function getSimpleProp(): void
     {
-        $storage = new Storage();
+        $storage       = new Storage();
         $storage->test = 'name';
 
         self::assertEquals('name', $storage->test);
@@ -49,7 +50,7 @@ final class StorageTest extends TestCase
     public function getPathProp(): void
     {
         $storage = new Storage();
-        $storage->{'first.second'} = 'name';
+        $storage->{'first.second'}  = 'name';
         $storage->{'first.second2'} = 'test';
 
         self::assertEquals(['second' => 'name', 'second2' => 'test'], $storage->{'first'});
@@ -145,6 +146,82 @@ final class StorageTest extends TestCase
         unset($storage['first']);
         self::assertNull($storage['first']);
         self::assertEquals([], $storage->jsonSerialize());
+    }
 
+    #[Test]
+    public function iteratesOverStoredData(): void
+    {
+        $storage = new Storage(
+            [
+                'a' => 1,
+                'b' => 2,
+            ]
+        );
+
+        $seen = [];
+        foreach ($storage as $key => $value) {
+            $seen[$key] = $value;
+        }
+
+        self::assertSame(
+            [
+                'a' => 1,
+                'b' => 2,
+            ],
+            $seen
+        );
+        self::assertInstanceOf(\IteratorAggregate::class, $storage);
+    }
+
+    #[Test]
+    public function allAndToArrayAndArrayable(): void
+    {
+        $storage = new Storage(['a' => 1]);
+
+        self::assertSame(['a' => 1], $storage->all());
+        self::assertSame(['a' => 1], $storage->toArray());
+        self::assertInstanceOf(Arrayable::class, $storage);
+    }
+
+    #[Test]
+    public function emptinessAndClear(): void
+    {
+        $storage = new Storage();
+        self::assertTrue($storage->isEmpty());
+
+        $storage->set('a', 1);
+        self::assertFalse($storage->isEmpty());
+
+        $storage->clear();
+        self::assertTrue($storage->isEmpty());
+        self::assertSame([], $storage->all());
+    }
+
+    #[Test]
+    public function countIsTopLevelAndCountRecursiveIsNot(): void
+    {
+        $storage = new Storage();
+        $storage->set('a.b', 1);
+        $storage->set('a.c', 2);
+        $storage->set('d', 3);
+
+        self::assertCount(2, $storage);
+        self::assertSame(3, $storage->countRecursive());
+    }
+
+    #[Test]
+    public function honoursACustomSeparator(): void
+    {
+        $storage = new Storage();
+
+        $storage->set('x/y', 1, '/');
+
+        self::assertSame(['x' => ['y' => 1]], $storage->all());
+        self::assertSame(1, $storage->get('x/y', null, '/'));
+        self::assertTrue($storage->exist('x/y', '/'));
+
+        $storage->remove('x/y', '/');
+
+        self::assertFalse($storage->exist('x/y', '/'));
     }
 }
