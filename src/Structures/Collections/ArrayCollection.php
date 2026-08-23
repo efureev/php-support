@@ -10,11 +10,20 @@ use JsonSerializable;
 use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Exceptions\MissingPropertyException;
 use Php\Support\Helpers\Arr;
+use Php\Support\Helpers\Json;
 use Php\Support\Interfaces\Arrayable;
 use Stringable;
 use Traversable;
 
 use function array_chunk;
+use function is_numeric;
+use function min;
+use function max;
+use function implode;
+use function array_sum;
+use function array_intersect;
+use function array_diff;
+use function array_combine;
 use function array_filter;
 use function array_key_exists;
 use function array_keys;
@@ -898,5 +907,278 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     public function __toString(): string
     {
         return self::class . '@' . spl_object_hash($this);
+    }
+
+    /**
+     * Get the values of a given key, optionally keyed by another one.
+     *
+     * @param string|int|null $value
+     * @param string|int|null $key
+     *
+     * @return static<array-key, mixed>
+     */
+    public function pluck(string|int|null $value, string|int|null $key = null): static
+    {
+        return $this->createFrom(Arr::pluck($this->elements, $value, $key));
+    }
+
+    /**
+     * Sum the collection, optionally mapping each element first.
+     *
+     * @param (callable(T, TKey): (int|float))|string|null $callback
+     */
+    public function sum(callable|string|null $callback = null): int|float
+    {
+        $values = $this->resolveNumbers($callback);
+
+        return array_sum($values);
+    }
+
+    /**
+     * Average of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): (int|float))|string|null $callback
+     */
+    public function avg(callable|string|null $callback = null): int|float|null
+    {
+        $values = $this->resolveNumbers($callback);
+
+        return $values === [] ? null : array_sum($values) / count($values);
+    }
+
+    /**
+     * Smallest value of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     */
+    public function min(callable|string|null $callback = null): mixed
+    {
+        $values = $this->resolveValues($callback);
+
+        return $values === [] ? null : min($values);
+    }
+
+    /**
+     * Largest value of the collection, or null when it is empty.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     */
+    public function max(callable|string|null $callback = null): mixed
+    {
+        $values = $this->resolveValues($callback);
+
+        return $values === [] ? null : max($values);
+    }
+
+    /**
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     *
+     * @return array<int, int|float>
+     */
+    private function resolveNumbers(callable|string|null $callback): array
+    {
+        return array_map(static fn($value) => is_numeric($value) ? $value + 0 : 0, $this->resolveValues($callback));
+    }
+
+    /**
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     *
+     * @return array<int, mixed>
+     */
+    private function resolveValues(callable|string|null $callback): array
+    {
+        if ($callback === null) {
+            return array_values($this->elements);
+        }
+
+        $retriever = $this->valueRetriever($callback);
+        $result    = [];
+
+        foreach ($this->elements as $key => $element) {
+            $result[] = $retriever($element, $key);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Remove duplicate values. Keys of the first occurrence are preserved.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     * @param bool $strict Compare types as well.
+     *
+     * @return static<TKey, T>
+     */
+    public function unique(callable|string|null $callback = null, bool $strict = false): static
+    {
+        $retriever = $callback === null ? null : $this->valueRetriever($callback);
+        $seen      = [];
+        $result    = [];
+
+        foreach ($this->elements as $key => $element) {
+            $marker = $retriever === null ? $element : $retriever($element, $key);
+
+            if (in_array($marker, $seen, $strict)) {
+                continue;
+            }
+
+            $seen[]       = $marker;
+            $result[$key] = $element;
+        }
+
+        return $this->createFrom($result);
+    }
+
+    /**
+     * Key the collection by a field or a callback.
+     *
+     * @param (callable(T, TKey): array-key)|string|int $keyBy
+     *
+     * @return static<array-key, T>
+     */
+    public function keyBy(callable|string|int $keyBy): static
+    {
+        return $this->createFrom(Arr::keyBy($this->elements, $keyBy));
+    }
+
+    /**
+     * Flatten a multi-dimensional collection into a single level.
+     *
+     * @return static<int, mixed>
+     */
+    public function flatten(int|float $depth = INF): static
+    {
+        return $this->createFrom(Arr::flatten($this->elements, $depth));
+    }
+
+    /**
+     * Reset the keys to a sequential range.
+     *
+     * @return static<int, T>
+     */
+    public function values(): static
+    {
+        return $this->createFrom(array_values($this->elements));
+    }
+
+    /**
+     * Concatenate the elements, optionally plucking a field first.
+     */
+    public function implode(string $glue = '', string|int|null $field = null): string
+    {
+        $values = $field === null ? $this->elements : Arr::pluck($this->elements, $field);
+
+        return implode($glue, array_map(static fn($value) => (string)$value, $values));
+    }
+
+    /**
+     * Pass the collection to the callback and return the collection.
+     *
+     * @param callable(static): mixed $callback
+     */
+    public function tap(callable $callback): static
+    {
+        $callback($this);
+
+        return $this;
+    }
+
+    /**
+     * Pass the collection to the callback and return its result.
+     *
+     * @template TPipe
+     * @param callable(static): TPipe $callback
+     *
+     * @return TPipe
+     */
+    public function pipe(callable $callback): mixed
+    {
+        return $callback($this);
+    }
+
+    /**
+     * Apply the callback when the value is truthy.
+     *
+     * @param callable(static, mixed): mixed $callback
+     * @param null|callable(static, mixed): mixed $default
+     */
+    public function when(mixed $value, callable $callback, ?callable $default = null): static
+    {
+        if ($value) {
+            return $callback($this, $value) ?? $this;
+        }
+
+        if ($default !== null) {
+            return $default($this, $value) ?? $this;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Apply the callback when the value is falsy.
+     *
+     * @param callable(static, mixed): mixed $callback
+     * @param null|callable(static, mixed): mixed $default
+     */
+    public function unless(mixed $value, callable $callback, ?callable $default = null): static
+    {
+        return $this->when(!$value, $callback, $default);
+    }
+
+    /**
+     * Elements that are not present in the given items. Keys are preserved.
+     *
+     * @param iterable<array-key, T> $items
+     *
+     * @return static<TKey, T>
+     */
+    public function diff(iterable $items): static
+    {
+        return $this->createFrom(array_diff($this->elements, Arr::toArray($items)));
+    }
+
+    /**
+     * Elements that are also present in the given items. Keys are preserved.
+     *
+     * @param iterable<array-key, T> $items
+     *
+     * @return static<TKey, T>
+     */
+    public function intersect(iterable $items): static
+    {
+        return $this->createFrom(array_intersect($this->elements, Arr::toArray($items)));
+    }
+
+    /**
+     * Take the first (or, for a negative value, the last) $limit elements.
+     *
+     * @return static<TKey, T>
+     */
+    public function take(int $limit): static
+    {
+        if ($limit < 0) {
+            return $this->createFrom(array_slice($this->elements, $limit, null, true));
+        }
+
+        return $this->createFrom(array_slice($this->elements, 0, $limit, true));
+    }
+
+    /**
+     * Skip the first $count elements.
+     *
+     * @return static<TKey, T>
+     */
+    public function skip(int $count): static
+    {
+        return $this->createFrom(array_slice($this->elements, $count, null, true));
+    }
+
+    /**
+     * JSON representation of the collection.
+     */
+    public function toJson(int $options = 320): ?string
+    {
+        return Json::encode($this->elements, $options);
     }
 }

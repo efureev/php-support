@@ -662,4 +662,173 @@ final class ArrayCollectionTest extends TestCase
 
         self::assertInstanceOf($c::class, $c->random(2));
     }
+
+    #[Test]
+    public function aggregates(): void
+    {
+        $numbers = new ArrayCollection([3, 1, 2]);
+        $people  = new ArrayCollection(
+            [
+                [
+                    'id'  => 1,
+                    'age' => 30,
+                ],
+                [
+                    'id'  => 2,
+                    'age' => 20,
+                ],
+            ]
+        );
+
+        self::assertSame(6, $numbers->sum());
+        self::assertSame(50, $people->sum('age'));
+        self::assertSame(2, $numbers->avg());
+        self::assertSame(25, $people->avg('age'));
+        self::assertSame(1, $numbers->min());
+        self::assertSame(3, $numbers->max());
+        self::assertSame(20, $people->min(static fn($p) => $p['age']));
+        self::assertSame(30, $people->max('age'));
+    }
+
+    #[Test]
+    public function aggregatesOfAnEmptyCollection(): void
+    {
+        $empty = new ArrayCollection();
+
+        self::assertSame(0, $empty->sum());
+        self::assertNull($empty->avg());
+        self::assertNull($empty->min());
+        self::assertNull($empty->max());
+    }
+
+    #[Test]
+    public function pluck(): void
+    {
+        $people = new ArrayCollection(
+            [
+                [
+                    'id'   => 1,
+                    'name' => 'a',
+                ],
+                [
+                    'id'   => 2,
+                    'name' => 'b',
+                ],
+            ]
+        );
+
+        self::assertSame(['a', 'b'], $people->pluck('name')->all());
+        self::assertSame([1 => 'a', 2 => 'b'], $people->pluck('name', 'id')->all());
+    }
+
+    #[Test]
+    public function unique(): void
+    {
+        self::assertSame([0 => 1, 1 => 2, 3 => 3], (new ArrayCollection([1, 2, 2, 3]))->unique()->all());
+
+        $people = new ArrayCollection(
+            [
+                ['n' => 'a'],
+                ['n' => 'b'],
+                ['n' => 'a'],
+            ]
+        );
+        self::assertCount(2, $people->unique('n'));
+
+        // loose by default, strict on request
+        self::assertCount(1, (new ArrayCollection([1, '1']))->unique());
+        self::assertCount(2, (new ArrayCollection([1, '1']))->unique(null, true));
+    }
+
+    #[Test]
+    public function keyByAndValuesAndFlatten(): void
+    {
+        $people = new ArrayCollection(
+            [
+                ['id' => 1],
+                ['id' => 2],
+            ]
+        );
+
+        self::assertSame([1, 2], $people->keyBy('id')->getKeys());
+        self::assertSame(['k1', 'k2'], $people->keyBy(static fn($p) => 'k' . $p['id'])->getKeys());
+
+        self::assertSame([1, 2], (new ArrayCollection(['a' => 1, 'b' => 2]))->values()->all());
+        self::assertSame([1, 2, 3], (new ArrayCollection([1, [2, [3]]]))->flatten()->all());
+        self::assertSame([1, 2, [3]], (new ArrayCollection([1, [2, [3]]]))->flatten(1)->all());
+    }
+
+    #[Test]
+    public function implode(): void
+    {
+        self::assertSame('3,1,2', (new ArrayCollection([3, 1, 2]))->implode(','));
+        self::assertSame('', (new ArrayCollection())->implode(','));
+
+        $people = new ArrayCollection(
+            [
+                ['n' => 'a'],
+                ['n' => 'b'],
+            ]
+        );
+        self::assertSame('a|b', $people->implode('|', 'n'));
+    }
+
+    #[Test]
+    public function tapAndPipe(): void
+    {
+        $c    = new ArrayCollection([1, 2, 3]);
+        $seen = null;
+
+        $result = $c->tap(
+            function (ArrayCollection $collection) use (&$seen): void {
+                $seen = $collection->count();
+            }
+        );
+
+        self::assertSame($c, $result);
+        self::assertSame(3, $seen);
+        self::assertSame(3, $c->pipe(static fn(ArrayCollection $collection) => $collection->count()));
+    }
+
+    #[Test]
+    public function whenAndUnless(): void
+    {
+        $c = new ArrayCollection([1, 2, 3]);
+
+        self::assertSame([1], $c->when(true, static fn(ArrayCollection $col) => $col->take(1))->all());
+        self::assertSame([1, 2, 3], $c->when(false, static fn(ArrayCollection $col) => $col->take(1))->all());
+        self::assertSame([1], $c->when(false, static fn($col) => $col, static fn($col) => $col->take(1))->all());
+
+        self::assertSame([1], $c->unless(false, static fn(ArrayCollection $col) => $col->take(1))->all());
+        self::assertSame([1, 2, 3], $c->unless(true, static fn(ArrayCollection $col) => $col->take(1))->all());
+    }
+
+    #[Test]
+    public function diffAndIntersect(): void
+    {
+        $c = new ArrayCollection([1, 2, 3]);
+
+        self::assertSame([0 => 1, 2 => 3], $c->diff([2])->all());
+        self::assertSame([1 => 2, 2 => 3], $c->intersect([2, 3, 9])->all());
+        self::assertSame([1, 2, 3], $c->diff([])->all());
+    }
+
+    #[Test]
+    public function takeAndSkip(): void
+    {
+        $c = new ArrayCollection([1, 2, 3]);
+
+        self::assertSame([1, 2], $c->take(2)->all());
+        self::assertSame([1 => 2, 2 => 3], $c->take(-2)->all());
+        self::assertSame([1, 2, 3], $c->take(10)->all());
+        self::assertSame([1 => 2, 2 => 3], $c->skip(1)->all());
+        self::assertSame([], $c->skip(10)->all());
+    }
+
+    #[Test]
+    public function toJson(): void
+    {
+        self::assertSame('[1,2]', (new ArrayCollection([1, 2]))->toJson());
+        self::assertSame('{"a":1}', (new ArrayCollection(['a' => 1]))->toJson());
+    }
 }
