@@ -18,8 +18,8 @@ trait HasPrePostActions
 
     public function getCallbackActions(?string $key = null): array
     {
-        return $key ?
-            $this->executeCallbacks[$key] ?? []
+        return $key !== null
+            ? $this->executeCallbacks[$key] ?? []
             : $this->executeCallbacks;
     }
 

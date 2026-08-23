@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Php\Support\Tests\Helpers;
 
+use Php\Support\Exceptions\InvalidParamException;
 use Php\Support\Helpers\Str;
 use Php\Support\Helpers\URLify;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -583,7 +584,7 @@ final class StrTest extends TestCase
             [
                 '"{{%KEY%}}-{{%TOKEN%}}" - test',
                 [
-                    '{{%KEY%}}' => 'key',
+                    '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 '"key-token" - test',
@@ -591,7 +592,7 @@ final class StrTest extends TestCase
             [
                 'sdasdas',
                 [
-                    '{{%KEY%}}' => 'key',
+                    '{{%KEY%}}'   => 'key',
                     '{{%TOKEN%}}' => 'token',
                 ],
                 'sdasdas',
@@ -701,7 +702,7 @@ final class StrTest extends TestCase
             mb_internal_encoding('UTF-8');
             // Converts the 'ç' UTF-8 character to UCS-2LE
             $utf8Char = pack('n', 50087);
-            $ucsChar = mb_convert_encoding($utf8Char, 'UCS-2LE', 'UTF-8');
+            $ucsChar  = mb_convert_encoding($utf8Char, 'UCS-2LE', 'UTF-8');
 
             self::assertEquals(
                 $utf8Char,
@@ -769,5 +770,26 @@ final class StrTest extends TestCase
         $this->assertEquals('a-simple:title', Str::trimSuffix('a-simple:title', 'asdas'));
         $this->assertEquals('a-simple:title', Str::trimSuffix('a-simple:title', 'a-sdas'));
         $this->assertEquals('', Str::trimSuffix('', 'a-simple:'));
+    }
+
+    #[Test]
+    public function truncateRejectsNonPositiveLength(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::truncate('abc', 0);
+    }
+
+    #[Test]
+    public function truncateRejectsNegativeLength(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::truncate('abc', -1);
+    }
+
+    #[Test]
+    public function slugifyWithFormatRejectsBrokenPattern(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::slugifyWithFormat('a/b', '-', 'a/b');
     }
 }

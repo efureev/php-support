@@ -7,6 +7,8 @@ namespace Php\Support\Structures\Collections;
 use ArrayIterator;
 use Closure;
 use JsonSerializable;
+use Php\Support\Exceptions\InvalidParamException;
+use Php\Support\Exceptions\MissingPropertyException;
 use Php\Support\Helpers\Arr;
 use Php\Support\Interfaces\Arrayable;
 use Stringable;
@@ -297,17 +299,29 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
 
     private function getProperty(mixed $target, string|int $keyName, bool $throwOnMiss = true): mixed
     {
-        return match (true) {
-            is_array($target) || $target instanceof \ArrayAccess
-            => $throwOnMiss ? $target[$keyName] : ($target[$keyName] ?? null),
-            is_object($target)
-            => $throwOnMiss ? $target->$keyName : (property_exists($target, $keyName) ? $target->$keyName : null),
-            default => $throwOnMiss
-                ? throw new \Php\Support\Exceptions\InvalidParamException(
-                    'Unsupported target type for property extraction'
-                )
-                : null,
-        };
+        if (is_array($target) || $target instanceof \ArrayAccess) {
+            $exists = is_array($target)
+                ? array_key_exists($keyName, $target)
+                : $target->offsetExists($keyName);
+
+            if ($exists) {
+                return $target[$keyName];
+            }
+
+            return $throwOnMiss ? throw new MissingPropertyException((string)$keyName) : null;
+        }
+
+        if (is_object($target)) {
+            if (property_exists($target, $keyName) || isset($target->$keyName)) {
+                return $target->$keyName;
+            }
+
+            return $throwOnMiss ? throw new MissingPropertyException((string)$keyName) : null;
+        }
+
+        return $throwOnMiss
+            ? throw new InvalidParamException('Unsupported target type for property extraction')
+            : null;
     }
 
     /**
@@ -619,7 +633,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     public function chunk(int $size): static
     {
         if ($size <= 0) {
-            return $this->createFrom([]);
+            throw new InvalidParamException("Chunk size must be a positive integer, $size given", 'size');
         }
 
         $chunks = [];
@@ -793,10 +807,10 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
         }
 
         if (is_callable($number)) {
-            return new static(Arr::random($this->elements, $number($this), $preserveKeys));
+            return $this->createFrom(Arr::random($this->elements, $number($this), $preserveKeys));
         }
 
-        return new static(Arr::random($this->elements, $number, $preserveKeys));
+        return $this->createFrom(Arr::random($this->elements, $number, $preserveKeys));
     }
 
     /**

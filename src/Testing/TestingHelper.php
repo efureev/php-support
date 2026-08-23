@@ -24,7 +24,7 @@ trait TestingHelper
     protected static function runProtectedMethod(string|object $class, string $method, ...$params): mixed
     {
         $methodReflex = new \ReflectionMethod($class, $method);
-        $methodReflex->setAccessible(true);
+
         return $methodReflex->invoke($class, ...$params);
     }
 
@@ -43,7 +43,6 @@ trait TestingHelper
         $reflection = new ReflectionClass($object);
 
         $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
 
         return $property->getValue($object);
     }

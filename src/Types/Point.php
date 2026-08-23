@@ -64,15 +64,21 @@ class Point implements Jsonable, Arrayable
     /**
      * @param string|null $string
      *
-     * @return Jsonable|null
+     * @return Jsonable|null `null` when the JSON does not describe a point
      */
     public static function fromJson(?string $string): ?Jsonable
     {
-        if (!$array = Json::decode($string)) {
+        $array = Json::decode($string);
+
+        if (!is_array($array) || !isset($array['x'], $array['y'])) {
             return null;
         }
 
-        return new static($array['x'], $array['y']);
+        if (!is_numeric($array['x']) || !is_numeric($array['y'])) {
+            return null;
+        }
+
+        return new static((float)$array['x'], (float)$array['y']);
     }
 
     /**

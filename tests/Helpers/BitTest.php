@@ -134,4 +134,15 @@ final class BitTest extends TestCase
             static::assertEquals($expected, Bit::decBinPad($flag, $padLength));
         }
     }
+
+    public function testNonBinaryStringIsRejected(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidParamException::class);
+        Bit::addFlag('abc', 1);
+    }
+
+    public function testBinaryStringIsAccepted(): void
+    {
+        static::assertSame(3, Bit::addFlag('00001', 2));
+    }
 }

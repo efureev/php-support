@@ -1537,4 +1537,83 @@ final class ArrTest extends TestCase
             Arr::fromPostgresPoint('(1e3,2)')
         );
     }
+
+    #[Test]
+    public function mergeAppendsWhenIntKeyHoldsNull(): void
+    {
+        self::assertSame(
+            [
+                null,
+                'x',
+            ],
+            Arr::merge([0 => null], [0 => 'x'])
+        );
+    }
+
+    #[Test]
+    public function fillKeysByValuesMatchesPositionally(): void
+    {
+        self::assertSame(
+            [
+                'a' => 'x',
+                'b' => 'y',
+            ],
+            Arr::fillKeysByValues(
+                [
+                    'k1' => 'a',
+                    'k2' => 'b',
+                ],
+                [
+                    'x',
+                    'y',
+                ]
+            )
+        );
+
+        // a missing value still becomes null
+        self::assertSame(
+            [
+                'a' => 'x',
+                'b' => null,
+            ],
+            Arr::fillKeysByValues(
+                [
+                    'a',
+                    'b',
+                ],
+                ['x']
+            )
+        );
+    }
+
+    #[Test]
+    public function setReturnsTheWholeArray(): void
+    {
+        $array = [];
+
+        self::assertSame(['a' => ['b' => 1]], Arr::set($array, 'a.b', 1));
+        self::assertSame(['a' => ['b' => 1]], $array);
+    }
+
+    #[Test]
+    public function removeHonoursCustomSeparator(): void
+    {
+        $array = [
+            'key' => [
+                'sub'  => 1,
+                'keep' => 2,
+            ],
+        ];
+
+        Arr::remove($array, 'key/sub', '/');
+
+        self::assertSame(['key' => ['keep' => 2]], $array);
+    }
+
+    #[Test]
+    public function randomThrowsPackageException(): void
+    {
+        $this->expectException(\Php\Support\Exceptions\InvalidArgumentException::class);
+        Arr::random([1, 2], 5);
+    }
 }

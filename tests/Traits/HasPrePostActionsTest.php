@@ -123,4 +123,15 @@ final class HasPrePostActionsTest extends TestCase
     {
         self::assertTrue($this->makeSubject()->run('empty'));
     }
+
+    public function testZeroNamedGroupIsNotTreatedAsMissingKey(): void
+    {
+        $subject = $this->makeSubject();
+        $action  = static fn () => true;
+
+        $subject->addCallbackAction('0', $action);
+        $subject->addCallbackAction('other', static fn () => true);
+
+        self::assertSame([$action], $subject->getCallbackActions('0'));
+    }
 }

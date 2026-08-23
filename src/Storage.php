@@ -35,9 +35,9 @@ class Storage implements ArrayAccess, Countable, JsonSerializable
         Arr::set($this->data, $key, $value);
     }
 
-    public function remove(string $key): void
+    public function remove(string $key, string $separator = '.'): void
     {
-        Arr::remove($this->data, $key);
+        Arr::remove($this->data, $key, $separator);
     }
 
     public function get(string $key, mixed $default = null): mixed

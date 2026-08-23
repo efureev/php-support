@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Php\Support\Traits;
 
 use ArrayAccess;
@@ -16,7 +18,7 @@ trait ConfigurableTrait
     public function configurable(array|ArrayAccess $attributes, bool $throwOnMissingProp = true): static
     {
         foreach ($attributes as $key => $value) {
-            if (!$this->applyValue($key, $value) && $throwOnMissingProp) {
+            if (!$this->applyValue((string)$key, $value) && $throwOnMissingProp) {
                 throw new InvalidParamException("Property $key is absent at class: " . $this::class);
             }
         }

@@ -13,7 +13,6 @@ trait HasReflection
     {
         $class  = new \ReflectionClass($cls);
         $method = $class->getMethod($name);
-        $method->setAccessible(true);
         return $method;
     }
 }

@@ -8,6 +8,7 @@ use Closure;
 use ArrayAccess;
 use ArrayObject;
 use JsonSerializable;
+use Php\Support\Exceptions\InvalidArgumentException;
 use Php\Support\Interfaces\Arrayable;
 use Php\Support\Interfaces\Jsonable;
 use Php\Support\Structures\Collections\ReadableCollection;
@@ -177,7 +178,7 @@ class Arr
     {
         foreach ($b as $key => $val) {
             if (is_int($key)) {
-                if (isset($res[$key])) {
+                if (array_key_exists($key, $res)) {
                     $res[] = $val;
                 } else {
                     $res[$key] = $val;
@@ -553,7 +554,8 @@ class Arr
         mixed $value,
         string $separator = '.'
     ): array|ArrayObject {
-        $keys = explode($separator, $key);
+        $original = &$array;
+        $keys     = explode($separator, $key);
 
         while (count($keys) > 1) {
             $key = array_shift($keys);
@@ -567,7 +569,7 @@ class Arr
 
         $array[array_shift($keys)] = $value;
 
-        return $array;
+        return $original;
     }
 
     /**
@@ -575,10 +577,11 @@ class Arr
      *
      * @param array<TKey,T>|ArrayObject<TKey,T> $array
      * @param string[]|string $keys
+     * @param non-empty-string $separator
      *
      * @return void
      */
-    public static function remove(array|ArrayObject &$array, array|string $keys): void
+    public static function remove(array|ArrayObject &$array, array|string $keys, string $separator = '.'): void
     {
         $original = &$array;
         $keys     = (array)$keys;
@@ -595,7 +598,7 @@ class Arr
                 continue;
             }
 
-            $parts = explode('.', $key);
+            $parts = explode($separator, $key);
 
             // clean up before each pass
             $array = &$original;
@@ -673,9 +676,10 @@ class Arr
     public static function fillKeysByValues(array $keys, array $values): array
     {
         $result = [];
+        $values = array_values($values);
 
-        foreach ($keys as $key => $keyName) {
-            $result[$keyName] = $values[$key] ?? null;
+        foreach (array_values($keys) as $index => $keyName) {
+            $result[$keyName] = $values[$index] ?? null;
         }
 
         return $result;
@@ -708,7 +712,7 @@ class Arr
      * @param bool $preserveKeys
      * @return T[]|array<TKey, T>
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public static function random(array $array, ?int $number = null, bool $preserveKeys = false): mixed
     {
@@ -717,7 +721,7 @@ class Arr
         $count = count($array);
 
         if ($requested > $count) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "You requested {$requested} items, but there are only {$count} items available."
             );
         }

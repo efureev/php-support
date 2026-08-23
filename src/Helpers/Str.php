@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Php\Support\Helpers;
 
+use Php\Support\Exceptions\InvalidParamException;
+
 use function mb_strlen;
 use function mb_strtolower;
 use function mb_strtoupper;
@@ -278,6 +280,10 @@ class Str
      */
     public static function truncate(string $str, int $length, string $append = '...'): string
     {
+        if ($length < 1) {
+            throw new InvalidParamException("Length must be a positive integer, $length given", 'length');
+        }
+
         $ret        = mb_substr($str, 0, $length);
         $last_space = mb_strrpos($ret, ' ');
 
@@ -313,8 +319,19 @@ class Str
         string $format = '([^a-z\d]+)',
         bool $firstLetterOnly = false
     ): string {
-        $slug = preg_replace("/$format/", $separator, mb_strtolower(self::removeAccents($str)));
-        if (empty($slug)) {
+        $pattern = "/$format/";
+
+        if (!self::isRegExp($pattern)) {
+            throw new InvalidParamException("Invalid slug format: $format", 'format');
+        }
+
+        $slug = preg_replace($pattern, $separator, mb_strtolower(self::removeAccents($str)));
+
+        if ($slug === null) {
+            throw new InvalidParamException("Slug format failed to apply: $format", 'format');
+        }
+
+        if ($slug === '') {
             return '';
         }
 
