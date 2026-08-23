@@ -305,6 +305,39 @@ Report::make()
     ->addError('row 12 is malformed');
 ```
 
+`HasPrePostActions` gives an object named callback groups to run around an operation. A callback
+returning exactly `false` stops the group and makes `runActions()` return `false`, which is how a
+listener vetoes the work:
+
+```php
+use Php\Support\Traits\HasPrePostActions;
+
+final class Importer
+{
+    use HasPrePostActions;
+
+    public function import(array $rows): bool
+    {
+        if (!$this->runActions('before', $rows)) {
+            return false;                       // a listener said no
+        }
+
+        // ... do the work
+
+        $this->runActions('after', count($rows));
+
+        return true;
+    }
+}
+
+$importer = (new Importer())
+    ->addCallbackAction('before', static fn(array $rows) => $rows !== [])
+    ->addCallbackAction('after', static fn(int $count) => $logger->info("imported {$count}"));
+
+$importer->import([]);              // false — the guard vetoed it, nothing ran
+$importer->import([['id' => 1]]);   // true
+```
+
 <details>
 <summary>All traits</summary>
 
@@ -325,6 +358,40 @@ Report::make()
 | `TraitBooter`            | Eloquent-style `bootXxx()` hooks for traits                           |
 | `TraitInitializer`       | `initializeXxx()` hooks, run per instance                             |
 </details>
+
+## Conditional handlers
+
+`ConditionalHandler` pairs a piece of work with the condition that guards it, so the two travel
+together and the work is only built when it is actually needed. Both closures receive the same
+arguments.
+
+```php
+use Php\Support\ConditionalHandler;
+
+$auditLink = ConditionalHandler::make(
+    static fn(User $user) => ['label' => 'Audit log', 'href' => '/audit'],
+)->handleIf(static fn(User $user) => $user->isAdmin());
+
+$auditLink($admin);   // ['label' => 'Audit log', 'href' => '/audit']
+$auditLink($guest);   // null — the handler was never called
+```
+
+Useful for assembling a menu, a set of API fields or a list of tabs, where each entry knows for
+itself whether it belongs:
+
+```php
+$fields = array_filter(array_map(
+    static fn(ConditionalHandler $field) => $field($user),
+    [$auditLink, $billingLink, $profileLink],
+));
+```
+
+The condition can also be a plain boolean, and the handler is immutable — `handleIf()` returns a
+new instance rather than mutating the old one:
+
+```php
+ConditionalHandler::make(static fn() => buildReport(), $featureEnabled);
+```
 
 ## PostgreSQL types
 
@@ -435,7 +502,9 @@ MissingPropertyException, NotSupportedException, UnknownMethodException, Unknown
 **Enums** — casesToEscapeString, casesToString, fromName, hasName, hasValue, labels, names, random,
 toKeyValueArray, toValueKeyArray, tryFromName, values
 
-**Types** — Point, GeoPoint · **Interfaces** — Arrayable, Jsonable · **Other** — ConditionalHandler
+**`ConditionalHandler`** — make, handleIf, resolve, `__invoke`
+
+**Types** — Point, GeoPoint · **Interfaces** — Arrayable, Jsonable
 </details>
 
 ## Good to know
