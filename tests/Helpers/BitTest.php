@@ -107,14 +107,14 @@ final class BitTest extends TestCase
     }
 
 
-    public function testExistFlag(): void
+    public function testHasFlagIn(): void
     {
         foreach (self::permissions() as $permission) {
-            static::assertTrue(Bit::exist(self::permissions(), $permission));
+            static::assertTrue(Bit::hasFlagIn(self::permissions(), $permission));
         }
 
         for ($i = 5; $i <= 20; $i++) {
-            static::assertFalse(Bit::exist(self::permissions(), 1 << $i));
+            static::assertFalse(Bit::hasFlagIn(self::permissions(), 1 << $i));
         }
     }
 

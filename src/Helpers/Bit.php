@@ -75,14 +75,14 @@ class Bit
 
 
     /**
-     * Check a bit is existing in flag`s list
+     * Check whether a bit is set in the combined mask of the given flags.
      *
      * @param int[] $list
      * @param int $bit
      *
      * @return bool
      */
-    public static function exist(array $list, int $bit): bool
+    public static function hasFlagIn(array $list, int $bit): bool
     {
         return self::checkFlag(self::grant($list), $bit);
     }

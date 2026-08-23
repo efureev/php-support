@@ -33,16 +33,6 @@ trait UseErrorsBox
         return $this;
     }
 
-    /**
-     * Append an error to the box.
-     *
-     * @deprecated Misleading name - this appends rather than replaces. Use {@see self::addError()}.
-     */
-    public function setError(string|\Throwable $message): static
-    {
-        return $this->addError($message);
-    }
-
     public function hasErrors(): bool
     {
         return $this->errors !== [];

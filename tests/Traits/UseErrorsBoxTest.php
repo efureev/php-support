@@ -24,38 +24,38 @@ final class UseErrorsBoxTest extends TestCase
         self::assertSame([], $subject->errors());
     }
 
-    public function testSetErrorWithStringIsFluent(): void
+    public function testAddErrorWithStringIsFluent(): void
     {
         $subject = $this->makeSubject();
 
-        self::assertSame($subject, $subject->setError('oops'));
+        self::assertSame($subject, $subject->addError('oops'));
         self::assertTrue($subject->hasErrors());
         self::assertSame(['oops'], $subject->errors());
     }
 
-    public function testSetErrorAccumulates(): void
+    public function testAddErrorAccumulates(): void
     {
         $subject = $this->makeSubject();
 
-        $subject->setError('first')->setError('second');
+        $subject->addError('first')->addError('second');
 
         self::assertSame(['first', 'second'], $subject->errors());
     }
 
-    public function testSetErrorWithExceptionUsesMessage(): void
+    public function testAddErrorWithExceptionUsesMessage(): void
     {
         $subject = $this->makeSubject();
 
-        $subject->setError(new \RuntimeException('exception message'));
+        $subject->addError(new \RuntimeException('exception message'));
 
         self::assertSame(['exception message'], $subject->errors());
     }
 
-    public function testSetErrorWithErrorUsesMessageNotStackTrace(): void
+    public function testAddErrorWithErrorUsesMessageNotStackTrace(): void
     {
         $subject = $this->makeSubject();
 
-        $subject->setError(new \Error('fatal message'));
+        $subject->addError(new \Error('fatal message'));
 
         self::assertSame(['fatal message'], $subject->errors());
     }
@@ -64,7 +64,7 @@ final class UseErrorsBoxTest extends TestCase
     {
         $subject = $this->makeSubject();
 
-        $subject->setError('oops');
+        $subject->addError('oops');
 
         self::assertSame($subject, $subject->clearErrors());
         self::assertFalse($subject->hasErrors());
@@ -101,15 +101,6 @@ final class UseErrorsBoxTest extends TestCase
         $subject->addError('first')->addError('second');
 
         self::assertSame('first', $subject->firstError());
-    }
-
-    public function testSetErrorStillAppends(): void
-    {
-        $subject = $this->makeSubject();
-
-        $subject->setError('one')->setError('two');
-
-        self::assertSame(['one', 'two'], $subject->errors());
     }
 
     public function testAddErrorAcceptsThrowable(): void

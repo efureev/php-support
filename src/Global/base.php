@@ -273,18 +273,6 @@ if (!function_exists('remoteStaticCallOrThrow')) {
     }
 }
 
-if (!function_exists('remoteStaticCallOrTrow')) {
-    /**
-     * Returns result of an object's static method if it exists in the class or throws an exception.
-     *
-     * @deprecated Misspelled alias, use remoteStaticCallOrThrow() instead. Kept for backward compatibility.
-     */
-    function remoteStaticCallOrTrow(object|string|null $class, string $method, mixed ...$params): mixed
-    {
-        return remoteStaticCallOrThrow($class, $method, ...$params);
-    }
-}
-
 if (!function_exists('remoteCall')) {
     /**
      * Returns result of an object's method if it exists in the object.

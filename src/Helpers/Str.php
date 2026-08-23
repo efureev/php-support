@@ -398,23 +398,6 @@ class Str
 
 
     /**
-     * Checks to see if a string is utf8 encoded.
-     *
-     * NOTE: This function checks for 5-Byte sequences, UTF8
-     *       has Bytes Sequences with a maximum length of 4.
-     *
-     * Written by Tony Ferrara <http://blog.ircmaxwell.com>
-     *
-     * @param string $string The string to be checked
-     *
-     * @return bool
-     */
-    public static function seemsUTF8(string $string): bool
-    {
-        return URLify::seemsUTF8($string);
-    }
-
-    /**
      * Converts all accent characters to ASCII characters.
      */
     public static function removeAccents(string $str, string $language = ''): string

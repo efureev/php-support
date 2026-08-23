@@ -684,18 +684,18 @@ final class StrTest extends TestCase
     {
         // Test a valid UTF-8 sequence: "ÜTF-8 Fµñ".
         $validUTF8 = "\xC3\x9CTF-8 F\xC2\xB5\xC3\xB1";
-        self::assertTrue(Str::seemsUTF8($validUTF8));
+        self::assertTrue(URLify::seemsUTF8($validUTF8));
 
         self::assertTrue(
-            Str::seemsUTF8("\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid UTF-8 \xEF\xBF\xBD")
+            URLify::seemsUTF8("\xEF\xBF\xBD this has \xEF\xBF\xBD\xEF\xBF\xBD some invalid UTF-8 \xEF\xBF\xBD")
         );
 
         // Test invalid UTF-8 sequences
         $invalidUTF8 = "\xc3 this has \xe6\x9d some invalid UTF-8 \xe6";
-        self::assertFalse(Str::seemsUTF8($invalidUTF8));
+        self::assertFalse(URLify::seemsUTF8($invalidUTF8));
 
         // And test some plain ASCII
-        self::assertTrue(Str::seemsUTF8('The quick brown fox jumps over the lazy dog'));
+        self::assertTrue(URLify::seemsUTF8('The quick brown fox jumps over the lazy dog'));
 
         // Test an invalid non-UTF-8 string.
         if (function_exists('mb_convert_encoding')) {
@@ -712,7 +712,7 @@ final class StrTest extends TestCase
             self::assertEquals($utf8Char, pack('n', 50087), 'Something is wrong with your ICU unicode library.');
 
             // Test for not UTF-8.
-            self::assertFalse(Str::seemsUTF8($ucsChar));
+            self::assertFalse(URLify::seemsUTF8($ucsChar));
 
             // Test the worker method.
             $method = self::setMethodAccessible(URLify::class, 'seemsUTF8Regex');
