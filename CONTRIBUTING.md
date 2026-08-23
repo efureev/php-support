@@ -44,5 +44,5 @@ if you see one from `vendor/`, it is not yours to fix.
 
 ## Versioning
 
-The package follows semantic versioning. Breaking changes wait for the next
-major; see the release plan in `AUDIT.md` for what is already queued for 6.0.
+The package follows semantic versioning. Breaking changes wait for the next major, and every one
+of them is listed in [UPGRADE.md](./UPGRADE.md) with its replacement.
