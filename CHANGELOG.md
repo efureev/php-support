@@ -47,7 +47,8 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 - `ArrayCollection::mapByKey` throws `MissingPropertyException` for a missing key or property
 - `Str::truncate`, `Str::slugifyWithFormat` and `Bit::toInt` throw `InvalidParamException` on invalid input
 - `UseConfigurableStorage::configurable` writes unknown keys to the `Storage` instead of throwing
-- PHPUnit now fails on warnings, deprecations, notices and risky tests
+- PHPUnit now fails on warnings, deprecations, notices and risky tests; deprecations triggered by
+  dependencies rather than by this package are excluded via `ignoreIndirectDeprecations`
 
 ### Added
 
