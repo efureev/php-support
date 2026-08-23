@@ -80,7 +80,9 @@ final class Func
 
             if (Arr::accessible($target) && Arr::exists($target, $segment)) {
                 $target = $target[$segment];
-            } elseif (is_object($target) && isset($target->{$segment})) {
+            } elseif (is_object($target) && self::objectHasValue($target, (string)$segment)) {
+                // property_exists() rather than isset(): a public property holding null exists,
+                // and returning $default for it confused "no such property" with "the value null"
                 $target = $target->{$segment};
             } else {
                 return self::value($default);
@@ -88,6 +90,16 @@ final class Func
         }
 
         return $target;
+    }
+
+    /**
+     * Whether the object exposes the given property, including one that holds null.
+     *
+     * Magic properties are covered by isset(), declared ones by property_exists().
+     */
+    private static function objectHasValue(object $target, string $property): bool
+    {
+        return property_exists($target, $property) || isset($target->{$property});
     }
 
     /**

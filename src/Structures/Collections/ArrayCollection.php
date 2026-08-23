@@ -1182,4 +1182,130 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
     {
         return Json::encode($this->elements, $options);
     }
+
+    /**
+     * The median value, or null when the collection is empty.
+     *
+     * @param (callable(T, TKey): mixed)|string|null $callback
+     */
+    public function median(callable|string|null $callback = null): int|float|null
+    {
+        $values = array_values(
+            array_filter($this->resolveValues($callback), static fn($value) => is_numeric($value))
+        );
+
+        if ($values === []) {
+            return null;
+        }
+
+        sort($values);
+        $count  = count($values);
+        $middle = (int)floor(($count - 1) / 2);
+
+        return $count % 2 === 1
+            ? $values[$middle] + 0
+            : (($values[$middle] + $values[$middle + 1]) / 2);
+    }
+
+    /**
+     * Swap keys and values.
+     *
+     * @return static<array-key, TKey>
+     */
+    public function flip(): static
+    {
+        return $this->createFrom(array_flip($this->elements));
+    }
+
+    /**
+     * Pair each element with the one at the same position in each of the given iterables.
+     *
+     * @param iterable<array-key, mixed> ...$items
+     *
+     * @return static<int, static<int, mixed>>
+     */
+    public function zip(iterable ...$items): static
+    {
+        $lists  = array_map(static fn($list) => array_values(Arr::toArray($list)), $items);
+        $result = [];
+
+        foreach (array_values($this->elements) as $index => $element) {
+            $row = [$element];
+
+            foreach ($lists as $list) {
+                $row[] = $list[$index] ?? null;
+            }
+
+            $result[] = $this->createFrom($row);
+        }
+
+        return $this->createFrom($result);
+    }
+
+    /**
+     * Whether the predicate holds for every element. True for an empty collection.
+     *
+     * @param callable(T, TKey): bool $callback
+     */
+    public function every(callable $callback): bool
+    {
+        foreach ($this->elements as $key => $element) {
+            if (!$callback($element, $key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether the predicate holds for at least one element.
+     *
+     * @param callable(T, TKey): bool $callback
+     */
+    public function some(callable $callback): bool
+    {
+        foreach ($this->elements as $key => $element) {
+            if ($callback($element, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * How many times each value - or each result of the callback - occurs.
+     *
+     * @param (callable(T, TKey): array-key)|string|null $callback
+     *
+     * @return static<array-key, int<1, max>>
+     */
+    public function countBy(callable|string|null $callback = null): static
+    {
+        $result = [];
+
+        foreach ($this->resolveValues($callback) as $value) {
+            $key = match (true) {
+                is_bool($value) => (int)$value,
+                $value instanceof \BackedEnum => $value->value,
+                $value instanceof Stringable => (string)$value,
+                default => $value,
+            };
+
+            $result[$key] = ($result[$key] ?? 0) + 1;
+        }
+
+        return $this->createFrom($result);
+    }
+
+    /**
+     * A generator over the elements, for iterating without a second copy in memory.
+     *
+     * @return \Generator<TKey, T>
+     */
+    public function lazy(): \Generator
+    {
+        yield from $this->elements;
+    }
 }

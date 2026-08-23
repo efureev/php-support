@@ -948,4 +948,105 @@ final class StrTest extends TestCase
         self::assertSame('SomeValue', Str::toCamel('some_value'));
         self::assertSame('someValue', Str::toLowerCamel('some_value'));
     }
+
+    #[Test]
+    public function padding(): void
+    {
+        self::assertSame('---abc---', Str::padBoth('abc', 9, '-'));
+        self::assertSame('abc', Str::padBoth('abc', 3));
+        self::assertSame('abc', Str::padBoth('abc', 1));
+        // an odd remainder goes to the right
+        self::assertSame('-abc--', Str::padBoth('abc', 6, '-'));
+
+        self::assertSame('007', Str::padLeft('7', 3, '0'));
+        self::assertSame('700', Str::padRight('7', 3, '0'));
+        self::assertSame('7', Str::padLeft('7', 1, '0'));
+
+        // multibyte: the length is in characters, not bytes
+        self::assertSame('——ы——', Str::padBoth('ы', 5, '—'));
+        self::assertSame(5, mb_strlen(Str::padBoth('ы', 5, '—')));
+        // a multi-character pad is cut to fit exactly
+        self::assertSame('abab7', Str::padLeft('7', 5, 'ab'));
+    }
+
+    #[Test]
+    public function paddingRejectsAnEmptyPad(): void
+    {
+        $this->expectException(InvalidParamException::class);
+        Str::padBoth('abc', 9, '');
+    }
+
+    #[Test]
+    public function wrapAndTitle(): void
+    {
+        self::assertSame('"x"', Str::wrap('x', '"'));
+        self::assertSame('<x>', Str::wrap('x', '<', '>'));
+
+        self::assertSame('Hello World', Str::title('hello world'));
+        self::assertSame('Привет Мир', Str::title('привет мир'));
+        self::assertSame('', Str::title(''));
+    }
+
+    #[Test]
+    public function uuidIsAValidVersion4(): void
+    {
+        $uuid = Str::uuid();
+
+        self::assertMatchesRegularExpression(
+            '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/',
+            $uuid
+        );
+        self::assertNotSame($uuid, Str::uuid());
+    }
+
+    #[Test]
+    public function ulidIsSortableByTime(): void
+    {
+        $earlier = Str::ulid(1_000);
+        $later   = Str::ulid(2_000);
+
+        self::assertSame(26, strlen($earlier));
+        self::assertMatchesRegularExpression('/^[0-9A-HJKMNP-TV-Z]{26}$/', $earlier);
+        self::assertLessThan($later, $earlier, 'ULIDs must sort by creation time');
+        self::assertNotSame(Str::ulid(1_000), Str::ulid(1_000), 'the random part must differ');
+    }
+
+    #[Test]
+    public function padLeftAndPadRightRejectAnEmptyPad(): void
+    {
+        $caught = 0;
+
+        foreach (['padLeft', 'padRight'] as $method) {
+            try {
+                Str::$method('abc', 9, '');
+            } catch (InvalidParamException) {
+                $caught++;
+            }
+        }
+
+        self::assertSame(2, $caught);
+    }
+
+    #[Test]
+    public function slugifyWithFormatReportsAPatternThatFailsToApply(): void
+    {
+        // a syntactically valid pattern that preg_replace still cannot run: catastrophic
+        // backtracking trips the PCRE limit and returns null
+        $this->expectException(InvalidParamException::class);
+
+        Str::slugifyWithFormat(str_repeat('a', 100_000) . 'b', '-', '(a+)+$');
+    }
+
+    #[Test]
+    public function slugifyReturnsEmptyWhenNothingSurvivesTheFormat(): void
+    {
+        self::assertSame('', Str::slugifyWithFormat('!!!', '-', '([^a-z\\d]+)'));
+    }
+
+    #[Test]
+    public function padBothWithAnOddRemainderPadsOnlyOneSide(): void
+    {
+        // the left side gets zero characters, which exercises the empty-repeat path
+        self::assertSame('ab-', Str::padBoth('ab', 3, '-'));
+    }
 }

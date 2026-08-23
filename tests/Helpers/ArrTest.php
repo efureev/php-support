@@ -1758,4 +1758,240 @@ final class ArrTest extends TestCase
         ];
         self::assertSame(0, Arr::removeByValue($exact, 1, false, true));
     }
+
+    #[Test]
+    public function sortRecursive(): void
+    {
+        self::assertSame([1, 3, [2, 9]], Arr::sortRecursive([3, 1, [9, 2]]));
+        self::assertSame(
+            [
+                'a' => [
+                    'c' => 2,
+                    'd' => 1,
+                ],
+                'b' => 1,
+            ],
+            Arr::sortRecursive(['b' => 1, 'a' => ['d' => 1, 'c' => 2]])
+        );
+        self::assertSame([3, 2, 1], Arr::sortRecursive([1, 3, 2], SORT_REGULAR, true));
+        self::assertSame([], Arr::sortRecursive([]));
+    }
+
+    #[Test]
+    public function divideAndCrossJoin(): void
+    {
+        self::assertSame([['a', 'b'], [1, 2]], Arr::divide(['a' => 1, 'b' => 2]));
+        self::assertSame([[], []], Arr::divide([]));
+
+        self::assertSame(
+            [
+                [
+                    1,
+                    'a',
+                ],
+                [
+                    1,
+                    'b',
+                ],
+                [
+                    2,
+                    'a',
+                ],
+                [
+                    2,
+                    'b',
+                ],
+            ],
+            Arr::crossJoin([1, 2], ['a', 'b'])
+        );
+        self::assertCount(8, Arr::crossJoin([1, 2], [3, 4], [5, 6]));
+        self::assertSame([[]], Arr::crossJoin());
+    }
+
+    #[Test]
+    public function shufflePreservesTheElements(): void
+    {
+        $source   = [
+            1,
+            2,
+            3,
+            4,
+            5,
+        ];
+        $shuffled = Arr::shuffle($source);
+
+        self::assertCount(5, $shuffled);
+        self::assertTrue(array_is_list($shuffled), 'keys are not preserved');
+
+        sort($shuffled);
+        self::assertSame($source, $shuffled);
+        self::assertSame([], Arr::shuffle([]));
+    }
+
+    #[Test]
+    public function whereNotNullKeepsFalsyValues(): void
+    {
+        self::assertSame(
+            [
+                'a' => 1,
+                'c' => 0,
+                'd' => '',
+            ],
+            Arr::whereNotNull(['a' => 1, 'b' => null, 'c' => 0, 'd' => ''])
+        );
+    }
+
+    #[Test]
+    public function dataToArrayWalksAPlainTraversable(): void
+    {
+        $iterator = new class implements \IteratorAggregate {
+            public function getIterator(): \Traversable
+            {
+                yield 'a' => 1;
+                yield 'b' => ['c' => 2];
+            }
+        };
+
+        self::assertSame(['a' => 1, 'b' => ['c' => 2]], Arr::dataToArray($iterator));
+        self::assertSame('scalar', Arr::dataToArray('scalar'));
+    }
+
+    #[Test]
+    public function fromPostgresArrayRejectsInputWithoutTheOpeningBrace(): void
+    {
+        self::assertSame([], Arr::fromPostgresArray('no-brace'));
+        self::assertSame([], Arr::fromPostgresArray(null));
+        self::assertSame([], Arr::fromPostgresArray(''));
+    }
+
+    #[Test]
+    public function replaceByTemplateLeavesNonStringsAlone(): void
+    {
+        self::assertSame(
+            [
+                'a' => 'X',
+                'n' => 5,
+                'b' => true,
+            ],
+            Arr::replaceByTemplate(['a' => 'A', 'n' => 5, 'b' => true], ['A' => 'X'])
+        );
+    }
+
+    #[Test]
+    public function mapReceivesValueAndKey(): void
+    {
+        self::assertSame(
+            [
+                'a' => 'a1',
+                'b' => 'b2',
+            ],
+            Arr::map(['a' => 1, 'b' => 2], static fn($value, $key) => $key . $value)
+        );
+        self::assertSame([], Arr::map([], static fn($value) => $value));
+    }
+
+    #[Test]
+    public function dataToArrayWalksAPlainIterableObject(): void
+    {
+        // an object that is iterable but neither Arrayable, Jsonable nor Traversable-backed
+        $object = new class implements \Iterator {
+            /** @var array<string, mixed> */
+            private array $items = [
+                'a' => 1,
+                'b' => 2,
+            ];
+
+            public function current(): mixed
+            {
+                return current($this->items);
+            }
+
+            public function next(): void
+            {
+                next($this->items);
+            }
+
+            public function key(): mixed
+            {
+                return key($this->items);
+            }
+
+            public function valid(): bool
+            {
+                return key($this->items) !== null;
+            }
+
+            public function rewind(): void
+            {
+                reset($this->items);
+            }
+        };
+
+        self::assertSame(['a' => 1, 'b' => 2], Arr::dataToArray($object));
+    }
+
+    #[Test]
+    public function mergeAddsAnUnseenIntegerKey(): void
+    {
+        self::assertSame([5 => 'x'], Arr::merge([], [5 => 'x']));
+    }
+
+    #[Test]
+    public function fromPostgresArrayReadsFloats(): void
+    {
+        self::assertSame([1.5, 2.25], Arr::fromPostgresArray('{1.5,2.25}'));
+    }
+
+    #[Test]
+    public function duplicates(): void
+    {
+        self::assertSame([2 => 'a'], Arr::duplicates(['a', 'b', 'a']));
+        self::assertSame([], Arr::duplicates(['a', 'b']));
+    }
+
+    #[Test]
+    public function randomReturnsAnEmptyArrayForZero(): void
+    {
+        self::assertSame([], Arr::random([1, 2, 3], 0));
+    }
+
+    #[Test]
+    public function dataToArrayKeepsPublicPropertiesOfAPlainObject(): void
+    {
+        // this used to return [], and Json::encode() inherited it: any stdClass became "[]"
+        $object    = new \stdClass();
+        $object->a = 1;
+        $object->b = ['c' => 2];
+
+        self::assertSame(['a' => 1, 'b' => ['c' => 2]], Arr::dataToArray($object));
+
+        $nested        = new \stdClass();
+        $nested->inner = $object;
+        self::assertSame(['inner' => ['a' => 1, 'b' => ['c' => 2]]], Arr::dataToArray($nested));
+
+        $visibility = new class {
+            public int $shown     = 1;
+            protected int $hidden = 2;
+            private int $secret   = 3;
+        };
+        self::assertSame(['shown' => 1], Arr::dataToArray($visibility), 'only public properties');
+
+        self::assertSame([], Arr::dataToArray(new \stdClass()));
+    }
+
+    #[Test]
+    public function randomCanPreserveKeys(): void
+    {
+        $source = [
+            'a' => 1,
+            'b' => 2,
+            'c' => 3,
+        ];
+        $picked = Arr::random($source, 2, true);
+
+        self::assertCount(2, $picked);
+        foreach ($picked as $key => $value) {
+            self::assertSame($source[$key], $value);
+        }
+    }
 }

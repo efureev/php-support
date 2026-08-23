@@ -75,4 +75,16 @@ final class ConsolePrintTest extends TestCase
             use ConsolePrint;
         };
     }
+
+    public function testFallsBackToThePhpWrapperWhenNoConstantExists(): void
+    {
+        // STDOUT/STDERR exist under CLI, so the wrapper branch is only reachable with a target
+        // that has no constant - which is exactly the situation under php-fpm
+        $stream = new \ReflectionMethod($this->cls(), 'consoleStream');
+
+        $first = $stream->invoke(null, 'output');
+
+        self::assertIsResource($first);
+        self::assertSame($first, $stream->invoke(null, 'output'), 'the handle is cached');
+    }
 }

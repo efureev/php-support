@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Php\Support\Tests;
 
 use Php\Support\Func;
+use Php\Support\Tests\Global\RemoteCallSubject;
+use Php\Support\Tests\Global\RemoteCallTraitHolder;
 use Php\Support\Structures\Collections\ArrayCollection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -66,11 +68,14 @@ final class FuncTest extends TestCase
     }
 
     #[Test]
-    public function everyFacadeMethodIsStaticAndPublic(): void
+    public function theFacadeExposesOnlyStaticMethods(): void
     {
-        foreach ((new \ReflectionClass(Func::class))->getMethods() as $method) {
+        $class = new \ReflectionClass(Func::class);
+
+        self::assertTrue($class->isFinal(), 'the facade is not meant to be extended');
+
+        foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             self::assertTrue($method->isStatic(), "Func::{$method->name} must be static");
-            self::assertTrue($method->isPublic(), "Func::{$method->name} must be public");
         }
     }
 
@@ -133,5 +138,66 @@ final class FuncTest extends TestCase
                 'line ' . ($number + 1) . ' of base.php should be a plain forward'
             );
         }
+    }
+
+    #[Test]
+    public function everyGlobalWrapperForwards(): void
+    {
+        $object       = new \stdClass();
+        $object->name = 'obj';
+        $subject      = new class {
+            public string $title = 'a title';
+
+            public function getName(): string
+            {
+                return 'name';
+            }
+
+            public function setName(string $value): void
+            {
+            }
+        };
+
+        self::assertSame('x', value('x'));
+        self::assertSame(1, dataGet(['a' => ['b' => 1]], 'a.b'));
+        self::assertSame([2, 4], array_values(mapValue(static fn($v) => $v * 2, [1, 2])));
+
+        $seen = [];
+        eachValue(
+            static function ($v) use (&$seen): void {
+                $seen[] = $v;
+            },
+            [
+                1,
+                2,
+            ]
+        );
+        self::assertSame([1, 2], $seen);
+
+        self::assertSame('yes', when(true, 'yes'));
+        self::assertSame('Php\Support', classNamespace(Func::class));
+        self::assertTrue(isTrue('yes'));
+        self::assertInstanceOf(\stdClass::class, instance(\stdClass::class));
+        self::assertSame('Func', class_basename(Func::class));
+        self::assertIsArray(trait_uses_recursive(RemoteCallTraitHolder::class));
+        self::assertTrue(does_trait_use(RemoteCallTraitHolder::class, \Php\Support\Traits\Maker::class));
+        self::assertIsArray(class_uses_recursive(RemoteCallTraitHolder::class));
+        self::assertSame('static:x', remoteStaticCall(RemoteCallSubject::class, 'staticGreet', 'x'));
+        self::assertSame('static:y', remoteStaticCallOrThrow(RemoteCallSubject::class, 'staticGreet', 'y'));
+        self::assertSame('instance:z', remoteCall(new RemoteCallSubject(), 'greet', 'z'));
+        self::assertSame('getName', attributeToGetterMethod('name'));
+        self::assertSame('setName', attributeToSetterMethod('name'));
+        self::assertSame('getName', findGetterMethod($subject, 'name'));
+        self::assertSame('setName', findSetterMethodByProp($subject, 'name'));
+        self::assertSame('title', public_property_exists($subject, 'title'));
+        self::assertSame('obj', getPropertyValue($object, 'name'));
+    }
+
+    #[Test]
+    public function dataGetStopsAtANullSegment(): void
+    {
+        $target = ['a' => 1];
+
+        self::assertSame($target, Func::dataGet($target, [null]));
     }
 }

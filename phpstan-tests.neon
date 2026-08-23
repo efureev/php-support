@@ -1,0 +1,16 @@
+includes:
+  - phpstan-tests-baseline.neon
+
+parameters:
+  level: 6
+  reportUnmatchedIgnoredErrors: false
+  paths:
+    - tests
+  ignoreErrors:
+    # Test fixtures are anonymous classes and throwaway data providers. Demanding full generic
+    # and iterable annotations from them buys nothing; real type errors are still reported.
+    - identifier: missingType.parameter
+    - identifier: missingType.iterableValue
+    - identifier: missingType.generics
+    - identifier: missingType.property
+    - identifier: missingType.return

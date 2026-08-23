@@ -315,4 +315,39 @@ final class HashCollectionTest extends TestCase
         $this->expectException(InvalidParamException::class);
         $c[] = 'scalar';
     }
+
+    #[Test]
+    public function sortBy(): void
+    {
+        $c = new HashCollection(['a' => 3, 'b' => 1, 'c' => 2]);
+
+        self::assertSame(['b' => 1, 'c' => 2, 'a' => 3], $c->sortBy()->all());
+        self::assertSame(['a' => 3, 'c' => 2, 'b' => 1], $c->sortBy(null, true)->all());
+        self::assertSame(['a' => 3, 'c' => 2, 'b' => 1], $c->sortBy(static fn($v) => -$v)->all());
+    }
+
+    #[Test]
+    public function partition(): void
+    {
+        $c = new HashCollection(['a' => 3, 'b' => 1, 'c' => 2]);
+
+        [
+            $matches,
+            $rest,
+        ] = $c->partition(static fn($v) => $v > 1);
+
+        self::assertSame(['a' => 3, 'c' => 2], $matches->all());
+        self::assertSame(['b' => 1], $rest->all());
+    }
+
+    #[Test]
+    public function groupBy(): void
+    {
+        $c = new HashCollection(['a' => 3, 'b' => 1, 'c' => 2]);
+
+        $groups = $c->groupBy(static fn($v) => $v > 1 ? 'big' : 'small');
+
+        self::assertSame(['a' => 3, 'c' => 2], $groups['big']->all());
+        self::assertSame(['b' => 1], $groups['small']->all());
+    }
 }

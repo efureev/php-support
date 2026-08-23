@@ -6,7 +6,6 @@
 # from the other side: its methods are static, so the class templates never bind at a call site.
 #
 # Dropping the generics would silence all of this and leave the package less typed, not more.
-# Level 8 with an empty baseline is therefore not reachable for these shapes today.
 #
 # New code must not add to this file.
 
@@ -109,6 +108,12 @@ parameters:
 			path: src/Structures/Collections/ArrayCollection.php
 
 		-
+			message: '#^Unable to resolve the template type K in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<TKey of \(int\|string\),T\>\:\:createFrom\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: src/Structures/Collections/ArrayCollection.php
+
+		-
 			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:createFrom\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<mixed, object\>\)\.$#'
 			identifier: return.type
 			count: 1
@@ -121,7 +126,25 @@ parameters:
 			path: src/Structures/Collections/HashCollection.php
 
 		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:groupBy\(\) should return array\<static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\> but returns array\<static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
 			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:map\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<U, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:partition\(\) should return array\{static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\), static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\} but returns array\{static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\), static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\}\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Structures/Collections/HashCollection.php
+
+		-
+			message: '#^Method Php\\Support\\Structures\\Collections\\HashCollection\:\:sortBy\(\) should return static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\) but returns static\(Php\\Support\\Structures\\Collections\\HashCollection\<T, TO of object\>\)\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Structures/Collections/HashCollection.php

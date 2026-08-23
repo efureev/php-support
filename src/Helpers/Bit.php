@@ -123,4 +123,64 @@ class Bit
 
         return str_pad(decbin($bit), $length, '0', STR_PAD_LEFT);
     }
+
+    /**
+     * Flip a bit: set it when clear, clear it when set.
+     *
+     * @param int|string $value
+     * @param int $bit
+     */
+    public static function toggleFlag(int|string $value, int $bit): int
+    {
+        return static::toInt($value) ^ $bit;
+    }
+
+    /**
+     * The individual bits that make up a mask, lowest first.
+     *
+     * @param int|string $value
+     *
+     * @return int[]
+     */
+    public static function flags(int|string $value): array
+    {
+        $mask   = static::toInt($value);
+        $result = [];
+
+        // Walk bit positions rather than doubling a probe: doubling past the highest bit
+        // overflows to a negative value and then to 0, which loops forever for PHP_INT_MAX.
+        for ($position = 0; $position < PHP_INT_SIZE * 8 - 1; $position++) {
+            $bit = 1 << $position;
+
+            if (($mask & $bit) !== 0) {
+                $result[] = $bit;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Whether every one of the given bits is set.
+     *
+     * @param int|string $value
+     * @param int[] $bits
+     */
+    public static function hasAll(int|string $value, array $bits): bool
+    {
+        $mask = static::grant($bits);
+
+        return $mask !== 0 && (static::toInt($value) & $mask) === $mask;
+    }
+
+    /**
+     * Whether at least one of the given bits is set.
+     *
+     * @param int|string $value
+     * @param int[] $bits
+     */
+    public static function hasAny(int|string $value, array $bits): bool
+    {
+        return (static::toInt($value) & static::grant($bits)) !== 0;
+    }
 }

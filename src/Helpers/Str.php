@@ -309,9 +309,9 @@ class Str
      * @param string $str
      * @param array<string,string> $replace
      *
-     * @return string|string[]
+     * @return string
      */
-    public static function replaceByTemplate(string $str, array $replace): array|string
+    public static function replaceByTemplate(string $str, array $replace): string
     {
         return str_replace(array_keys($replace), array_values($replace), $str);
     }
@@ -664,5 +664,139 @@ class Str
         }
 
         return mb_strtolower(mb_substr($str, 0, 1, 'UTF-8'), 'UTF-8') . mb_substr($str, 1, null, 'UTF-8');
+    }
+
+    /**
+     * Pad the string on both sides until it reaches $length characters.
+     *
+     * Multibyte-aware, unlike str_pad(), which counts bytes.
+     *
+     * @throws InvalidParamException when the padding is empty
+     */
+    public static function padBoth(string $str, int $length, string $pad = ' '): string
+    {
+        if ($pad === '') {
+            throw new InvalidParamException('Padding must not be empty', 'pad');
+        }
+
+        $missing = $length - mb_strlen($str);
+
+        if ($missing <= 0) {
+            return $str;
+        }
+
+        $left  = (int)floor($missing / 2);
+        $right = $missing - $left;
+
+        return self::repeatTo($pad, $left) . $str . self::repeatTo($pad, $right);
+    }
+
+    /**
+     * Pad the string on the left until it reaches $length characters.
+     *
+     * @throws InvalidParamException when the padding is empty
+     */
+    public static function padLeft(string $str, int $length, string $pad = ' '): string
+    {
+        if ($pad === '') {
+            throw new InvalidParamException('Padding must not be empty', 'pad');
+        }
+
+        $missing = $length - mb_strlen($str);
+
+        return $missing <= 0 ? $str : self::repeatTo($pad, $missing) . $str;
+    }
+
+    /**
+     * Pad the string on the right until it reaches $length characters.
+     *
+     * @throws InvalidParamException when the padding is empty
+     */
+    public static function padRight(string $str, int $length, string $pad = ' '): string
+    {
+        if ($pad === '') {
+            throw new InvalidParamException('Padding must not be empty', 'pad');
+        }
+
+        $missing = $length - mb_strlen($str);
+
+        return $missing <= 0 ? $str : $str . self::repeatTo($pad, $missing);
+    }
+
+    /**
+     * Repeats $pad until exactly $length characters are produced.
+     */
+    private static function repeatTo(string $pad, int $length): string
+    {
+        if ($length <= 0) {
+            return '';
+        }
+
+        $repeated = str_repeat($pad, (int)ceil($length / mb_strlen($pad)));
+
+        return mb_substr($repeated, 0, $length);
+    }
+
+    /**
+     * Wrap the string in $before and $after; a single argument wraps on both sides.
+     */
+    public static function wrap(string $str, string $before, ?string $after = null): string
+    {
+        return $before . $str . ($after ?? $before);
+    }
+
+    /**
+     * Upper-case the first letter of every word, multibyte-aware.
+     */
+    public static function title(string $str): string
+    {
+        return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
+    }
+
+    /**
+     * Generate an RFC 4122 version 4 UUID.
+     */
+    public static function uuid(): string
+    {
+        $bytes = random_bytes(16);
+
+        // version 4, variant 10xx
+        $bytes[6] = chr((ord($bytes[6]) & 0x0f) | 0x40);
+        $bytes[8] = chr((ord($bytes[8]) & 0x3f) | 0x80);
+
+        return implode(
+            '-',
+            [
+                bin2hex(substr($bytes, 0, 4)),
+                bin2hex(substr($bytes, 4, 2)),
+                bin2hex(substr($bytes, 6, 2)),
+                bin2hex(substr($bytes, 8, 2)),
+                bin2hex(substr($bytes, 10, 6)),
+            ]
+        );
+    }
+
+    /**
+     * Generate a ULID: 26 characters of Crockford base32, sortable by creation time.
+     *
+     * @param ?int $timestampMs Milliseconds since the epoch; defaults to now
+     */
+    public static function ulid(?int $timestampMs = null): string
+    {
+        $alphabet  = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+        $timestamp = $timestampMs ?? (int)(microtime(true) * 1000);
+
+        $time = '';
+        for ($i = 9; $i >= 0; $i--) {
+            $time      = $alphabet[$timestamp % 32] . $time;
+            $timestamp = intdiv($timestamp, 32);
+        }
+
+        $random = '';
+        for ($i = 0; $i < 16; $i++) {
+            $random .= $alphabet[random_int(0, 31)];
+        }
+
+        return $time . $random;
     }
 }

@@ -113,4 +113,11 @@ final class PointTest extends TestCase
         self::assertSame(5.0, Point::calcDistance(new Point(0, 0), new Point(3, 4)));
         self::assertSame(0.0, Point::calcDistance(new Point(1, 1), new Point(1, 1)));
     }
+
+    #[Test]
+    public function fromJsonRejectsNonNumericCoordinates(): void
+    {
+        self::assertNull(Point::fromJson('{"x":"a","y":"b"}'));
+        self::assertNull(Point::fromJson('{"x":1,"y":"b"}'));
+    }
 }

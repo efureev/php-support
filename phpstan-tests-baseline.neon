@@ -1,0 +1,307 @@
+# Findings in the test suite that are not worth chasing: assertions PHPStan can prove
+# statically, dead catches that exist precisely to prove a catch does not match, and generic
+# call sites in fixtures.
+#
+# New code must not add to this file.
+
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Dead catch \- Php\\Support\\Exceptions\\ExceptionInterface is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: tests/Exceptions/ExceptionInterfaceTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<string, string\> will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 2
+			path: tests/FuncTest.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to static method Php\\Support\\Func\:\:instance\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/FuncTest.php
+
+		-
+			message: '#^Call to function is_object\(\) with Php\\Support\\Types\\Point will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: tests/Global/BaseTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertTrue\(\) with true will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Global/BaseTest.php
+
+		-
+			message: '#^Parameter \#1 \$instance of function instance expects 0\|1\|class\-string\<0\|1\|false\|null\|true\>\|false\|null\|true, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Global/BaseTest.php
+
+		-
+			message: '#^Comparison operation "\>" between 1\|2 and 5 is always false\.$#'
+			identifier: greater.alwaysFalse
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Method Php\\Support\\Interfaces\\Jsonable@anonymous/Helpers/ArrTest\.php\:125\:\:fromJson\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Method Php\\Support\\Interfaces\\Jsonable@anonymous/Helpers/ArrTest\.php\:279\:\:fromJson\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Parameter \#2 \$func of static method Php\\Support\\Helpers\\Arr\:\:map\(\) expects Closure\(array\<''a''\|''b'', 1\|2\>\)\: array\<mixed\>, Closure\(mixed, mixed\)\: mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Property class@anonymous/Helpers/ArrTest\.php\:1972\:\:\$secret is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to static method Php\\Support\\Helpers\\Arr\:\:map\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/Helpers/ArrTest.php
+
+		-
+			message: '#^Method Php\\Support\\Tests\\Helpers\\JsonTest\:\:testDecodeOrThrowSeparatesNullFromFailure\(\) has JsonException in PHPDoc @throws tag but it''s not thrown\.$#'
+			identifier: throws.unusedType
+			count: 1
+			path: tests/Helpers/JsonTest.php
+
+		-
+			message: '#^Dead catch \- Php\\Support\\Exceptions\\InvalidParamException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: tests/Helpers/StrTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<mixed\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Interfaces/ArrayableTest.php
+
+		-
+			message: '#^PHPDoc tag @throws with type Php\\Support\\Tests\\ReflectionException is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 1
+			path: tests/Interfaces/ArrayableTest.php
+
+		-
+			message: '#^PHPDoc tag @throws with type Php\\Support\\Tests\\ReflectionException is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 1
+			path: tests/Interfaces/JsonableTest.php
+
+		-
+			message: '#^Access to an undefined property Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\>\:\:\$first\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Access to an undefined property Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\>\:\:\$first\.second\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Access to an undefined property Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\>\:\:\$first\.second2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Access to an undefined property Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\>\:\:\$test\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with null will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Offset ''first'' on Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\> in isset\(\) always exists and is always null\.$#'
+			identifier: isset.offset
+			count: 1
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Php\\Support\\Storage\<\*NEVER\*, \*NEVER\*\> does not accept int\.$#'
+			identifier: offsetAssign.valueType
+			count: 1
+			path: tests/StorageTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertFalse\(\) with false will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Cannot access property \$value on string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,array\<string, int\>\>\:\:sortBy\(\) expects array\<array\{string, string\}\|\(callable\(array\{n\: int\}, array\{n\: int\}\)\: mixed\)\|\(callable\(array\{n\: int\}, int\)\: mixed\)\|string\>\|\(callable\(array\{n\: int\}, array\{n\: int\}\)\: mixed\)\|\(callable\(array\{n\: int\}, int\)\: mixed\)\|string, array\{array\{Closure\(mixed, mixed\)\: int\<\-1, 1\>\}\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Parameter \#1 \$func of method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,int\>\:\:each\(\) expects callable\(int, int\)\: bool, Closure\(mixed, mixed\)\: void given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Parameter \#1 \$func of method Php\\Support\\Structures\\Collections\\ArrayCollection\<string,int\>\:\:map\(\) expects Closure\(int\)\: non\-falsy\-string, Closure\(mixed, mixed\)\: non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Parameter \#1 \$key of method Php\\Support\\Structures\\Collections\\ArrayCollection\<string,int\>\:\:get\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,ArrayObject\<string, int\|string\>\>\:\:mapByKey\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,array\<string, int\>\>\:\:mapByKey\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,array\<string, int\|string\>\>\:\:mapByKey\(\)$#'
+			identifier: argument.templateType
+			count: 2
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,stdClass\>\:\:mapByKey\(\)$#'
+			identifier: argument.templateType
+			count: 2
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Unable to resolve the template type U in call to method Php\\Support\\Structures\\Collections\\ArrayCollection\<int,string\>\:\:mapByKey\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: tests/Structures/Collections/ArrayCollectionTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertFalse\(\) with false will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/Structures/Collections/HashCollectionTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertNull\(\) with null will always evaluate to true\.$#'
+			identifier: staticMethod.alreadyNarrowedType
+			count: 1
+			path: tests/Structures/Collections/HashCollectionTest.php
+
+		-
+			message: '#^Php\\Support\\Structures\\Collections\\HashCollection\<\*NEVER\*, object\> does not accept stdClass\.$#'
+			identifier: offsetAssign.valueType
+			count: 2
+			path: tests/Structures/Collections/HashCollectionTest.php
+
+		-
+			message: '#^Php\\Support\\Structures\\Collections\\HashCollection\<\*NEVER\*, object\> does not accept string\.$#'
+			identifier: offsetAssign.valueType
+			count: 1
+			path: tests/Structures/Collections/HashCollectionTest.php
+
+		-
+			message: '#^Method Php\\Support\\Tests\\Testing\\TestingHelperSubject\:\:secretNumber\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: tests/Testing/TestingHelperSubject.php
+
+		-
+			message: '#^Property Php\\Support\\Tests\\Testing\\TestingHelperSubject\:\:\$secretValue is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/Testing/TestingHelperSubject.php
+
+		-
+			message: '#^Call to function property_exists\(\) with Php\\Support\\Tests\\Traits\\ConfigurableTraitTestClass and ''test'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: tests/Traits/ConfigurableTest.php
+
+		-
+			message: '#^Call to function property_exists\(\) with class@anonymous/Traits/ConfigurableTest\.php\:17 and ''test'' will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 1
+			path: tests/Traits/ConfigurableTest.php
+
+		-
+			message: '#^Dead catch \- Php\\Support\\Exceptions\\MissingPropertyException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: tests/Traits/ReadOnlyPropertiesTest.php
+
+		-
+			message: '#^Property class@anonymous/Traits/ReadOnlyPropertiesTest\.php\:16\:\:\$secret is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: tests/Traits/ReadOnlyPropertiesTest.php
+
+		-
+			message: '#^Property Php\\Support\\Tests\\Traits\\SingletonChildFixture\:\:\$password is unused\.$#'
+			identifier: property.unused
+			count: 1
+			path: tests/Traits/SingletonChildFixture.php
+
+		-
+			message: '#^Cannot instantiate class Php\\Support\\Tests\\Traits\\SingletonParentFixture via protected constructor Php\\Support\\Tests\\Traits\\SingletonParentFixture\:\:__construct\(\)\.$#'
+			identifier: new.protectedConstructor
+			count: 1
+			path: tests/Traits/SingletonTest.php
+
+		-
+			message: '#^Access to protected property class@anonymous/Traits/UseStorageTest\.php\:139\:\:\$hidden\.$#'
+			identifier: property.protected
+			count: 1
+			path: tests/Traits/UseStorageTest.php
+
+		-
+			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertFalse\(\) with true will always evaluate to false\.$#'
+			identifier: staticMethod.impossibleType
+			count: 1
+			path: tests/Traits/UseStorageTest.php
+
+		-
+			message: '#^Property class@anonymous/Traits/UseStorageTest\.php\:105\:\:\$name \(string\) in isset\(\) is not nullable\.$#'
+			identifier: isset.property
+			count: 1
+			path: tests/Traits/UseStorageTest.php
