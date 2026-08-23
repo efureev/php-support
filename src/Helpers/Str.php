@@ -465,7 +465,7 @@ class Str
 
         while (strlen($result) < $length) {
             $missing = $length - strlen($result);
-            $bytes   = random_bytes((int)ceil($missing / 3) * 3);
+            $bytes   = random_bytes(max(1, (int)ceil($missing / 3) * 3));
             $result .= substr(str_replace(['/', '+', '='], '', base64_encode($bytes)), 0, $missing);
         }
 

@@ -322,7 +322,7 @@ class ArrayCollection implements Collection, Stringable, JsonSerializable, Array
         }
 
         if (is_object($target)) {
-            if (property_exists($target, $keyName) || isset($target->$keyName)) {
+            if (property_exists($target, (string)$keyName) || isset($target->$keyName)) {
                 return $target->$keyName;
             }
 

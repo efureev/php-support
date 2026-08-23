@@ -34,14 +34,18 @@ use function str_contains;
 use function str_replace;
 
 /**
- * @template TKey of array-key
- * @template T
+ * Array helpers.
+ *
+ * Every method is static, so the generic parameters live on the methods: a @template on the class
+ * only ever binds for an instance, which this class never has.
  */
 class Arr
 {
     /**
      * Collapse an array of arrays into a single array.
      *
+     * @template TKey of array-key
+     * @template T
      * @param iterable<TKey,T> $array
      * @return array<T>
      */
@@ -65,6 +69,7 @@ class Arr
     /**
      * Remove one element from array by value
      *
+     * @template T
      * @param array<T> $array
      * @param mixed $val If $val is a string, the comparison is done in a case-sensitive manner.
      * @param bool $reindex
@@ -97,9 +102,11 @@ class Arr
     /**
      * Simple variable to array
      *
+     * The input is mixed, so the element type cannot be carried through to the result.
+     *
      * @param mixed $items
      *
-     * @return T[]|array<TKey, T>
+     * @return array<array-key, mixed>
      */
     public static function toArray(mixed $items): array
     {
@@ -173,6 +180,8 @@ class Arr
     }
 
     /**
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $res array to be merged to
      * @param array<TKey, T> $b array to be merged from. You can specify additional
      *                            arrays via third argument, fourth argument etc.
@@ -208,6 +217,8 @@ class Arr
      * Elements are quoted only when the PostgreSQL array literal syntax requires it: empty strings,
      * the literal `NULL` and values containing `{`, `}`, `,`, `"`, a backslash or whitespace.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      *
      * @return string
@@ -285,6 +296,8 @@ class Arr
     /**
      * Remove named keys from arrays
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      *
      * @return array<T>
@@ -493,6 +506,8 @@ class Arr
     /**
      * Determine if the given key exists in the provided array.
      *
+     * @template TKey of array-key
+     * @template T
      * @param ArrayAccess<TKey, T>|array<TKey, T> $array
      * @param string|int $key
      *
@@ -510,6 +525,8 @@ class Arr
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
+     * @template TKey of array-key
+     * @template T
      * @param ArrayAccess<TKey,T>|array<TKey,T> $array
      * @param string|string[] $keys
      * @param non-empty-string $separator
@@ -547,12 +564,12 @@ class Arr
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param array<TKey,T>|ArrayObject<TKey,T>|array<mixed> $array
-     * @param-out array<TKey,T>|ArrayObject<TKey,T>|array<mixed> $array
+     * @param array<array-key, mixed>|ArrayObject<array-key, mixed> $array
+     * @param-out array<array-key, mixed>|ArrayObject<array-key, mixed> $array
      * @param string $key
      * @param mixed $value
      * @param non-empty-string $separator
-     * @return T[]|array<TKey,T>|ArrayObject<TKey,T>
+     * @return array<array-key, mixed>|ArrayObject<array-key, mixed> The whole array, not the leaf
      */
     public static function set(
         array|ArrayObject &$array,
@@ -581,7 +598,7 @@ class Arr
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param array<TKey,T>|ArrayObject<TKey,T> $array
+     * @param array<array-key, mixed>|ArrayObject<array-key, mixed> $array
      * @param string[]|string $keys
      * @param non-empty-string $separator
      *
@@ -628,6 +645,8 @@ class Arr
      * Key = search value
      * Value = replace value
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param array<string, string> $replace
      *
@@ -662,6 +681,8 @@ class Arr
     /**
      * Find duplicates into an array
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      *
      * @return array<TKey, T>
@@ -674,6 +695,8 @@ class Arr
     /**
      * Fill a keyed array by values from another array
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey> $keys
      * @param array<T> $values
      *
@@ -694,6 +717,8 @@ class Arr
     /**
      * Push an item onto the beginning of an array.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param mixed $value
      * @param string|int|null $key
@@ -713,6 +738,8 @@ class Arr
     /**
      * Get one or a specified number of random values from an array.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param int|null $number
      * @param bool $preserveKeys
@@ -758,6 +785,8 @@ class Arr
     }
 
     /**
+     * @template TKey of array-key
+     * @template T
      * @template U
      * @param array<TKey, T> $elements
      * @param Closure $func
@@ -775,6 +804,8 @@ class Arr
     /**
      * Get a subset of the items, keeping only the given keys.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param string[]|int[]|string|int $keys
      *
@@ -788,6 +819,8 @@ class Arr
     /**
      * Get all of the items except for those with the given keys.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param string[]|int[]|string|int $keys
      *
@@ -803,6 +836,8 @@ class Arr
      *
      * Both `$value` and `$key` support the "dot" notation understood by {@see self::get()}.
      *
+     * @template TKey of array-key
+     * @template T
      * @param iterable<TKey, T> $array
      * @param string|int|null $value
      * @param string|int|null $key
@@ -831,6 +866,8 @@ class Arr
     /**
      * Return the first element passing a given truth test.
      *
+     * @template TKey of array-key
+     * @template T
      * @param iterable<TKey, T> $array
      * @param null|callable(T, TKey): bool $callback
      * @param mixed $default
@@ -851,6 +888,8 @@ class Arr
     /**
      * Return the last element passing a given truth test.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param null|callable(T, TKey): bool $callback
      * @param mixed $default
@@ -958,6 +997,8 @@ class Arr
     /**
      * Key an array by a field or using a callback.
      *
+     * @template TKey of array-key
+     * @template T
      * @param iterable<TKey, T> $array
      * @param (callable(T, TKey): array-key)|string|int $keyBy
      *
@@ -979,6 +1020,8 @@ class Arr
     /**
      * Filter the array using the given callback, preserving keys.
      *
+     * @template TKey of array-key
+     * @template T
      * @param array<TKey, T> $array
      * @param callable(T, TKey): bool $callback
      *

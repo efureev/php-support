@@ -35,21 +35,33 @@ class Storage implements ArrayAccess, Countable, IteratorAggregate, JsonSerializ
         $this->data = $init;
     }
 
+    /**
+     * @param non-empty-string $separator
+     */
     public function set(string $key, mixed $value, string $separator = '.'): void
     {
         Arr::set($this->data, $key, $value, $separator);
     }
 
+    /**
+     * @param non-empty-string $separator
+     */
     public function remove(string $key, string $separator = '.'): void
     {
         Arr::remove($this->data, $key, $separator);
     }
 
+    /**
+     * @param non-empty-string $separator
+     */
     public function get(string $key, mixed $default = null, string $separator = '.'): mixed
     {
         return Arr::get($this->data, $key, $default, $separator);
     }
 
+    /**
+     * @param non-empty-string $separator
+     */
     public function exist(string $key, string $separator = '.'): bool
     {
         return Arr::has($this->data, $key, $separator);
@@ -131,7 +143,7 @@ class Storage implements ArrayAccess, Countable, IteratorAggregate, JsonSerializ
 
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        $this->set($offset, $value);
+        $this->set((string)$offset, $value);
     }
 
     public function offsetUnset(mixed $offset): void
