@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog][keepachangelog] and this project adher
 
 ## [Unreleased]
 
+## v6.1.3
+
+No code changes: the library itself is byte-for-byte what 6.1.2 shipped, only less is downloaded with it.
+
+### Added
+
+- Add `.gitattributes` marking the development tooling `export-ignore`, so `composer require` no longer downloads `tests/`, `.github/`, the PHPStan, PHPUnit and PHPCS configs or `CONTRIBUTING.md` into every `vendor/` directory - the archive drops from 904 KB and 139 files to 412 KB and 59
+- Normalise line endings to LF through the same file
+
 ## v6.1.2
 
 Documentation only - no code changes, nothing to test against when upgrading from 6.1.1.
@@ -467,7 +476,9 @@ See [UPGRADE.md](./UPGRADE.md) for migration instructions.
 
 [semver]:https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.2...HEAD
+[Unreleased]: https://github.com/efureev/php-support/compare/v6.1.3...HEAD
+
+[6.1.3]: https://github.com/efureev/php-support/compare/v6.1.2...v6.1.3
 
 [6.1.2]: https://github.com/efureev/php-support/compare/v6.1.1...v6.1.2
 
