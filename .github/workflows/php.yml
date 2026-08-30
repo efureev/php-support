@@ -120,7 +120,7 @@ jobs:
 
       - name: Upload coverage report
         if: matrix.setup == 'stable' && matrix.intl
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-php${{ matrix.php }}
           path: ./clover.xml
